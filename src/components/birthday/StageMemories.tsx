@@ -1,11 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { birthdayConfig, memories } from "@/data/birthday";
 import { PixelButton, PixelPanel, StageShell, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── STAGE 6: cinematic memories — one by one, pixel transitions ──
+// Background music is global (thoseeyes.mp3) — continues across stages.
 export function StageMemories({ onNext }: { onNext: () => void }) {
   const cfg = birthdayConfig.memories;
   const [idx, setIdx] = useState(0);
@@ -14,10 +15,6 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
   const [dir, setDir] = useState(1);
   const m = memories[idx];
   const finished = seen.every(Boolean);
-
-  useEffect(() => {
-    void birthdayAudio.playBackground("memories", cfg.musicSrc);
-  }, [cfg.musicSrc]);
 
   const markSeen = (i: number) => setSeen((s) => (s[i] ? s : s.map((v, j) => (j === i ? true : v))));
 
@@ -154,8 +151,6 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
           </p>
         )}
       </div>
-
-      <p className="pixel-font z-10 mt-2 text-center text-[9px] text-[#8a6a6a]">🎵 memory music playing • add /music/memories.mp3 to change it</p>
     </StageShell>
   );
 }

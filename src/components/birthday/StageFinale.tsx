@@ -7,6 +7,7 @@ import { PixelButton, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── FINAL: HAPPY 20 ──
+// Background music is global (thoseeyes.mp3) — keeps playing through the finale.
 export function StageFinale({ onReplay }: { onReplay: () => void }) {
   const cfg = birthdayConfig.finale;
   const [photoOk, setPhotoOk] = useState(true);
@@ -22,8 +23,6 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
       if (Date.now() < end) setTimeout(frame, 350);
     };
     frame();
-    void birthdayAudio.playBackground("birthday", "/music/happy-birthday.mp3");
-    return () => birthdayAudio.stopBackground();
   }, []);
 
   return (

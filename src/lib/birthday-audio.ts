@@ -1,39 +1,27 @@
 // ─────────────────────────────────────────────
 //  Reusable chiptune + file audio engine.
-//  - Starts only after first user gesture (autoplay-safe)
-//  - Tries real mp3 (audioSrc) first, falls back to WebAudio synth
-//  - Global mute toggle, per-stage background loops
+//  - SFX (pop/blow/fanfare/...) via WebAudio synth, starts after first gesture
+//  - Background music: ONE global <audio> instance playing
+//    "/audio/thoseeyes.mp3" on loop across ALL stages.
+//    Never restarts on stage change, keeps playback position.
+//    Only stops via explicit user control or page close.
 // ─────────────────────────────────────────────
 "use client";
 
-type LoopKind = "birthday" | "memories" | "game" | null;
-
-const HAPPY_BIRTHDAY: { f: number; d: number }[] = [
-  // "Happy birthday to you" — G G A G C B | G G A G D C ...
-  { f: 392.0, d: 0.75 }, { f: 392.0, d: 0.75 }, { f: 440.0, d: 1 },
-  { f: 392.0, d: 1 }, { f: 523.25, d: 1 }, { f: 493.88, d: 1.5 },
-  { f: 392.0, d: 0.75 }, { f: 392.0, d: 0.75 }, { f: 440.0, d: 1 },
-  { f: 392.0, d: 1 }, { f: 587.33, d: 1 }, { f: 523.25, d: 1.5 },
-  { f: 392.0, d: 0.75 }, { f: 392.0, d: 0.75 }, { f: 783.99, d: 1 },
-  { f: 659.25, d: 1 }, { f: 523.25, d: 1 }, { f: 493.88, d: 1 }, { f: 440.0, d: 1.5 },
-  { f: 698.46, d: 0.75 }, { f: 698.46, d: 0.75 }, { f: 659.25, d: 1 },
-  { f: 523.25, d: 1 }, { f: 587.33, d: 1 }, { f: 523.25, d: 2 },
-];
-
-const MEMORY_LULLABY = [523.25, 587.33, 659.25, 587.33, 523.25, 440.0, 392.0, 440.0, 523.25, 659.25, 783.99, 659.25];
-const GAME_LOOP = [262, 330, 392, 523, 392, 330, 294, 330, 392, 440, 523, 440];
+export const GLOBAL_MUSIC_SRC = "/audio/thoseeyes.mp3";
+const GLOBAL_MUSIC_VOLUME = 0.8;
 
 class BirthdayAudio {
   private ctx: AudioContext | null = null;
   private master: GainNode | null = null;
-  private loopTimer: number | null = null;
-  private loopKind: LoopKind = null;
-  private fileAudio: HTMLAudioElement | null = null;
-  private fileSrc: string | null = null;
+  // ── single global background music instance ──
+  private globalAudio: HTMLAudioElement | null = null;
+  private userStopped = false;
+  private interactionListenersBound = false;
   muted = false;
   unlocked = false;
 
-  /** Must be called from a click/tap handler once. */
+  /** Must be called from a click/tap handler once (enables WebAudio SFX). */
   unlock() {
     if (this.unlocked) return;
     this.unlocked = true;
@@ -51,91 +39,84 @@ class BirthdayAudio {
   setMuted(m: boolean) {
     this.muted = m;
     if (this.master && this.ctx) this.master.gain.setValueAtTime(m ? 0 : 0.5, this.ctx.currentTime);
-    if (this.fileAudio) this.fileAudio.muted = m;
+    if (this.globalAudio) this.globalAudio.muted = m;
   }
 
-  private async tryFile(src?: string): Promise<boolean> {
-    if (!src) return false;
-    try {
-      const res = await fetch(src, { method: "HEAD" });
-      if (!res.ok) return false;
-    } catch {
-      return false;
-    }
-    this.stopFile();
-    const el = new Audio(src);
-    el.loop = true;
-    el.muted = this.muted;
-    el.volume = 0.8;
-    this.fileAudio = el;
-    this.fileSrc = src;
-    try {
-      await el.play();
-      return true;
-    } catch {
-      return false;
-    }
-  }
-
-  private stopFile() {
-    if (this.fileAudio) {
-      this.fileAudio.pause();
-      this.fileAudio.src = "";
-      this.fileAudio = null;
-      this.fileSrc = null;
-    }
-  }
-
-  private stopSynth() {
-    if (this.loopTimer) {
-      window.clearTimeout(this.loopTimer);
-      this.loopTimer = null;
-    }
-    this.loopKind = null;
-  }
-
-  stopBackground() {
-    this.stopFile();
-    this.stopSynth();
-  }
-
-  /** Play a stage background loop: tries mp3, else synth. */
-  async playBackground(kind: Exclude<LoopKind, null>, fileSrc?: string) {
-    this.unlock();
-    if (this.ctx?.state === "suspended") void this.ctx.resume();
-    this.stopBackground();
-    const ok = await this.tryFile(fileSrc);
-    if (ok) return;
-    this.loopKind = kind;
-    if (kind === "birthday") void this.synthBirthdayLoop();
-    else if (kind === "memories") this.synthLoop(MEMORY_LULLABY, 340, "triangle", 0.35);
-    else if (kind === "game") this.synthLoop(GAME_LOOP, 150, "square", 0.12);
-  }
-
-  private synthLoop(melody: number[], tempoMs: number, type: OscillatorType, vol: number) {
-    if (!this.ctx || !this.master) return;
-    let i = 0;
-    const step = () => {
-      if (!this.ctx || !this.master) return;
-      this.blip(melody[i % melody.length], tempoMs / 1000, type, vol);
-      i++;
-      this.loopTimer = window.setTimeout(step, tempoMs);
+  private bindFirstInteractionRetry() {
+    if (this.interactionListenersBound) return;
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+    this.interactionListenersBound = true;
+    const retry = () => {
+      if (this.userStopped) return;
+      const el = this.globalAudio;
+      if (el && el.paused) {
+        void el.play().catch(() => {});
+      } else if (!el) {
+        this.playGlobalMusic();
+        return;
+      }
+      // Once playing, no need to keep listening.
+      if (this.globalAudio && !this.globalAudio.paused) {
+        document.removeEventListener("pointerdown", retry);
+        document.removeEventListener("keydown", retry);
+        document.removeEventListener("touchstart", retry);
+        this.interactionListenersBound = false;
+      }
     };
-    step();
+    document.addEventListener("pointerdown", retry);
+    document.addEventListener("keydown", retry);
+    document.addEventListener("touchstart", retry);
   }
 
-  private async synthBirthdayLoop() {
-    if (!this.ctx || !this.master) return;
-    const beat = 0.42;
-    for (const n of HAPPY_BIRTHDAY) {
-      if (this.loopKind !== "birthday") return;
-      this.blip(n.f, n.d * beat * 0.9, "square", 0.16);
-      await new Promise((r) => setTimeout(r, n.d * beat * 1000));
+  /**
+   * Start (or resume) the single global background track.
+   * Idempotent: never restarts, never resets playback position.
+   * If autoplay is blocked, retries after the user's first interaction.
+   */
+  playGlobalMusic() {
+    if (typeof window === "undefined") return;
+    this.userStopped = false;
+    // Already have the one global instance → just resume, keep position.
+    if (this.globalAudio) {
+      this.globalAudio.muted = this.muted;
+      if (this.globalAudio.paused) {
+        void this.globalAudio.play().catch(() => {
+          this.bindFirstInteractionRetry();
+        });
+      }
+      return;
     }
-    if (this.loopKind === "birthday") {
-      await new Promise((r) => setTimeout(r, 600));
-      void this.synthBirthdayLoop();
+    // Create the ONE global instance.
+    const el = new Audio(GLOBAL_MUSIC_SRC);
+    el.loop = true;
+    el.preload = "auto";
+    el.muted = this.muted;
+    el.volume = GLOBAL_MUSIC_VOLUME;
+    this.globalAudio = el;
+    void el.play().catch(() => {
+      // Autoplay blocked — start after first user gesture.
+      this.bindFirstInteractionRetry();
+    });
+  }
+
+  /** Explicit user stop/pause. Preserves playback position for resume. */
+  stopGlobalMusic() {
+    this.userStopped = true;
+    if (this.globalAudio) {
+      try {
+        this.globalAudio.pause();
+      } catch {
+        // ignore
+      }
     }
+  }
+
+  /**
+   * Explicit user stop only (used by the music control).
+   * Stages must NOT call this on navigation — music continues across stages.
+   */
+  stopBackground() {
+    this.stopGlobalMusic();
   }
 
   private blip(freq: number, durSec: number, type: OscillatorType = "square", vol = 0.2) {
@@ -162,7 +143,48 @@ class BirthdayAudio {
     notes.forEach((f, i) => setTimeout(() => this.blip(f, 0.18, type, vol), i * stepMs));
   }
   pop() { this.sfx([660, 880], 70); }
-  blow() { this.sfx([800, 600, 400, 200], 90, "sawtooth", 0.12); }
+  /** Short blowing/wind noise for candle blow-out. */
+  blow() {
+    this.unlock();
+    if (!this.ctx || !this.master) return;
+    if (this.ctx.state === "suspended") void this.ctx.resume();
+    if (this.muted) return;
+    try {
+      const ctx = this.ctx;
+      const master = this.master;
+      const dur = 0.9;
+      const t = ctx.currentTime;
+      const len = Math.max(1, Math.floor(ctx.sampleRate * dur));
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const bp = ctx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.Q.value = 0.7;
+      bp.frequency.setValueAtTime(1000, t);
+      bp.frequency.exponentialRampToValueAtTime(320, t + dur);
+      const lp = ctx.createBiquadFilter();
+      lp.type = "lowpass";
+      lp.frequency.value = 2400;
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(0.6, t + 0.12);
+      g.gain.exponentialRampToValueAtTime(0.28, t + 0.45);
+      g.gain.exponentialRampToValueAtTime(0.5, t + 0.62);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+      src.connect(bp);
+      bp.connect(lp);
+      lp.connect(g);
+      g.connect(master);
+      src.start(t);
+      src.stop(t + dur + 0.05);
+    } catch {
+      // fall back to soft descending puff so blow-out still has feedback
+      this.sfx([500, 380, 260], 90, "sine", 0.12);
+    }
+  }
   success() { this.sfx([523, 659, 784, 1047], 90, "square", 0.2); }
   fail() { this.sfx([300, 220], 140, "sawtooth", 0.14); }
   jump() { this.sfx([400, 700], 60, "square", 0.14); }

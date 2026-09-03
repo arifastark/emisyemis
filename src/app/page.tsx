@@ -12,8 +12,11 @@ import { StageLetter } from "@/components/birthday/StageLetter";
 import { StageFinale } from "@/components/birthday/StageFinale";
 import { StageProgress } from "@/components/birthday/pixel-ui";
 import { MusicToggle } from "@/components/birthday/MusicToggle";
+import { birthdayAudio } from "@/lib/birthday-audio";
 
 // Sequential 8-stage pixel birthday game. One stage at a time.
+// Background music is ONE global thoseeyes.mp3 instance: started once here,
+// never restarted on stage change, keeps playback position.
 export default function Home() {
   const [stage, setStage] = useState(0);
   const next = useCallback(() => {
@@ -27,6 +30,13 @@ export default function Home() {
   useEffect(() => {
     window.scrollTo({ top: 0 });
   }, [stage]);
+
+  // Start the single global background track once. If autoplay is blocked,
+  // birthdayAudio retries after the user's first interaction. Stage changes
+  // never touch it, so position is preserved.
+  useEffect(() => {
+    birthdayAudio.playGlobalMusic();
+  }, []);
 
   return (
     <main className="crt relative min-h-dvh overflow-x-clip bg-[#FFD8D8]">
@@ -66,7 +76,7 @@ export default function Home() {
         <div className="fixed inset-x-0 bottom-0 z-10 overflow-hidden border-t-4 border-[#3A2B2B] bg-[#FFD93D] py-1.5">
           <div className="animate-marquee flex w-max gap-8 whitespace-nowrap pr-8">
             {Array.from({ length: 2 }).flatMap((_, k) =>
-              ["happy birthday ★", "happy 20 ★", "many more years ★", "confetti ready ★"].map((t, i) => (
+              ["You're my best friend, and I love you forever. ★", "Best friends forever. ★", "Friends who become family. ★", "Side by side, always. ★", "Making memories together, one moment at a time. ★", "Through every adventure, I'll always be by your side. ★"].map((t, i) => (
                 <span key={`${k}-${i}`} className="pixel-font text-[9px] text-[#3A2B2B]">
                   {t}
                 </span>

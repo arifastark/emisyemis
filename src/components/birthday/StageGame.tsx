@@ -16,11 +16,9 @@ type Obstacle = {
   passed: boolean;
 };
 
-// funny obstacle names for flavor
-const OBSTACLE_NAMES = ["blockhead ex", "funny dude", "random guy", "gel-hair guy"];
-
 // ── STAGE 4: custom pixel runner ──
-// friend runs → jumps over funny male heads → reaches ME.
+// ELMIRA runs → jumps over 5 boys → reaches ARIFA (girl) → hug!
+// Background music is global (thoseeyes.mp3) — continues across stages.
 export function StageGame({ onNext }: { onNext: () => void }) {
   const cfg = birthdayConfig.game;
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -32,6 +30,9 @@ export function StageGame({ onNext }: { onNext: () => void }) {
   const [, forceSprite] = useState(0);
   const stateRef = useRef<GameState>("ready");
   const rafRef = useRef(0);
+
+  const friendName = (cfg as { friendName?: string }).friendName ?? "ELMIRA";
+  const goalName = (cfg as { goalName?: string }).goalName ?? "ARIFA";
 
   // preload optional custom sprites (silent fallback to canvas-drawn pixels)
   // NOTE: ready-flags live in refs so image onload never restarts the game loop.
@@ -61,10 +62,6 @@ export function StageGame({ onNext }: { onNext: () => void }) {
     };
     meImg.current = m;
   }, [cfg.friendSprite, cfg.meSprite]);
-
-  useEffect(() => {
-    void birthdayAudio.playBackground("game", cfg.musicSrc);
-  }, [cfg.musicSrc]);
 
   const setBoth = (s: GameState) => {
     stateRef.current = s;
@@ -100,24 +97,33 @@ export function StageGame({ onNext }: { onNext: () => void }) {
     resize();
     window.addEventListener("resize", resize);
 
-    // physics / world
+    // physics / world — YAVAŞ ve rahat ayar
     const groundY = () => H - 46;
     let playerY = 0; // height above ground
     let vy = 0;
     let jumping = false;
-    const GRAV = 0.75;
-    const JUMP_V = 13.5;
-    // Relaxed pace: slightly slower base speed + gentler ramp so the game
-    // feels fair rather than difficult. Jump physics left untouched.
-    const BASE_SPEED = 4.2;
-    const MAX_SPEED = 7.5;
-    const SPEED_RAMP = 900; // dist units per +1 speed (higher = slower ramp)
+    const GRAV = 0.72;
+    const JUMP_V = 13.2;
+    const BASE_SPEED = 3.6; // biraz hızlandırıldı (önce 3.0)
+    const MAX_SPEED = 4.5; // hafif rampayla
+    const SPEED_RAMP = 2500; // yüksek = hız neredeyse sabit
     let speed = BASE_SPEED;
     let dist = 0;
     let frame = 0;
     let obstacles: Obstacle[] = [];
-    // First obstacle gets extra breathing room at run start.
-    let spawnIn = 160;
+
+    // ── TAM 5 ERKEK, ERKEN GELEN, ~8CM ARALIK (~300px) ──
+    const TOTAL_BOYS = 5;
+    // aralar ~180 dist (~300px ≈ ekranda ~8cm) → tek zıplayışla rahat geçilir.
+    const goalDist = cfg.goalDistance;
+    const SPAWN_AT = [0.1, 0.28, 0.46, 0.64, 0.82].map((f) => f * goalDist);
+    let spawned = 0;
+    let passedCount = 0;
+
+    // kavuşma animasyonu
+    let playerX = 64;
+    let winT = 0;
+
     const clouds = Array.from({ length: 5 }, (_, i) => ({ x: Math.random() * 800, y: 20 + Math.random() * 70, s: 0.6 + Math.random() * 0.8, i }));
     let hills = 0;
     let deadFlash = 0;
@@ -150,12 +156,26 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       ctx.fillRect(Math.round(x / PX) * PX, Math.round(y / PX) * PX, Math.round(w / PX) * PX, Math.round(h / PX) * PX);
     };
 
-    // cute pixel girl (friend) — two-frame run cycle
+    const drawNameTag = (cx: number, y: number, name: string, bg = "#3A2B2B") => {
+      ctx.font = "10px 'Press Start 2P', monospace";
+      const w = ctx.measureText(name).width + 14;
+      const x = cx - w / 2;
+      ctx.fillStyle = bg;
+      ctx.fillRect(x, y - 16, w, 18);
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x, y - 16, w, 18);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(name, x + 7, y - 3);
+    };
+
+    // oynayan kız — ELMIRA (kırmızı elbiseli, uzun siyah saçlı)
     const drawFriend = (x: number, gy: number, runFrame: number, squash: number) => {
       if (friendImg.current && friendReady.current && friendImg.current.complete && friendImg.current.naturalWidth > 0) {
         const s = 52;
         ctx.imageSmoothingEnabled = false;
         ctx.drawImage(friendImg.current, x - 6, gy - playerY - s + squash, s, s);
+        drawNameTag(x + 20, gy - playerY - 58 + squash, friendName, "#E63946");
         return;
       }
       const y0 = gy - playerY;
@@ -165,60 +185,77 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       ctx.beginPath();
       ctx.ellipse(x + 16, gy + 8, 18, 5, 0, 0, Math.PI * 2);
       ctx.fill();
-      // hair
-      drawPixelRect(x, y0 - 52, 32, 12, "#5b3a29");
-      drawPixelRect(x - 2, y0 - 42, 6, 22, "#5b3a29");
-      drawPixelRect(x + 28, y0 - 42, 6, 22, "#5b3a29");
+      // uzun siyah saç (bele kadar)
+      drawPixelRect(x, y0 - 52, 32, 12, "#1d1d1f");
+      drawPixelRect(x - 3, y0 - 42, 7, 30, "#1d1d1f");
+      drawPixelRect(x + 28, y0 - 42, 7, 30, "#1d1d1f");
       // face
       drawPixelRect(x + 4, y0 - 42, 24, 16, "#ffd9b3");
       drawPixelRect(x + 8, y0 - 36, 4, 4, "#3A2B2B");
       drawPixelRect(x + 20, y0 - 36, 4, 4, "#3A2B2B");
       drawPixelRect(x + 12, y0 - 30, 8, 3, "#c2255c");
       // bow
-      drawPixelRect(x + 22, y0 - 54, 10, 8, "#FF6B9D");
-      // dress
-      drawPixelRect(x + 4, y0 - 26, 24, 14, "#FF6B9D");
-      drawPixelRect(x + 2, y0 - 14, 28, 6, "#e64980");
+      drawPixelRect(x + 22, y0 - 54, 10, 8, "#FFD93D");
+      // kırmızı elbise
+      drawPixelRect(x + 4, y0 - 26, 24, 14, "#E63946");
+      drawPixelRect(x + 2, y0 - 14, 28, 6, "#B91C1C");
       // legs
       drawPixelRect(x + 8 + legSwing * 0.4, y0 - 8, 6, 8, "#ffd9b3");
       drawPixelRect(x + 18 - legSwing * 0.4, y0 - 8, 6, 8, "#ffd9b3");
       // arm
       drawPixelRect(x + 28, y0 - 24, 6, 10, "#ffd9b3");
+      drawNameTag(x + 16, y0 - 56, friendName, "#E63946");
     };
 
-    const drawMe = (x: number, gy: number, t: number) => {
+    // finalde BEKLEYEN kız — ARIFA (kahverengi elbiseli, kızıl saçlı, koşmaz)
+    const drawGoalGirl = (x: number, gy: number, t: number, happy: boolean) => {
       if (meImg.current && meReady.current && meImg.current.complete && meImg.current.naturalWidth > 0) {
         const s = 56;
         ctx.imageSmoothingEnabled = false;
-        const bob = Math.sin(t / 18) * 3;
+        const bob = happy ? Math.abs(Math.sin(t / 10)) * -8 : Math.sin(t / 30) * 2;
         ctx.drawImage(meImg.current, x, gy - s + bob, s, s);
+        drawNameTag(x + s / 2, gy - s + bob - 8, goalName, "#8B5E34");
         return;
       }
-      const y0 = gy + Math.sin(t / 18) * 3;
+      const jump = happy ? Math.abs(Math.sin(t / 10)) * -8 : 0;
+      const y0 = gy + Math.sin(t / 30) * 1.5 + jump;
       ctx.fillStyle = "rgba(58,43,43,.18)";
       ctx.beginPath();
       ctx.ellipse(x + 16, gy + 8, 18, 5, 0, 0, Math.PI * 2);
       ctx.fill();
-      // waving arm
-      const wave = Math.sin(t / 10) * 6;
+      // el sallıyor (beklerken)
+      const wave = Math.sin(t / 10) * 5;
       drawPixelRect(x + 26, y0 - 46 + wave, 6, 14, "#ffd9b3");
-      drawPixelRect(x, y0 - 54, 32, 12, "#3A2B2B");
+      // diğer elinde kahve bardağı ☕
+      drawPixelRect(x - 6, y0 - 30, 6, 10, "#ffd9b3");
+      drawPixelRect(x - 8, y0 - 36, 10, 8, "#fff");
+      drawPixelRect(x - 8, y0 - 36, 10, 3, "#6F4E37");
+      // kızıl saç
+      drawPixelRect(x - 2, y0 - 54, 36, 14, "#C1440E");
+      drawPixelRect(x - 2, y0 - 42, 6, 22, "#C1440E");
+      drawPixelRect(x + 28, y0 - 42, 6, 22, "#C1440E");
+      // face
       drawPixelRect(x + 4, y0 - 44, 24, 16, "#ffd9b3");
       drawPixelRect(x + 8, y0 - 38, 4, 4, "#3A2B2B");
       drawPixelRect(x + 20, y0 - 38, 4, 4, "#3A2B2B");
-      drawPixelRect(x + 11, y0 - 32, 10, 3, "#3A2B2B");
-      drawPixelRect(x + 4, y0 - 28, 24, 16, "#4D96FF");
-      drawPixelRect(x + 8, y0 - 12, 6, 12, "#3A2B2B");
-      drawPixelRect(x + 18, y0 - 12, 6, 12, "#3A2B2B");
+      drawPixelRect(x + 11, y0 - 32, 10, 3, "#c2255c");
+      // kahverengi elbise
+      drawPixelRect(x + 4, y0 - 28, 24, 14, "#8B5E34");
+      drawPixelRect(x + 2, y0 - 14, 28, 6, "#6F4E37");
+      // bacaklar bitişik — BEKLİYOR, koşmuyor
+      drawPixelRect(x + 9, y0 - 8, 6, 8, "#3A2B2B");
+      drawPixelRect(x + 18, y0 - 8, 6, 8, "#3A2B2B");
       // heart above head
       ctx.font = "16px serif";
       ctx.fillText("💖", x + 6, y0 - 60 + Math.sin(t / 12) * 3);
+      drawNameTag(x + 16, y0 - 60, goalName, "#8B5E34");
     };
 
-    // funny male head obstacles
-    const HEAD_COLORS = ["#ffdbac", "#f1c27d", "#e0ac69", "#c68642"];
-    const HAIR = ["#2b2b2b", "#6b4a2b", "#d94f04", "#123a6d"];
+    // 5 farklı tipte erkek kafa — her biri türlü türlü
+    const HEAD_COLORS = ["#ffdbac", "#f1c27d", "#e0ac69", "#c68642", "#8d5524"];
+    const HAIR = ["#2b2b2b", "#6b4a2b", "#d94f04", "#123a6d", "#555555"];
     const drawHead = (o: Obstacle, gy: number) => {
+      const v = o.variant % 5;
       const x = o.x;
       const y0 = gy - o.h;
       // shadow
@@ -226,25 +263,49 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       ctx.beginPath();
       ctx.ellipse(x + o.w / 2, gy + 8, o.w / 2, 4, 0, 0, Math.PI * 2);
       ctx.fill();
-      const skin = HEAD_COLORS[o.variant % HEAD_COLORS.length];
-      const hair = HAIR[o.variant % HAIR.length];
+      const skin = HEAD_COLORS[v];
+      const hair = HAIR[v];
       // neck + head block
       drawPixelRect(x + 8, y0 + o.h - 10, o.w - 16, 10, skin);
       drawPixelRect(x, y0, o.w, o.h - 10, skin);
-      // hair
-      drawPixelRect(x - 2, y0 - 4, o.w + 4, 12, hair);
-      if (o.variant % 2 === 0) drawPixelRect(x + 4, y0 - 10, o.w - 8, 8, hair); // tall hair
-      // eyes (derpy)
+      // saç — tipe göre
+      if (v === 4) {
+        // kel + yanlar + sakal
+        drawPixelRect(x - 2, y0 + 8, 6, 14, hair);
+        drawPixelRect(x + o.w - 4, y0 + 8, 6, 14, hair);
+        drawPixelRect(x + 6, y0 + 30, o.w - 12, 8, "#3A2B2B"); // sakal
+      } else {
+        drawPixelRect(x - 2, y0 - 4, o.w + 4, 12, hair);
+        if (v === 0) drawPixelRect(x + 4, y0 - 12, o.w - 8, 10, hair); // dik saç
+        if (v === 2) drawPixelRect(x + o.w / 2 - 4, y0 - 14, 8, 12, hair); // mohawk
+        if (v === 3) drawPixelRect(x - 2, y0 - 2, 6, 18, hair); // uzun yan
+      }
+      if (v === 1) drawPixelRect(x + 4, y0 + 8, o.w - 8, 4, hair); // alın bandı gibi
+      // eyes (derpy — her tipte farklı)
       drawPixelRect(x + 8, y0 + 14, 6, 8, "#fff");
       drawPixelRect(x + o.w - 14, y0 + 14, 6, 8, "#fff");
+      if (v === 3) {
+        // gözlüklü tip
+        drawPixelRect(x + 6, y0 + 12, 10, 12, "#3A2B2B");
+        drawPixelRect(x + o.w - 16, y0 + 12, 10, 12, "#3A2B2B");
+        drawPixelRect(x + 8, y0 + 15, 6, 6, "#fff");
+        drawPixelRect(x + o.w - 14, y0 + 15, 6, 6, "#fff");
+      }
       drawPixelRect(x + 10, y0 + 17, 3, 4, "#3A2B2B");
       drawPixelRect(x + o.w - 12, y0 + 15, 3, 4, "#3A2B2B");
-      // silly mouth
-      if (o.variant % 3 === 0) drawPixelRect(x + o.w / 2 - 6, y0 + 30, 12, 4, "#3A2B2B");
-      else {
+      // silly mouth — her tipte farklı
+      if (v === 0) drawPixelRect(x + o.w / 2 - 6, y0 + 30, 12, 4, "#3A2B2B");
+      else if (v === 1) drawPixelRect(x + 6, y0 + 30, 8, 3, "#3A2B2B");
+      else if (v === 2) {
+        drawPixelRect(x + o.w / 2 - 4, y0 + 28, 8, 8, "#3A2B2B"); // açık ağız
+      } else if (v === 4) {
+        drawPixelRect(x + o.w / 2 - 6, y0 + 30, 12, 3, "#fff"); // sakal üstü sırıtma
+      } else {
         drawPixelRect(x + 6, y0 + 30, 8, 3, "#3A2B2B");
         drawPixelRect(x + o.w - 14, y0 + 30, 8, 3, "#3A2B2B");
       }
+      // bıyık (tip 1 ve 4)
+      if (v === 1) drawPixelRect(x + o.w / 2 - 8, y0 + 26, 16, 3, "#2b2b2b");
       // label
       ctx.fillStyle = "#3A2B2B";
       ctx.font = "9px 'Press Start 2P', monospace";
@@ -258,10 +319,28 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       speed = BASE_SPEED;
       dist = 0;
       obstacles = [];
-      spawnIn = 140;
+      spawned = 0;
+      passedCount = 0;
+      playerX = 64;
+      winT = 0;
       deadFlash = 0;
     };
     (canvas as HTMLCanvasElement & { __reset?: () => void }).__reset = reset;
+
+    const doWin = () => {
+      setBoth("won");
+      winT = 0;
+      birthdayAudio.fanfare();
+      setBest((b) => Math.max(b, Math.floor(dist)));
+      confetti({ particleCount: 200, spread: 120, origin: { y: 0.55 }, shapes: ["square"] });
+      const end = Date.now() + 1800;
+      const f2 = () => {
+        confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, shapes: ["square"] });
+        confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.7 }, shapes: ["square"] });
+        if (Date.now() < end) requestAnimationFrame(f2);
+      };
+      f2();
+    };
 
     const loop = () => {
       frame++;
@@ -308,9 +387,6 @@ export function StageGame({ onNext }: { onNext: () => void }) {
         ctx.fillRect(x - off, gy + 18, 24, 5);
       }
       // floating hearts
-      if (frame % 40 === 0) {
-        /* decorative only */
-      }
       ctx.font = "14px serif";
       for (let i = 0; i < 3; i++) {
         const hx = (frame * 0.6 + i * 260) % (W + 60);
@@ -335,19 +411,14 @@ export function StageGame({ onNext }: { onNext: () => void }) {
             vy = 0;
           }
         }
-        // spawn — wider, slightly randomized gaps for comfortable reaction time.
-        // NOTE: spawnIn ticks down by speed*0.55/frame, so pixel spacing is
-        // gap/0.55 (independent of speed). avg gap ~295 => ~535px between
-        // obstacles, min gap 180 => ~327px guaranteed breathing room.
-        spawnIn -= speed * 0.55;
-        if (spawnIn <= 0) {
-          const h = 34 + Math.random() * 22;
-          obstacles.push({ x: W + 20, w: 34 + Math.random() * 10, h, variant: Math.floor(Math.random() * 4), passed: false });
-          const gap = Math.max(180, 250 - speed * 6 + Math.random() * 140);
-          spawnIn = gap;
+        // ── sabit 5 engel: mesafe eşiğine gelince tek tek doğar ──
+        while (spawned < TOTAL_BOYS && dist >= SPAWN_AT[spawned]) {
+          const h = 32 + Math.random() * 10; // alçak → tek zıplayış yeter
+          obstacles.push({ x: W + 20, w: 34, h, variant: spawned % 5, passed: false });
+          spawned++;
         }
         // move + collide
-        const px = 64;
+        const px = playerX;
         const pw = 32;
         const ph = 52;
         const pTop = gy - playerY - ph;
@@ -367,34 +438,48 @@ export function StageGame({ onNext }: { onNext: () => void }) {
           }
           if (!o.passed && o.x + o.w < px) {
             o.passed = true;
+            passedCount++;
             birthdayAudio.pop();
           }
         }
         obstacles = obstacles.filter((o) => o.x > -60);
 
         // win?
-        if (dist >= cfg.goalDistance) {
-          setBoth("won");
-          birthdayAudio.fanfare();
-          setBest((b) => Math.max(b, Math.floor(dist)));
-          confetti({ particleCount: 200, spread: 120, origin: { y: 0.55 }, shapes: ["square"] });
-          const end = Date.now() + 1800;
-          const f2 = () => {
-            confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, shapes: ["square"] });
-            confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.7 }, shapes: ["square"] });
-            if (Date.now() < end) requestAnimationFrame(f2);
-          };
-          f2();
+        if (dist >= goalDist) {
+          // son engel ekrandan çıksın, sonra kazan
+          obstacles = [];
+          doWin();
         }
       }
 
-      // draw goal guy at finish (walks in when close)
-      const remaining = Math.max(0, cfg.goalDistance - dist);
-      const goalX = stateRef.current === "won" ? W - 150 : W - 90 - Math.min(320, remaining * 0.5);
-      if (stateRef.current !== "dead" || true) {
-        if (remaining < 420 || stateRef.current === "won") drawMe(goalX, gy, frame);
+      // ── final kızı + kavuşma ──
+      // ARIFA sonda sabit bekler, koşmaz — bitişe yaklaşınca görünür
+      const remaining = Math.max(0, goalDist - dist);
+      const goalX = W - 150;
+
+      if (stateRef.current === "won") {
+        winT++;
+        // ELMIRA cidden ARIFA'ya doğru koşar
+        const target = goalX - 38;
+        if (playerX < target) {
+          playerX = Math.min(target, playerX + 3.2);
+        }
+        // toz efekti koşarken
+        if (playerX < target && winT % 8 === 0) {
+          ctx.fillStyle = "rgba(58,43,43,.2)";
+          ctx.beginPath();
+          ctx.ellipse(playerX + 8, gy + 6, 10, 4, 0, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else {
+        playerX = 64;
       }
-      // finish flag
+
+      const hugged = stateRef.current === "won" && playerX >= goalX - 40;
+      if (remaining < 420 || stateRef.current === "won") {
+        drawGoalGirl(goalX, gy, frame, stateRef.current === "won");
+      }
+      // finish flag (sadece oynarken)
       if (remaining < 420 && stateRef.current === "playing") {
         const fx = W - 60;
         drawPixelRect(fx, gy - 90, 5, 90, "#3A2B2B");
@@ -402,13 +487,24 @@ export function StageGame({ onNext }: { onNext: () => void }) {
         drawPixelRect(fx + 5, gy - 90 + wave, 34, 22, "#FF6B9D");
         ctx.fillStyle = "#fff";
         ctx.font = "8px 'Press Start 2P', monospace";
-        ctx.fillText("ME", fx + 9, gy - 75 + wave);
+        ctx.fillText(goalName, fx + 6, gy - 75 + wave);
       }
 
-      // player
+      // player (ELMIRA) — won'da da koşar halde çizilir
       const squash = jumping ? 0 : Math.sin(frame / 6) * 1.5;
-      drawFriend(64, gy, Math.floor(frame / 8), squash);
+      const runFrame = Math.floor(frame / 8);
+      drawFriend(playerX, gy, runFrame, stateRef.current === "won" && !hugged ? 0 : squash);
       for (const o of obstacles) drawHead(o, gy);
+
+      // sarılma kalpleri — kavuşunca büyük kalp
+      if (stateRef.current === "won" && hugged) {
+        ctx.font = "26px serif";
+        const bounce = Math.sin(frame / 10) * 5;
+        ctx.fillText("💖", (playerX + goalX) / 2 + 6, gy - 78 + bounce);
+        ctx.font = "15px serif";
+        ctx.fillText("💕", (playerX + goalX) / 2 - 16, gy - 60 + Math.sin(frame / 14) * 4);
+        ctx.fillText("💕", (playerX + goalX) / 2 + 30, gy - 62 + Math.cos(frame / 12) * 4);
+      }
 
       // dead flash
       if (deadFlash > 0) {
@@ -439,7 +535,6 @@ export function StageGame({ onNext }: { onNext: () => void }) {
   const retry = () => {
     const canvas = canvasRef.current as (HTMLCanvasElement & { __reset?: () => void }) | null;
     canvas?.__reset?.();
-    // need to clear obstacles — easiest: force loop reset via start after tiny delay
     start();
   };
 
@@ -447,7 +542,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
 
   return (
     <StageShell kicker="🏃‍♀️ STAGE 3 / 7 — RUN GAME" title={cfg.title} subtitle={cfg.subtitle}>
-      <PixelPanel className="z-10 w-full max-w-3xl p-3 md:p-5">
+      <PixelPanel className="z-10 w-full max-w-4xl p-3 md:p-5">
         {/* HUD */}
         <div className="mb-2 flex items-center justify-between gap-2">
           <div className="pixel-font text-[10px] text-[#3A2B2B] md:text-xs">
@@ -459,12 +554,10 @@ export function StageGame({ onNext }: { onNext: () => void }) {
         </div>
         {/* reunion progress */}
         <div className="mb-3 flex items-center gap-2">
-          <span className="text-xl">🏃‍♀️</span>
           <div className="relative h-4 flex-1 overflow-hidden rounded-full border-[3px] border-[#3A2B2B] bg-[#FFD8D8]">
             <motion.div className="h-full" style={{ background: "#FF6B9D", width: `${progress * 100}%` }} />
             <span className="absolute left-1 top-0 text-[10px] leading-3">{"▮".repeat(Math.floor(progress * 20))}</span>
           </div>
-          <span className="text-xl">🧍💖</span>
         </div>
 
         {/* canvas */}
@@ -472,7 +565,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
           <canvas
             ref={canvasRef}
             onPointerDown={onCanvasTap}
-            className="block h-[260px] w-full cursor-pointer touch-none select-none md:h-[320px]"
+            className="block h-[300px] w-full cursor-pointer touch-none select-none md:h-[380px]"
           />
           {/* overlays */}
           <AnimatePresence>
@@ -483,9 +576,8 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/55 p-4 text-center"
               >
-                <p className="pixel-font text-xs text-white md:text-sm">DON&apos;T BONK THE FUNNY HEADS! 😜</p>
-                <p className="pixel-soft mt-2 text-xl text-white/90">
-                  {OBSTACLE_NAMES.join(" • ")} — jump over them all!
+                <p className="pixel-font text-xs text-white md:text-sm">
+                  {friendName} 🏃‍♀️💨 → 5 oğlanı atla → {goalName}&apos;ya ulaş! 💖
                 </p>
                 <div className="mt-4">
                   <PixelButton onClick={start} color="#FF6B9D">
@@ -506,7 +598,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                 className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/60 p-4 text-center"
               >
                 <p className="text-4xl">💥🤪</p>
-                <p className="pixel-font mt-2 text-xs text-white md:text-sm">OOPS! you bonked a head!</p>
+                <p className="pixel-font mt-2 text-xs text-white md:text-sm">Min dəfə demişəm ki, oğlanlardan uzaq dur</p>
                 <p className="pixel-soft mt-1 text-xl text-white/85">
                   you ran {score}m — {cfg.goalDistance - score}m to go. try again!
                 </p>
@@ -539,11 +631,13 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       {/* victory card */}
       <AnimatePresence>
         {state === "won" && (
-          <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="z-10 mt-5 w-full max-w-3xl">
+          <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="z-10 mt-5 w-full max-w-4xl">
             <PixelPanel className="p-5 text-center md:p-7" color="#FFF6E9">
               <div className="text-5xl">💖🏁💖</div>
               <h3 className="pixel-font mt-3 text-sm text-[#3A2B2B] md:text-lg">{cfg.victoryTitle}</h3>
-              <p className="pixel-soft mt-2 text-xl md:text-2xl">{cfg.victorySub}</p>
+              <p className="pixel-font mt-2 text-[10px] text-[#9B5DE5]">
+                {friendName} → {goalName} 💕 KAVUŞMA BAŞARILI!
+              </p>
               {/* reunion photo */}
               <div className="mx-auto mt-4 max-w-sm">
                 {rewardOk ? (

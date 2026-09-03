@@ -117,6 +117,7 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
           <PixelButton
             onClick={() => {
               birthdayAudio.unlock();
+              birthdayAudio.playGlobalMusic();
               birthdayAudio.fanfare();
               onStart();
             }}
@@ -125,9 +126,6 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
           </PixelButton>
         </div>
 
-        <p className="pixel-font mt-6 text-[9px] text-[#8a6a6a] md:text-[10px]">
-          ▼ 7 mini stages • ~5 minutes • tons of confetti guaranteed ▼
-        </p>
       </motion.div>
 
       {/* bottom deco */}

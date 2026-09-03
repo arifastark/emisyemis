@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── small unobtrusive music control ──
+// Controls the ONE global thoseeyes.mp3 player. Pause preserves position,
+// resume continues from the same spot (never restarts).
 export function MusicToggle() {
   const [muted, setMuted] = useState(false);
   const [on, setOn] = useState(true);
@@ -25,7 +27,12 @@ export function MusicToggle() {
       <motion.button
         whileTap={{ scale: 0.9 }}
         onClick={() => {
-          if (on) birthdayAudio.stopBackground();
+          birthdayAudio.unlock();
+          if (on) {
+            birthdayAudio.stopGlobalMusic();
+          } else {
+            birthdayAudio.playGlobalMusic();
+          }
           setOn(!on);
         }}
         title="stop/start music (page music)"

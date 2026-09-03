@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { birthdayConfig, quizQuestions } from "@/data/birthday";
@@ -105,9 +105,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
   const [doneSet, setDoneSet] = useState<boolean[]>(() => Array(quizQuestions.length).fill(false));
   const doneCount = doneSet.filter(Boolean).length;
 
-  useEffect(() => {
-    birthdayAudio.stopBackground();
-  }, []);
+  // Background music is global (thoseeyes.mp3) — keeps playing through the quiz.
 
   const markDone = (i: number) => {
     const next = doneSet.map((v, j) => (j === i ? true : v));

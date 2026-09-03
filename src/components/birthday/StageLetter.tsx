@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { birthdayConfig, finalLetter } from "@/data/birthday";
@@ -7,16 +7,13 @@ import { PixelButton, StageShell, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── STAGE 7: envelope → letter ──
+// Background music is global (thoseeyes.mp3) — keeps playing through the letter.
 export function StageLetter({ onNext }: { onNext: () => void }) {
   const cfg = birthdayConfig.letter;
   const [open, setOpen] = useState(false);
   const [showLetter, setShowLetter] = useState(false);
   const [read, setRead] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    birthdayAudio.stopBackground();
-  }, []);
 
   const openEnvelope = () => {
     if (open) return;

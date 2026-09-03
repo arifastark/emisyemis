@@ -8,10 +8,8 @@
 //   /public/sprites/me.png       → pixel-art of you (goal at end of game)
 //   /public/images/us-together.png → reward photo after the runner game
 //   /public/memories/*           → memory photos (memory-1..N)
-//   /public/music/happy-birthday.mp3 → optional real birthday song
-//   /public/music/memories.mp3       → optional memory-section song
-//   /public/music/game-loop.mp3      → optional runner-game music
-//  If an audioSrc file is missing, the built-in chiptune synth plays.
+//   /public/audio/thoseeyes.mp3  → the ONE global background music track (loops on all stages)
+//  Background music is a single global player — see src/lib/birthday-audio.ts.
 // ─────────────────────────────────────────────────────────────
 
 export const birthdayConfig = {
@@ -22,20 +20,18 @@ export const birthdayConfig = {
     buttonText: "ARE YOU READY?",
     titleTop: "HAPPY BIRTHDAY",
     titleBig: "20",
-    subtitle: "a tiny pixel adventure awaits you…",
+    subtitle: "A tiny pixel adventure for your birthday",
     hint: "don't forget to turn the sound on 🔊",
   },
 
   cake: {
     title: "first, make a wish…",
-    subtitle: "blow or tap to put out the candles!",
+    subtitle: "Tap / Blow to put out the candles!",
     blowButtonText: "BLOW! 🎂",
     litMessage: "candles are lit… make a wish!",
     blownMessage: "HAPPY BIRTHDAY! 🎉",
     blownSub: "your wish flew to the stars — now 20 wishes await you",
     continueText: "CONTINUE TO 20 WISHES →",
-    // optional real recording: place file at /public/music/happy-birthday.mp3
-    musicSrc: "/music/happy-birthday.mp3",
   },
 
   wishes: {
@@ -44,23 +40,23 @@ export const birthdayConfig = {
     completeTitle: "20/20! ALL WISHES UNLOCKED ✨",
     completeSub: "we collected 20 tiny universes for you",
     continueText: "CONTINUE TO THE GAME →",
-    musicSrc: "/music/happy-birthday.mp3",
   },
 
   game: {
-    title: "RUN! REACH ME! 🏃‍♀️💨",
-    subtitle: "jump over the funny heads — reach the finish line, reunite with me!",
+    title: "RUN FROM THE BOYS! REACH ME!",
+    subtitle: "Jump over the boys and escape them • reach Arifa",
     instructionsDesktop: "JUMP: SPACE / ↑",
     instructionsMobile: "JUMP: tap the screen 👆",
-    goalDistance: 1200, // px-score until reunion (lower = shorter level)
-    victoryTitle: "REUNION! 💖",
-    victorySub: "you ran, you jumped, you dodged them all — you reached me!",
-    continueText: "CONTINUE TO THE SURPRISE →",
+    goalDistance: 1000, // 5 engel, aralar ~8cm (~300px)
+    friendName: "ELMIRA", // oynayan kız
+    goalName: "ARIFA", // finalde bekleyen kız
+    victoryTitle: "You escaped the boys and reached me. Well done!",
+    victorySub: "You escaped the boys and reached me. Well done!",
+    continueText: "Continue",
     // sprites — replace with your own pixel art
     friendSprite: "/sprites/friend.png",
     meSprite: "/sprites/me.png",
     rewardPhoto: "/images/us-together.png",
-    musicSrc: "/music/game-loop.mp3",
   },
 
   quiz: {
@@ -75,7 +71,6 @@ export const birthdayConfig = {
     title: "MEMORIES 📸",
     subtitle: "tiny time capsules opening one by one",
     continueText: "CONTINUE TO THE FINAL LETTER →",
-    musicSrc: "/music/memories.mp3",
     hint: "press the arrow / swipe to move on",
   },
 
@@ -97,33 +92,30 @@ export const birthdayConfig = {
   },
 } as const;
 
-// ─── 20 WISHES — replace with your real 20 wishes ───
+// ─── 20 WISHES — final content (do not edit wording/order) ───
 // wishes[i] belongs to candle #i+1. Keep exactly 20 entries.
-export const wishes: string[] = Array.from({ length: 20 }, (_, i) => {
-  const placeholders = [
-    "Wish 1: May you wake up laughing every morning ☀️ (write your real wish here)",
-    "Wish 2: May you dance whenever your favorite song plays 🎶",
-    "Wish 3: May you never get tired while chasing your dreams 🏃‍♀️",
-    "Wish 4: May you always have chocolate in your pocket 🍫",
-    "Wish 5: May you ace every exam / crush it at work every time ⭐",
-    "Wish 6: May someone always be there to make you laugh on your worst day 💛",
-    "Wish 7: May you travel tons in your new age ✈️",
-    "Wish 8: May your heart always stay warm and cozy 💖",
-    "Wish 9: May this year pile up your funniest memories yet 😂",
-    "Wish 10: May your friendships never leave you halfway 🤝",
-    "Wish 11: May you smile every time you look in the mirror 🪞",
-    "Wish 12: May you have people you can call even at 2am 🌙",
-    "Wish 13: May surprise treats of your favorite food find you 🍕",
-    "Wish 14: May you feel as free as the sky ☁️",
-    "Wish 15: May tiny things bring you giant happiness 🌸",
-    "Wish 16: May your fears shrink and your courage grow 🦁",
-    "Wish 17: May your eyes sparkle in every photo 📸",
-    "Wish 18: May music, laughter and hugs never run out 🎈",
-    "Wish 19: May your 20s be your most legendary years 🎂",
-    "Wish 20: Happy birthday — so glad you're my best friend! 💖",
-  ];
-  return placeholders[i];
-});
+export const wishes: string[] = [
+  "Ümid edirəm ki, 20 yaşında olduğu kimi, 40 yaşında da ən yaxın dostun mən olaram (onsuz da başqa şansın yoxdur).",
+  "İnanıram ki, Arifə bir də tənbəllik edib sənin əsəblərinlə oynamayacaq.",
+  "Bu yaşında mütləq o xəyalındakı möhtəşəm soyuducuya qovuşmalısan, başqa variant yoxdur!",
+  "Gündə 500 dəfə \"Oğlanlar yaramır, başını burax\" adlı romanımı sənə oxusam da, ümid edirəm ki, bu il xəyalındakı relationshipi taparsan.",
+  "Tək arzum bir gün o qədər varlanmağındır ki, mənim işləməyimə ehtiyac qalmasın.",
+  "Bu yaşında məni danlamağa bir az ara verəcəyinə inanıram.",
+  "Bir də harasa gedəndə açarı evdə unutmayasan.",
+  "Arifənin sənin dediklərini vaxtında etdiyi bir il olsun.",
+  "Yeni laptopunla sənə bu il xoşbəxtliklər arzu edirəm.",
+  "Bu yaşında bir də camaat içində yıxılıb 1000 aura itirməyəsən.",
+  "İmtahanda köçürəndə tutulmayacaq qədər \"professional\" olasan.",
+  "Ümid edirəm ki, bir də avtobusa minəndə bank kartında problem olmaz.",
+  "İnanıram ki, bu il kiminsə mesajını \"screenshot\" edəndə səhvən həmin adamın özünə yox, mənə atmağı bacaracaqsan.",
+  "Gün o gün olsun ki, səninlə \"Instagram Blend\" edəndə artıq insanların qarşısına normal videolar çıxsın.",
+  "Bu yaşında bir də hansısa məxluqa görə ağlamayacağına inanıram, əks halda əlimdə qalacaqsan.",
+  "Gün o gün olsun ki, sənə zəng etmək istəyəndə nömrənin əvvəli +994 yox, +1 ilə başlasın.",
+  "Ümid edirəm ki, hər zaman mənim yanımda olarsan, çünki mənim axmaqlıqlarıma Elmiradan başqa heç kim dözə bilməz.",
+  "Söz verirəm ki, xoşbəxt və ya qəmli olduğun hər anda sağında və ya solunda (sağla solu ayıra bilməsəm də) məni görəcəksən.",
+  "Qarşılaşacağın hər kəs sənə sənin mənə davrandığın kimi davransın və səni mənim sevdiyim qədər sevsin.",
+  "20 yaşında bütün xoşbəxtliklər səninlə olsun. Ad günün mübarək!",
+];
 
 // ─── QUIZ — 10 questions. Edit freely. ───
 // `answers`: accepted correct answers (lowercase-compared, trimmed).

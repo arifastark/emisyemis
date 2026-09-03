@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { birthdayConfig, wishes } from "@/data/birthday";
@@ -7,6 +7,8 @@ import { PixelButton, PixelPanel, StageShell, FloatingPixels } from "./pixel-ui"
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── STAGE 3: 20 candles / 20 wishes ──
+// Background music is global (thoseeyes.mp3) — handled once in page.tsx,
+// continues across stages without restarting.
 function celebrateWishes() {
   birthdayAudio.fanfare();
   const colors = ["#FF6B9D", "#FFD93D", "#6BCB77", "#4D96FF", "#9B5DE5", "#ffffff"];
@@ -27,9 +29,9 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
 
   const done = useMemo(() => out.filter(Boolean).length, [out]);
 
-  useEffect(() => {
-    void birthdayAudio.playBackground("birthday", cfg.musicSrc);
-  }, [cfg.musicSrc]);
+  const handleNext = () => {
+    onNext();
+  };
 
   const blow = (i: number) => {
     if (out[i]) {
@@ -58,7 +60,16 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
     }
   };
 
-  const candleColors = ["#FF6B9D", "#4D96FF", "#6BCB77", "#9B5DE5", "#FF9F45"];
+  // 5 pastel candle tones × 4 each = 20 candles.
+  // Harmonious with #FFD8D8 bg, clearly distinguishable pixel-art families.
+  // Order is fixed so each tone appears exactly 4 times (i % 5).
+  const candleColors = [
+    "#FF9EBB", // pastel rose
+    "#8FCBFF", // pastel sky
+    "#A8E6B8", // pastel mint
+    "#D3B8FF", // pastel lavender
+    "#FFCBA8", // pastel peach
+  ];
 
   return (
     <StageShell kicker={`🕯️ STAGE 2 / 7 — 20 WISHES • ${done}/20`} title={done === 20 ? cfg.completeTitle : cfg.title} subtitle={done === 20 ? cfg.completeSub : cfg.subtitle}>
@@ -106,11 +117,27 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
                 </motion.span>
               )}
             </span>
-            {/* mini candle body */}
+            {/* mini candle body — pastel tone, pixel-art stripes */}
             <span
-              className="mt-1 h-8 w-3 rounded-sm border-2 border-[#3A2B2B] md:h-10 md:w-4"
+              className="relative mt-1 h-8 w-4 overflow-hidden rounded-sm border-2 border-[#3A2B2B] md:h-10 md:w-5"
               style={{ background: isOut ? "#3a3340" : candleColors[i % candleColors.length] }}
-            />
+            >
+              {!isOut && (
+                <>
+                  {/* left gloss highlight */}
+                  <span className="absolute bottom-0 left-[2px] top-0 w-[3px] rounded-full bg-white/60" aria-hidden />
+                  {/* pixel stripes for texture */}
+                  <span
+                    className="absolute inset-0"
+                    aria-hidden
+                    style={{
+                      background:
+                        "repeating-linear-gradient(to bottom, transparent 0px, transparent 5px, rgba(58,43,43,0.12) 5px, rgba(58,43,43,0.12) 7px)",
+                    }}
+                  />
+                </>
+              )}
+            </span>
             {isOut && (
               <motion.span
                 initial={{ scale: 0 }}
@@ -124,7 +151,7 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
         ))}
       </div>
 
-      {/* wish reveal card */}
+      {/* wish reveal card — roomy, readable on desktop + mobile */}
       <div className="z-10 mt-5 w-full max-w-2xl">
         <AnimatePresence mode="wait">
           {activeWish !== null ? (
@@ -135,18 +162,31 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
               exit={{ opacity: 0, y: -12, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 160, damping: 18 }}
             >
-              <PixelPanel className="p-4 md:p-5" color="#FFF6E9">
-                <p className="pixel-font text-[10px] text-[#FF6B9D] md:text-xs">✨ WISH #{activeWish + 1} / 20</p>
-                <p className="pixel-soft mt-2 text-xl leading-snug text-[#3A2B2B] md:text-2xl">{wishes[activeWish]}</p>
+              <PixelPanel className="flex min-h-[158px] flex-col justify-center p-5 md:min-h-[150px] md:p-6" color="#FFF6E9">
+                <div className="flex items-center gap-2">
+                  <span
+                    className="inline-block h-4 w-4 shrink-0 rounded-[4px] border-2 border-[#3A2B2B]"
+                    style={{ background: candleColors[activeWish % candleColors.length] }}
+                    aria-hidden
+                  />
+                  <p className="pixel-font text-[10px] tracking-wide text-[#FF6B9D] md:text-xs">
+                    ✨ WISH #{activeWish + 1} / 20
+                  </p>
+                </div>
+                <p className="pixel-soft mt-3 max-h-[42vh] overflow-y-auto break-words text-[21px] leading-[1.45] text-[#3A2B2B] md:max-h-none md:text-[27px] md:leading-[1.4]">
+                  {wishes[activeWish]}
+                </p>
                 {done < 20 && (
-                  <p className="pixel-font mt-3 text-[9px] text-[#8a6a6a]">left: {20 - done} candles 🕯️ — keep going!</p>
+                  <p className="pixel-font mt-3 text-[9px] text-[#8a6a6a] md:text-[10px]">
+                    left: {20 - done} candles 🕯️ — keep going!
+                  </p>
                 )}
               </PixelPanel>
             </motion.div>
           ) : (
             <motion.div key="hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-              <PixelPanel className="p-4 text-center" color="#FFF6E9">
-                <p className="pixel-soft text-xl md:text-2xl">👆 tap a candle — a wish hides inside…</p>
+              <PixelPanel className="min-h-[120px] p-5 text-center" color="#FFF6E9">
+                <p className="pixel-soft text-[21px] leading-snug md:text-[26px]">👆 tap a candle — a wish hides inside…</p>
               </PixelPanel>
             </motion.div>
           )}
@@ -156,7 +196,7 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
       {done === 20 && (
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="z-10 mt-6 flex flex-col items-center gap-3">
           <div className="text-4xl">🎉✨💖✨🎉</div>
-          <PixelButton onClick={onNext} color="#6BCB77">
+          <PixelButton onClick={handleNext} color="#6BCB77">
             {cfg.continueText}
           </PixelButton>
         </motion.div>
