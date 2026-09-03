@@ -7,7 +7,7 @@ import { PixelButton, PixelPanel, StageShell, FloatingPixels } from "./pixel-ui"
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── STAGE 2: Big pixel birthday cake with "20" candles ──
-// Interaction: press ÜFLE (blow) OR tap each flame. No mic required.
+// Interaction: press BLOW OR tap each flame. No mic required.
 function celebrateCake() {
   birthdayAudio.fanfare();
   const end = Date.now() + 1600;
@@ -68,7 +68,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <StageShell kicker="🎂 BÖLÜM 1 / 7 — PASTA" title={allOut ? cfg.blownMessage : cfg.title} subtitle={allOut ? cfg.blownSub : cfg.subtitle}>
+    <StageShell kicker="🎂 STAGE 1 / 7 — CAKE" title={allOut ? cfg.blownMessage : cfg.title} subtitle={allOut ? cfg.blownSub : cfg.subtitle}>
       <FloatingPixels items={["🎂", "⭐", "💖", "✨", "🕯️"]} />
 
       {/* dim room when lit, bright party when blown */}
@@ -87,7 +87,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
               <button
                 key={digit}
                 onClick={() => blowOne(i)}
-                title={blown[i] ? "söndü!" : "söndürmek için dokun"}
+                title={blown[i] ? "out!" : "tap to blow out"}
                 className="flex cursor-pointer flex-col items-center outline-none"
               >
                 {/* flame / smoke */}
@@ -155,7 +155,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
             {/* bottom tier */}
             <div className="mx-auto w-full rounded-b-xl border-4 border-t-0 border-[#3A2B2B] bg-[#FF6B9D] px-4 py-5 text-center">
               <div className="pixel-font text-sm text-white md:text-base" style={{ textShadow: "2px 2px 0 #3A2B2B" }}>
-                İYİ Kİ DOĞDUN • 20 🎉
+                HAPPY BIRTHDAY • 20 🎉
               </div>
             </div>
             {/* plate */}
@@ -166,11 +166,11 @@ export function StageCake({ onNext }: { onNext: () => void }) {
           <div className="pixel-font mt-5 min-h-6 text-center text-[10px] text-[#5b4444] md:text-xs">
             {!allOut ? (
               <span>
-                {blown.filter(Boolean).length}/2 mum söndü — {blowing ? "üüüfff… 🌬️" : "mumlara dokun ya da alttaki düğmeye bas!"}
+                {blown.filter(Boolean).length}/2 candles out — {blowing ? "bloooow… 🌬️" : "tap the candles or press the button below!"}
               </span>
             ) : (
               <motion.span initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-[#c2255c]">
-                ✨ dileğin kabul oldu ✨
+                ✨ wish granted ✨
               </motion.span>
             )}
           </div>
@@ -179,9 +179,9 @@ export function StageCake({ onNext }: { onNext: () => void }) {
           {!allOut ? (
             <div className="mt-3">
               <PixelButton onClick={blowAll} color="#4D96FF">
-                {blowing ? "ÜFLENİYOR… 🌬️" : cfg.blowButtonText}
+                {blowing ? "BLOWING… 🌬️" : cfg.blowButtonText}
               </PixelButton>
-              <p className="pixel-font mt-3 text-center text-[9px] text-[#8a6a6a]">🎙️ mikrofon gerekmez — dokunmak yeterli!</p>
+              <p className="pixel-font mt-3 text-center text-[9px] text-[#8a6a6a]">🎙️ no mic needed — just tap!</p>
             </div>
           ) : (
             <AnimatePresence>
@@ -196,7 +196,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
         </div>
       </PixelPanel>
 
-      <p className="pixel-font mt-4 text-center text-[9px] text-[#8a6a6a] md:text-[10px]">🎵 happy birthday çalıyor • sesi sağ alttaki düğmeden kapatabilirsin</p>
+      <p className="pixel-font mt-4 text-center text-[9px] text-[#8a6a6a] md:text-[10px]">🎵 happy birthday is playing • mute it with the button at the bottom right</p>
     </StageShell>
   );
 }

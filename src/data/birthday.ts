@@ -15,47 +15,47 @@
 // ─────────────────────────────────────────────────────────────
 
 export const birthdayConfig = {
-  friendName: "BESTIE",
+  friendName: "ELMIRA",
   age: 20,
 
   intro: {
-    buttonText: "HAZIR MISIN?",
+    buttonText: "ARE YOU READY?",
     titleTop: "HAPPY BIRTHDAY",
     titleBig: "20",
-    subtitle: "küçük bir piksel macerası seni bekliyor…",
-    hint: "sesi açmayı unutma 🔊",
+    subtitle: "a tiny pixel adventure awaits you…",
+    hint: "don't forget to turn the sound on 🔊",
   },
 
   cake: {
-    title: "önce bir dilek tut…",
-    subtitle: "mumları söndürmek için üfle ya da dokun!",
-    blowButtonText: "ÜFLE! 🎂",
-    litMessage: "mumlar yanıyor… dileğini tut!",
-    blownMessage: "İYİ Kİ DOĞDUN! 🎉",
-    blownSub: "dileğin yıldızlara uçtu — şimdi 20 dilek seni bekliyor",
-    continueText: "20 DİLEĞE DEVAM ET →",
+    title: "first, make a wish…",
+    subtitle: "blow or tap to put out the candles!",
+    blowButtonText: "BLOW! 🎂",
+    litMessage: "candles are lit… make a wish!",
+    blownMessage: "HAPPY BIRTHDAY! 🎉",
+    blownSub: "your wish flew to the stars — now 20 wishes await you",
+    continueText: "CONTINUE TO 20 WISHES →",
     // optional real recording: place file at /public/music/happy-birthday.mp3
     musicSrc: "/music/happy-birthday.mp3",
   },
 
   wishes: {
-    title: "20 MUM • 20 DİLEK",
-    subtitle: "her mumu tek tek söndür — her mumda bir dilek saklı 🕯️",
-    completeTitle: "20/20! TÜM DİLEKLER AÇILDI ✨",
-    completeSub: "senin için 20 küçük evren topladık",
-    continueText: "OYUNA DEVAM ET →",
+    title: "20 CANDLES • 20 WISHES",
+    subtitle: "blow out each candle one by one — a wish hides in every flame 🕯️",
+    completeTitle: "20/20! ALL WISHES UNLOCKED ✨",
+    completeSub: "we collected 20 tiny universes for you",
+    continueText: "CONTINUE TO THE GAME →",
     musicSrc: "/music/happy-birthday.mp3",
   },
 
   game: {
-    title: "KOŞ! BANA ULAŞ! 🏃‍♀️💨",
-    subtitle: "komik kafaların üzerinden zıpla — sona ulaş, bana kavuş!",
-    instructionsDesktop: "ZIPLA: SPACE / ↑",
-    instructionsMobile: "ZIPLA: ekrana dokun 👆",
+    title: "RUN! REACH ME! 🏃‍♀️💨",
+    subtitle: "jump over the funny heads — reach the finish line, reunite with me!",
+    instructionsDesktop: "JUMP: SPACE / ↑",
+    instructionsMobile: "JUMP: tap the screen 👆",
     goalDistance: 1200, // px-score until reunion (lower = shorter level)
-    victoryTitle: "KAVUŞMA! 💖",
-    victorySub: "koştun, zıpladın, hepsini atlattın — bana ulaştın!",
-    continueText: "SÜRPRİZE DEVAM ET →",
+    victoryTitle: "REUNION! 💖",
+    victorySub: "you ran, you jumped, you dodged them all — you reached me!",
+    continueText: "CONTINUE TO THE SURPRISE →",
     // sprites — replace with your own pixel art
     friendSprite: "/sprites/friend.png",
     meSprite: "/sprites/me.png",
@@ -65,31 +65,31 @@ export const birthdayConfig = {
 
   quiz: {
     title: "BFF QUIZ SHOW 🎯",
-    subtitle: "10 soru • klavyeni hazırla • dürüst ol!",
-    completeTitle: "10/10 EFSANE! 🏆",
-    completeSub: "resmen beni benden iyi tanıyorsun",
-    continueText: "ANILARA DEVAM ET →",
+    subtitle: "10 questions • get your keyboard ready • be honest!",
+    completeTitle: "10/10 LEGENDARY! 🏆",
+    completeSub: "you literally know me better than I know myself",
+    continueText: "CONTINUE TO MEMORIES →",
   },
 
   memories: {
-    title: "ANILAR 📸",
-    subtitle: "teker teker açılan küçük zaman kapsülleri",
-    continueText: "SON MEKTUBA DEVAM ET →",
+    title: "MEMORIES 📸",
+    subtitle: "tiny time capsules opening one by one",
+    continueText: "CONTINUE TO THE FINAL LETTER →",
     musicSrc: "/music/memories.mp3",
-    hint: "ilerlemek için oka bas / kaydır",
+    hint: "press the arrow / swipe to move on",
   },
 
   letter: {
-    title: "SON BİR ZARF 💌",
-    subtitle: "sana özel, el yapımı bir mektup",
-    envelopeHint: "açmak için zarfa dokun 👆",
-    continueText: "FİNALE GİT →",
+    title: "ONE LAST ENVELOPE 💌",
+    subtitle: "a handmade letter, just for you",
+    envelopeHint: "tap the envelope to open it 👆",
+    continueText: "GO TO THE FINALE →",
   },
 
   finale: {
     title: "HAPPY 20",
-    subtitle: "iyi ki doğdun, iyi ki varsın 💖",
-    replayText: "↻ BAŞTAN OYNA",
+    subtitle: "happy birthday, so glad you exist 💖",
+    replayText: "↻ PLAY AGAIN",
   },
 
   music: {
@@ -101,26 +101,26 @@ export const birthdayConfig = {
 // wishes[i] belongs to candle #i+1. Keep exactly 20 entries.
 export const wishes: string[] = Array.from({ length: 20 }, (_, i) => {
   const placeholders = [
-    "Dilek 1: Her sabah kahkahayla uyanman dileğiyle ☀️ (buraya gerçek dileğini yaz)",
-    "Dilek 2: En sevdiğin şarkı çalarken dans etmen dileğiyle 🎶",
-    "Dilek 3: Hayallerinin peşinden koşarken hiç yorulmaman dileğiyle 🏃‍♀️",
-    "Dilek 4: Cebinde her zaman çikolata olması dileğiyle 🍫",
-    "Dilek 5: Sınavlardan / işlerden hep alnının akıyla çıkman dileğiyle ⭐",
-    "Dilek 6: En kötü gününde bile seni güldürecek biri olması dileğiyle 💛",
-    "Dilek 7: Yeni yaşında bol bol seyahat etmen dileğiyle ✈️",
-    "Dilek 8: Kalbinin hep sıcacık kalması dileğiyle 💖",
-    "Dilek 9: En komik anıların bu yıl birikmesi dileğiyle 😂",
-    "Dilek 10: Yarı yolda bırakmayan dostluklar dileğiyle 🤝",
-    "Dilek 11: Aynaya her baktığında gülümsemen dileğiyle 🪞",
-    "Dilek 12: Gece 2'de bile arayabileceğin insanlar dileğiyle 🌙",
-    "Dilek 13: En sevdiğin yemeği ısmarlayan sürprizler dileğiyle 🍕",
-    "Dilek 14: Gökyüzü kadar özgür hissetmen dileğiyle ☁️",
-    "Dilek 15: Küçük şeylerden büyük mutluluklar dileğiyle 🌸",
-    "Dilek 16: Korkularının küçülüp cesaretinin büyümesi dileğiyle 🦁",
-    "Dilek 17: Her fotoğrafında gözlerinin parlaması dileğiyle 📸",
-    "Dilek 18: Müzik, kahkaha ve sarılma eksik olmasın dileğiyle 🎈",
-    "Dilek 19: 20'li yaşların en efsane yılların olması dileğiyle 🎂",
-    "Dilek 20: İyi ki doğdun — iyi ki benim en yakın arkadaşımsın! 💖",
+    "Wish 1: May you wake up laughing every morning ☀️ (write your real wish here)",
+    "Wish 2: May you dance whenever your favorite song plays 🎶",
+    "Wish 3: May you never get tired while chasing your dreams 🏃‍♀️",
+    "Wish 4: May you always have chocolate in your pocket 🍫",
+    "Wish 5: May you ace every exam / crush it at work every time ⭐",
+    "Wish 6: May someone always be there to make you laugh on your worst day 💛",
+    "Wish 7: May you travel tons in your new age ✈️",
+    "Wish 8: May your heart always stay warm and cozy 💖",
+    "Wish 9: May this year pile up your funniest memories yet 😂",
+    "Wish 10: May your friendships never leave you halfway 🤝",
+    "Wish 11: May you smile every time you look in the mirror 🪞",
+    "Wish 12: May you have people you can call even at 2am 🌙",
+    "Wish 13: May surprise treats of your favorite food find you 🍕",
+    "Wish 14: May you feel as free as the sky ☁️",
+    "Wish 15: May tiny things bring you giant happiness 🌸",
+    "Wish 16: May your fears shrink and your courage grow 🦁",
+    "Wish 17: May your eyes sparkle in every photo 📸",
+    "Wish 18: May music, laughter and hugs never run out 🎈",
+    "Wish 19: May your 20s be your most legendary years 🎂",
+    "Wish 20: Happy birthday — so glad you're my best friend! 💖",
   ];
   return placeholders[i];
 });
@@ -138,54 +138,54 @@ export type QuizQuestion = {
 
 export const quizQuestions: QuizQuestion[] = [
   {
-    question: "Soru 1: En sevdiğimiz acil durum atıştırmalığı nedir?",
-    answers: ["cips", "fries", "patates", "nugget"],
-    incorrectMessage: "Haha hayır! İpucu: kızarmış ve pişmanlık içeriyor 🍟 Tekrar dene!",
+    question: "Question 1: What is our favorite emergency snack?",
+    answers: ["chips", "fries", "potato", "nugget"],
+    incorrectMessage: "Haha nope! Hint: fried and full of regret 🍟 Try again!",
   },
   {
-    question: "Soru 2: Benim buzdolabımı açarsan ne olur?",
-    answers: ["3 saat kalırsın", "kalırsın", "3 saat", "gidemezsin"],
-    incorrectMessage: "Yanlış! Buzdolabı kanunları açık: açan kalır 🧊",
+    question: "Question 2: What happens if you open my fridge?",
+    answers: ["you stay 3 hours", "you stay", "3 hours", "you can't leave"],
+    incorrectMessage: "Wrong! Fridge laws are clear: openers stay 🧊",
   },
   {
-    question: "Soru 3: Dünya rekoru sesli mesaj süremiz kaç?",
-    answers: ["11:47", "11 dakika", "11 dakika 47", "11dk"],
-    incorrectMessage: "Yok artık, biz PROFESYONEL gevezeyiz 🎙️ Bir daha düşün!",
+    question: "Question 3: What is our world-record voice message length?",
+    answers: ["11:47", "11 minutes", "11 minutes 47", "11min"],
+    incorrectMessage: "No way, we are PROFESSIONAL yappers 🎙️ Think again!",
   },
   {
-    question: "Soru 4: Uyanmak için kaç alarm kurarız?",
-    answers: ["8", "sekiz", "7+1", "7", "yedi"],
-    incorrectMessage: "Disiplinli?? Bizi tanımıyormuş gibi yapma ⏰",
+    question: "Question 4: How many alarms do we set to wake up?",
+    answers: ["8", "eight", "7+1", "7", "seven"],
+    incorrectMessage: "Disciplined?? Don't act like you don't know us ⏰",
   },
   {
-    question: "Soru 5: Benim kahve siparişim nedir?",
-    answers: ["latte", "cappuccino", "filtre kahve", "espresso"],
-    incorrectMessage: "Barista ağlıyor şu an ☕ Tekrar dene!",
+    question: "Question 5: What is my coffee order?",
+    answers: ["latte", "cappuccino", "filter coffee", "espresso"],
+    incorrectMessage: "The barista is crying right now ☕ Try again!",
   },
   {
-    question: "Soru 6: İlk tanıştığımız yer neresiydi?",
-    answers: ["okul", "park", "kafede", "sınıf"],
-    incorrectMessage: "Hafızayı biraz zorla… o günü hatırla! 👀",
+    question: "Question 6: Where did we first meet?",
+    answers: ["school", "park", "cafe", "classroom"],
+    incorrectMessage: "Stretch that memory… remember that day! 👀",
   },
   {
-    question: "Soru 7: Benim en sevdiğim renk nedir?",
-    answers: ["pembe", "pink", "pastel pembe"],
-    incorrectMessage: "Değil! İpucu: bu sitenin her yeri o renk 🎀",
+    question: "Question 7: What is my favorite color?",
+    answers: ["pink", "pastel pink"],
+    incorrectMessage: "Nope! Hint: this whole site is that color 🎀",
   },
   {
-    question: "Soru 8: Birlikte izlediğimiz ilk film neydi?",
+    question: "Question 8: What was the first movie we watched together?",
     answers: ["barbie", "harry potter", "titanic"],
-    incorrectMessage: "Mısır patlatıp izlediğimiz o gece… 🍿",
+    incorrectMessage: "That popcorn night… 🍿",
   },
   {
-    question: "Soru 9: Ben sinirliyken ne yapmalısın?",
-    answers: ["çikolata", "çikolata vermek", "sarılmak", "susmak"],
-    incorrectMessage: "Yanlış hamle = tehlike! 🚨 Doğru cevabı biliyorsun!",
+    question: "Question 9: What should you do when I'm grumpy?",
+    answers: ["chocolate", "give chocolate", "hug", "stay quiet"],
+    incorrectMessage: "Wrong move = danger! 🚨 You know the right answer!",
   },
   {
-    question: "Soru 10: Bu siteyi kim yaptı? (çok zor 😏)",
-    answers: ["en yakın arkadaşım", "kankam", "bestiem", "sen"],
-    incorrectMessage: "Aşk olsun! Bu kadar emeğe bir doğru cevap lütfen 💖",
+    question: "Question 10: Who made this site? (super hard 😏)",
+    answers: ["my best friend", "bestie", "you"],
+    incorrectMessage: "Come on! One correct answer for all this effort please 💖",
   },
 ];
 
@@ -199,24 +199,24 @@ export type Memory = {
 };
 
 export const memories: Memory[] = [
-  { src: "/memories/memory-1.svg", caption: "gülmekten ağladığımız gün", date: "yaz • 14:32 • hava çok sıcak", sticker: "☀️", overlay: "100% kahkaha garantili" },
-  { src: "/memories/memory-2.svg", caption: "gece yarısı atıştırmalık operasyonu", date: "00:47 • uyku < cips", sticker: "🍟", overlay: "suç ortağıma selam" },
-  { src: "/memories/memory-3.svg", caption: "ana karakter yürüyüşü", date: "golden hour • rüzgar: doğaçlama", sticker: "✨", overlay: "ikonik davranış" },
-  { src: "/memories/memory-4.svg", caption: "asla göstermememiz gereken foto", date: "gizli • gözler yarı kapalı", sticker: "🙈", overlay: "görünce yak" },
-  { src: "/memories/memory-5.svg", caption: "mutfakta dans molası", date: "yağmurlu gün • ses: son ses", sticker: "🪩", overlay: "kaşık = mikrofon" },
-  { src: "/memories/memory-6.svg", caption: "biz dünyaya karşı", date: "her zaman • sonsuza dek", sticker: "💛", overlay: "dinamik ikili" },
+  { src: "/memories/memory-1.svg", caption: "the day we laughed till we cried", date: "summer • 14:32 • super hot", sticker: "☀️", overlay: "100% laughs guaranteed" },
+  { src: "/memories/memory-2.svg", caption: "midnight snack operation", date: "00:47 • sleep < chips", sticker: "🍟", overlay: "shoutout to my partner in crime" },
+  { src: "/memories/memory-3.svg", caption: "main character walk", date: "golden hour • wind: improvised", sticker: "✨", overlay: "iconic behavior" },
+  { src: "/memories/memory-4.svg", caption: "the photo we must never show", date: "classified • eyes half closed", sticker: "🙈", overlay: "burn after viewing" },
+  { src: "/memories/memory-5.svg", caption: "kitchen dance break", date: "rainy day • volume: max", sticker: "🪩", overlay: "spoon = microphone" },
+  { src: "/memories/memory-6.svg", caption: "us against the world", date: "always • forever", sticker: "💛", overlay: "dynamic duo" },
 ];
 
 // ─── FINAL LETTER — replace with your real long letter ───
 export const finalLetter = {
-  greeting: "Sevgili En Yakın Arkadaşım,",
+  greeting: "Dear Best Friend,",
   paragraphs: [
-    "Mektup 1. paragraf (placeholder): 20 yaşına girdin! Bunu yazarken yüzümde kocaman bir gülümseme var, çünkü bu siteyi senin için parça parça, kahkaha ata ata yaptım. (Buraya gerçek mektubunu yapıştır — uzun olabilir, kaydırılabilir.)",
-    "Mektup 2. paragraf (placeholder): İyi gününde de kötü gününde de yanında olmak istiyorum. Gece yarısı sesli mesajların, bitmeyen kahkahaların, en saçma esprilere bile gülmen… hepsi benim en sevdiğim şeyler.",
-    "Mektup 3. paragraf (placeholder): 20'li yaşlar kocaman bir macera. Korkma, dene, yanıl, gül, ağla, dans et. Ben hep burada olacağım — en ön sırada seni alkışlayan kişi olarak.",
-    "Mektup 4. paragraf (placeholder): İyi ki doğdun. İyi ki yollarımız kesişti. İyi ki benim en yakın arkadaşımsın. Bu küçük piksel oyunu sana olan sevgimin yanında minicik kalır, ama umarım bugün seni birazcık daha mutlu eder. 💖",
+    "Letter paragraph 1 (placeholder): You turned 20! I'm grinning so big writing this, because I built this site for you piece by piece, laughing the whole way. (Paste your real letter here — long is fine, it's scrollable.)",
+    "Letter paragraph 2 (placeholder): I want to be by your side on good days and bad days. Your midnight voice notes, your endless laughter, how you laugh even at my silliest jokes… those are all my favorite things.",
+    "Letter paragraph 3 (placeholder): Your 20s are a giant adventure. Don't be afraid — try, fail, laugh, cry, dance. I'll always be here — front row, cheering the loudest for you.",
+    "Letter paragraph 4 (placeholder): Happy birthday. So glad our paths crossed. So glad you're my best friend. This tiny pixel game is nothing next to how much I love you, but I hope it makes your day a little happier. 💖",
   ],
-  sign: "— seni çok seven kankan 💛",
+  sign: "— your bestie who loves you tons 💛",
 };
 
 // ─── SPRITES / IMAGES — file paths to replace later ───
@@ -229,12 +229,12 @@ export const assets = {
 
 // ─── STAGE ORDER (do not change unless you know what you do) ───
 export const stages = [
-  { id: 0, label: "başlangıç", emoji: "🎈" },
-  { id: 1, label: "pasta", emoji: "🎂" },
-  { id: 2, label: "20 dilek", emoji: "🕯️" },
-  { id: 3, label: "koşu oyunu", emoji: "🏃‍♀️" },
+  { id: 0, label: "start", emoji: "🎈" },
+  { id: 1, label: "cake", emoji: "🎂" },
+  { id: 2, label: "20 wishes", emoji: "🕯️" },
+  { id: 3, label: "run game", emoji: "🏃‍♀️" },
   { id: 4, label: "quiz", emoji: "🎯" },
-  { id: 5, label: "anılar", emoji: "📸" },
-  { id: 6, label: "mektup", emoji: "💌" },
+  { id: 5, label: "memories", emoji: "📸" },
+  { id: 6, label: "letter", emoji: "💌" },
   { id: 7, label: "happy 20", emoji: "🎉" },
 ] as const;

@@ -126,7 +126,7 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
         </div>
 
         <p className="pixel-font mt-6 text-[9px] text-[#8a6a6a] md:text-[10px]">
-          ▼ 7 mini bölüm • ~5 dakika • bol konfeti garantili ▼
+          ▼ 7 mini stages • ~5 minutes • tons of confetti guaranteed ▼
         </p>
       </motion.div>
 

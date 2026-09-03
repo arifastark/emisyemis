@@ -48,7 +48,7 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
           transition={{ duration: 2.4, repeat: Infinity }}
           className="pixel-font rounded-2xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-5 py-2 text-[10px] text-[#3A2B2B] shadow-[5px_5px_0_#3A2B2B] md:text-xs"
         >
-          🎮 ★ OYUN TAMAMLANDI ★ TEBRİKLER! ★
+          🎮 ★ GAME COMPLETE ★ CONGRATS! ★
         </motion.div>
 
         <motion.h1
@@ -76,7 +76,7 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src="/images/us-together.png"
-              alt="ikimiz"
+              alt="us two"
               onError={() => setPhotoOk(false)}
               className="pixel-frame w-full object-cover"
             />
@@ -84,9 +84,9 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
             <div className="pixel-frame bg-gradient-to-br from-[#FF6B9D] via-[#FF9F45] to-[#FFD93D] p-6">
               <div className="text-5xl">👯‍♀️💖🎂</div>
               <p className="pixel-font mt-2 text-[9px] leading-relaxed text-white" style={{ textShadow: "2px 2px 0 #3A2B2B" }}>
-                İYİ Kİ DOĞDUN!
+                HAPPY BIRTHDAY!
                 <br />
-                İYİ Kİ VARSIN! 💖
+                SO GLAD YOU EXIST! 💖
               </p>
             </div>
           )}
@@ -94,9 +94,9 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
 
         {/* mini credits */}
         <div className="pixel-panel mt-6 w-full max-w-md bg-[#FFF6E9] p-4">
-          <p className="pixel-font text-[9px] text-[#8a6a6a]">★ MACERA ÖZETİ ★</p>
+          <p className="pixel-font text-[9px] text-[#8a6a6a]">★ ADVENTURE RECAP ★</p>
           <p className="pixel-soft mt-1 text-xl leading-snug">
-            🎂 mum üflendi • 🕯️ 20 dilek açıldı • 🏃‍♀️ kavuşma koşusu kazanıldı • 🎯 10/10 quiz • 📸 anılar gezildi • 💌 mektup okundu
+            🎂 candles blown • 🕯️ 20 wishes unlocked • 🏃‍♀️ reunion run won • 🎯 10/10 quiz • 📸 memories visited • 💌 letter read
           </p>
         </div>
 
@@ -108,13 +108,13 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
               confetti({ particleCount: 200, spread: 130, origin: { y: 0.5 }, shapes: ["square"] });
             }}
           >
-            🎉 KONFETİ!
+            🎉 CONFETTI!
           </PixelButton>
           <PixelButton color="#4D96FF" small onClick={onReplay}>
             {cfg.replayText}
           </PixelButton>
         </div>
-        <p className="pixel-font mt-5 text-[9px] text-[#8a6a6a]">seni çok seven kankandan • 20 yaş hatırası 💛</p>
+        <p className="pixel-font mt-5 text-[9px] text-[#8a6a6a]">from your bestie who loves you • age 20 keepsake 💛</p>
       </motion.div>
     </div>
   );

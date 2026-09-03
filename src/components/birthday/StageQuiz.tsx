@@ -8,7 +8,7 @@ import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── STAGE 5: Quiz — 10 questions, 5 top + 5 bottom ──
 function normalize(s: string) {
-  return s.toLocaleLowerCase("tr").trim().replace(/\s+/g, " ");
+  return s.toLocaleLowerCase("en").trim().replace(/\s+/g, " ");
 }
 
 function QuizCard({
@@ -29,14 +29,14 @@ function QuizCard({
     if (done) return;
     const v = normalize(value);
     if (!v) {
-      setMsg({ ok: false, text: "önce bir şey yaz! 😜" });
+      setMsg({ ok: false, text: "type something first! 😜" });
       return;
     }
     const correct = q.answers.some((a) => normalize(a) === v || v.includes(normalize(a)));
     if (correct) {
       birthdayAudio.success();
       confetti({ particleCount: 45, spread: 70, origin: { y: 0.6 }, shapes: ["square"], scalar: 0.9 });
-      setMsg({ ok: true, text: "DOĞRU! 🎉 +" });
+      setMsg({ ok: true, text: "CORRECT! 🎉 +" });
       onDone();
     } else {
       birthdayAudio.fail();
@@ -55,11 +55,11 @@ function QuizCard({
     >
       <div className="flex items-start justify-between gap-2">
         <span className="pixel-font rounded-md border-2 border-[#3A2B2B] bg-[#FFD93D] px-2 py-1 text-[9px] text-[#3A2B2B]">
-          SORU {index + 1}
+          QUESTION {index + 1}
         </span>
         {done && (
           <motion.span initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} className="pixel-font rounded-md border-2 border-[#3A2B2B] bg-[#6BCB77] px-2 py-1 text-[9px] text-white">
-            ✓ TAMAM!
+            ✓ DONE!
           </motion.span>
         )}
       </div>
@@ -70,7 +70,7 @@ function QuizCard({
             value={value}
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && check()}
-            placeholder={q.hint ?? "cevabını yaz…"}
+            placeholder={q.hint ?? "type your answer…"}
             enterKeyHint="go"
             className="pixel-input pixel-soft w-full px-3 py-2 text-xl"
           />
@@ -78,11 +78,11 @@ function QuizCard({
             onClick={check}
             className="pixel-font rounded-lg border-[3px] border-[#3A2B2B] bg-[#4D96FF] px-3 py-2 text-[10px] text-white shadow-[3px_3px_0_#3A2B2B] transition active:translate-y-0.5 active:shadow-none"
           >
-            KONTROL ET ▶
+            CHECK ▶
           </button>
         </div>
       ) : (
-        <div className="pixel-soft mt-2 text-lg text-[#2b8a3e]">bravo, bildin! 💛</div>
+        <div className="pixel-soft mt-2 text-lg text-[#2b8a3e]">nice, you got it! 💛</div>
       )}
       <AnimatePresence>
         {msg && (
@@ -119,12 +119,12 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <StageShell kicker={`🎯 BÖLÜM 4 / 7 — QUIZ • ${doneCount}/10`} title={doneCount === 10 ? cfg.completeTitle : cfg.title} subtitle={doneCount === 10 ? cfg.completeSub : cfg.subtitle}>
+    <StageShell kicker={`🎯 STAGE 4 / 7 — QUIZ • ${doneCount}/10`} title={doneCount === 10 ? cfg.completeTitle : cfg.title} subtitle={doneCount === 10 ? cfg.completeSub : cfg.subtitle}>
       <FloatingPixels items={["🎯", "⭐", "❓", "💡", "🏆"]} />
 
       {/* arcade scoreboard */}
       <div className="pixel-panel z-10 mb-5 flex w-full max-w-4xl items-center justify-between bg-[#3A2B2B] px-4 py-2">
-        <span className="pixel-font text-[10px] text-[#FFD93D] md:text-xs">SKOR: {doneCount * 100}</span>
+        <span className="pixel-font text-[10px] text-[#FFD93D] md:text-xs">SCORE: {doneCount * 100}</span>
         <div className="flex gap-1">
           {doneSet.map((d, i) => (
             <span key={i} className="block h-3 w-3 rounded-[4px] border border-black" style={{ background: d ? "#6BCB77" : "#5b4a5e" }} />
@@ -134,7 +134,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* upper 5 */}
-      <p className="pixel-font z-10 mb-2 text-[10px] text-[#5b4444]">— ÜST BÖLÜM (1-5) —</p>
+      <p className="pixel-font z-10 mb-2 text-[10px] text-[#5b4444]">— TOP ROW (1-5) —</p>
       <div className="z-10 grid w-full max-w-4xl grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {[0, 1, 2, 3, 4].map((i) => (
           <QuizCard key={i} index={i} done={doneSet[i]} onDone={() => markDone(i)} />
@@ -142,15 +142,15 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
         {/* fun filler arcade card on large screens */}
         <div className="pixel-panel hidden flex-col items-center justify-center bg-[#FFD93D] p-4 text-center lg:flex">
           <div className="text-4xl">🕹️</div>
-          <p className="pixel-font mt-2 text-[10px] text-[#3A2B2B]">MOLA DOLABI</p>
-          <p className="pixel-soft mt-1 text-lg">takılırsan derin nefes al ve en komik cevabı yaz 😌</p>
+          <p className="pixel-font mt-2 text-[10px] text-[#3A2B2B]">SNACK BREAK</p>
+          <p className="pixel-soft mt-1 text-lg">stuck? take a deep breath and write the funniest answer 😌</p>
         </div>
       </div>
 
       {/* divider */}
       <div className="z-10 my-5 flex w-full max-w-4xl items-center gap-3" aria-hidden>
         <div className="h-1 flex-1 rounded bg-[#3A2B2B]/20" />
-        <span className="pixel-font text-[10px] text-[#5b4444]">★ ALT BÖLÜM (6-10) ★</span>
+        <span className="pixel-font text-[10px] text-[#5b4444]">★ BOTTOM ROW (6-10) ★</span>
         <div className="h-1 flex-1 rounded bg-[#3A2B2B]/20" />
       </div>
 
@@ -160,8 +160,8 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
         ))}
         <PixelPanel className="flex-col items-center justify-center p-4 text-center" color="#FFF6E9">
           <div className="text-4xl">{doneCount === 10 ? "🏆" : "⏳"}</div>
-          <p className="pixel-font mt-2 text-[10px] text-[#3A2B2B]">{doneCount === 10 ? "EFSANE OLDUN!" : `${10 - doneCount} SORU KALDI`}</p>
-          <p className="pixel-soft mt-1 text-lg">{doneCount === 10 ? "hepsi doğru — alkışlar sana!" : "yapabilirsin, inanıyorum!"}</p>
+          <p className="pixel-font mt-2 text-[10px] text-[#3A2B2B]">{doneCount === 10 ? "YOU'RE LEGENDARY!" : `${10 - doneCount} QUESTIONS LEFT`}</p>
+          <p className="pixel-soft mt-1 text-lg">{doneCount === 10 ? "all correct — applause for you!" : "you got this, I believe in you!"}</p>
         </PixelPanel>
       </div>
 

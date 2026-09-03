@@ -41,7 +41,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <StageShell kicker="💌 BÖLÜM 6 / 7 — SON MEKTUP" title={cfg.title} subtitle={cfg.subtitle}>
+    <StageShell kicker="💌 STAGE 6 / 7 — FINAL LETTER" title={cfg.title} subtitle={cfg.subtitle}>
       <FloatingPixels items={["💌", "💖", "✨", "🌸", "💛"]} />
 
       {/* envelope */}
@@ -56,7 +56,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
             whileHover={{ scale: 1.03, rotate: -1 }}
             whileTap={{ scale: 0.97 }}
             className="relative z-10 mx-auto w-full max-w-sm cursor-pointer outline-none"
-            title="açmak için dokun"
+            title="tap to open"
           >
             {/* glow */}
             <motion.div
@@ -68,7 +68,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
               {/* stamp */}
               <div className="absolute right-3 top-3 rotate-6 rounded-md border-[3px] border-dashed border-[#FF6B9D] bg-white px-2 py-1 text-center">
                 <div className="text-2xl">🎂</div>
-                <div className="pixel-font text-[7px] text-[#FF6B9D]">20 YAŞ<br />ÖZEL</div>
+                <div className="pixel-font text-[7px] text-[#FF6B9D]">AGE 20<br />SPECIAL</div>
               </div>
               {/* envelope body */}
               <div className="relative mx-auto mt-8 h-44 overflow-hidden rounded-xl border-4 border-[#3A2B2B] bg-[#FFC9D6]">
@@ -78,7 +78,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
                   animate={open ? { y: -70, opacity: 1 } : { y: 10 }}
                   transition={{ type: "spring", stiffness: 90, damping: 14 }}
                 >
-                  <div className="pixel-font p-2 text-center text-[8px] text-[#3A2B2B]">sana bir mektubum var… 💖</div>
+                  <div className="pixel-font p-2 text-center text-[8px] text-[#3A2B2B]">I have a letter for you… 💖</div>
                 </motion.div>
                 {/* flap */}
                 <motion.div
@@ -103,7 +103,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
                 )}
               </div>
               <p className="pixel-font mt-5 animate-bounce text-[10px] text-[#c2255c] md:text-xs">{cfg.envelopeHint}</p>
-              <p className="pixel-soft mt-1 text-lg">kocaman bir zarf • minicik bir kalp • upuzun bir mektup</p>
+              <p className="pixel-soft mt-1 text-lg">one giant envelope • one tiny heart • one super long letter</p>
             </div>
           </motion.button>
         ) : (
@@ -149,7 +149,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
               {!read && (
                 <div className="pointer-events-none absolute inset-x-4 bottom-3 flex justify-center">
                   <span className="pixel-font animate-bounce rounded-full border-[3px] border-[#3A2B2B] bg-[#FFD93D] px-3 py-1 text-[9px] text-[#3A2B2B]">
-                    ↓ sonuna kadar kaydır ↓
+                    ↓ scroll to the very end ↓
                   </span>
                 </div>
               )}
@@ -163,7 +163,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
                   </PixelButton>
                 </motion.div>
               ) : (
-                <p className="pixel-font text-[10px] text-[#8a6a6a]">mektubu sonuna kadar oku 💛 ({finalLetter.paragraphs.length} paragraf)</p>
+                <p className="pixel-font text-[10px] text-[#8a6a6a]">read the letter to the very end 💛 ({finalLetter.paragraphs.length} paragraphs)</p>
               )}
             </div>
           </motion.div>

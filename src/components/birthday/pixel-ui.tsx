@@ -4,7 +4,7 @@ import confetti from "canvas-confetti";
 import type { ReactNode } from "react";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── Big rounded pixel button (HAZIR MISIN? etc.) ──
+// ── Big rounded pixel button (ARE YOU READY? etc.) ──
 export function PixelButton({
   children,
   onClick,

@@ -61,7 +61,7 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
   const candleColors = ["#FF6B9D", "#4D96FF", "#6BCB77", "#9B5DE5", "#FF9F45"];
 
   return (
-    <StageShell kicker={`🕯️ BÖLÜM 2 / 7 — 20 DİLEK • ${done}/20`} title={done === 20 ? cfg.completeTitle : cfg.title} subtitle={done === 20 ? cfg.completeSub : cfg.subtitle}>
+    <StageShell kicker={`🕯️ STAGE 2 / 7 — 20 WISHES • ${done}/20`} title={done === 20 ? cfg.completeTitle : cfg.title} subtitle={done === 20 ? cfg.completeSub : cfg.subtitle}>
       <FloatingPixels items={["🕯️", "✨", "💖", "⭐"]} />
 
       {/* progress bar */}
@@ -74,7 +74,7 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
             transition={{ type: "spring", stiffness: 90, damping: 18 }}
           />
         </div>
-        <p className="pixel-font mt-1 text-center text-[10px] text-[#5b4444]">{done}/20 mum söndü</p>
+        <p className="pixel-font mt-1 text-center text-[10px] text-[#5b4444]">{done}/20 candles out</p>
       </div>
 
       {/* candle grid — responsive */}
@@ -92,7 +92,7 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
               background: isOut ? "#5b4a5e" : "#FFF6E9",
               borderColor: "#3A2B2B",
             }}
-            title={isOut ? `Dilek ${i + 1} (tekrar oku)` : `Mum ${i + 1} — söndürmek için dokun`}
+            title={isOut ? `Wish ${i + 1} (read again)` : `Candle ${i + 1} — tap to blow out`}
           >
             <span className="pixel-font text-[9px] md:text-[10px]" style={{ color: isOut ? "#FFD93D" : "#3A2B2B" }}>
               {String(i + 1).padStart(2, "0")}
@@ -136,17 +136,17 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
               transition={{ type: "spring", stiffness: 160, damping: 18 }}
             >
               <PixelPanel className="p-4 md:p-5" color="#FFF6E9">
-                <p className="pixel-font text-[10px] text-[#FF6B9D] md:text-xs">✨ DİLEK #{activeWish + 1} / 20</p>
+                <p className="pixel-font text-[10px] text-[#FF6B9D] md:text-xs">✨ WISH #{activeWish + 1} / 20</p>
                 <p className="pixel-soft mt-2 text-xl leading-snug text-[#3A2B2B] md:text-2xl">{wishes[activeWish]}</p>
                 {done < 20 && (
-                  <p className="pixel-font mt-3 text-[9px] text-[#8a6a6a]">kalan: {20 - done} mum 🕯️ — devam et!</p>
+                  <p className="pixel-font mt-3 text-[9px] text-[#8a6a6a]">left: {20 - done} candles 🕯️ — keep going!</p>
                 )}
               </PixelPanel>
             </motion.div>
           ) : (
             <motion.div key="hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <PixelPanel className="p-4 text-center" color="#FFF6E9">
-                <p className="pixel-soft text-xl md:text-2xl">👆 bir muma dokun — içinde bir dilek saklı…</p>
+                <p className="pixel-soft text-xl md:text-2xl">👆 tap a candle — a wish hides inside…</p>
               </PixelPanel>
             </motion.div>
           )}

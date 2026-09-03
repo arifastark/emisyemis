@@ -17,7 +17,7 @@ export function MusicToggle() {
           setMuted(m);
           birthdayAudio.setMuted(m);
         }}
-        title={muted ? "sesi aç" : "sessize al"}
+        title={muted ? "unmute" : "mute"}
         className="pixel-font flex h-12 w-12 items-center justify-center rounded-xl border-[3px] border-[#3A2B2B] bg-[#FFF6E9] text-lg shadow-[3px_3px_0_#3A2B2B]"
       >
         {muted ? "🔇" : "🎵"}
@@ -28,7 +28,7 @@ export function MusicToggle() {
           if (on) birthdayAudio.stopBackground();
           setOn(!on);
         }}
-        title="müziği durdur/başlat (sayfa müziği)"
+        title="stop/start music (page music)"
         className="pixel-font hidden h-12 items-center rounded-xl border-[3px] border-[#3A2B2B] bg-[#FFF6E9] px-3 text-[10px] text-[#3A2B2B] shadow-[3px_3px_0_#3A2B2B] sm:flex"
       >
         {on ? "⏸" : "▶"}

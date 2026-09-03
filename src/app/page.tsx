@@ -66,7 +66,7 @@ export default function Home() {
         <div className="fixed inset-x-0 bottom-0 z-10 overflow-hidden border-t-4 border-[#3A2B2B] bg-[#FFD93D] py-1.5">
           <div className="animate-marquee flex w-max gap-8 whitespace-nowrap pr-8">
             {Array.from({ length: 2 }).flatMap((_, k) =>
-              ["iyi ki doğdun ★", "happy 20 ★", "nice senelere ★", "konfeti hazır ★"].map((t, i) => (
+              ["happy birthday ★", "happy 20 ★", "many more years ★", "confetti ready ★"].map((t, i) => (
                 <span key={`${k}-${i}`} className="pixel-font text-[9px] text-[#3A2B2B]">
                   {t}
                 </span>

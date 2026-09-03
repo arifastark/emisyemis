@@ -37,7 +37,7 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <StageShell kicker={`📸 BÖLÜM 5 / 7 — ANILAR • ${idx + 1}/${memories.length}`} title={cfg.title} subtitle={cfg.subtitle}>
+    <StageShell kicker={`📸 STAGE 5 / 7 — MEMORIES • ${idx + 1}/${memories.length}`} title={cfg.title} subtitle={cfg.subtitle}>
       <FloatingPixels items={["📸", "💛", "✨", "🌸"]} />
 
       {/* filmstrip progress */}
@@ -126,7 +126,7 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
             onClick={() => go(-1)}
             className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-4 py-3 text-xs text-[#3A2B2B] shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
           >
-            ← ÖNCEKİ
+            ← PREV
           </button>
           <p className="pixel-font hidden text-[9px] text-[#8a6a6a] sm:block">{cfg.hint}</p>
           <button
@@ -134,7 +134,7 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
             className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FF6B9D] px-4 py-3 text-xs text-white shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
             style={{ textShadow: "1px 1px 0 #3A2B2B" }}
           >
-            SONRAKİ →
+            NEXT →
           </button>
         </div>
       </div>
@@ -143,19 +143,19 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
       <div className="z-10 mt-5 flex min-h-16 flex-col items-center">
         {finished ? (
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-2">
-            <p className="pixel-font text-[10px] text-[#5b4444]">✨ tüm anılar açıldı ✨</p>
+            <p className="pixel-font text-[10px] text-[#5b4444]">✨ all memories unlocked ✨</p>
             <PixelButton onClick={onNext} color="#6BCB77">
               {cfg.continueText}
             </PixelButton>
           </motion.div>
         ) : (
           <p className="pixel-font text-[10px] text-[#8a6a6a]">
-            {seen.filter(Boolean).length}/{memories.length} anı görüldü — hepsini gez 💛
+            {seen.filter(Boolean).length}/{memories.length} memories seen — visit them all 💛
           </p>
         )}
       </div>
 
-      <p className="pixel-font z-10 mt-2 text-center text-[9px] text-[#8a6a6a]">🎵 anı müziği çalıyor • değiştirmek için /music/memories.mp3 ekle</p>
+      <p className="pixel-font z-10 mt-2 text-center text-[9px] text-[#8a6a6a]">🎵 memory music playing • add /music/memories.mp3 to change it</p>
     </StageShell>
   );
 }

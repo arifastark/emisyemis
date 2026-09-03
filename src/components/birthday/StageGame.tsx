@@ -17,7 +17,7 @@ type Obstacle = {
 };
 
 // funny obstacle names for flavor
-const OBSTACLE_NAMES = ["odun kafalı ex", "komik abi", "random tip", "saç jöleli"];
+const OBSTACLE_NAMES = ["blockhead ex", "funny dude", "random guy", "gel-hair guy"];
 
 // ── STAGE 4: custom pixel runner ──
 // friend runs → jumps over funny male heads → reaches ME.
@@ -402,7 +402,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
         drawPixelRect(fx + 5, gy - 90 + wave, 34, 22, "#FF6B9D");
         ctx.fillStyle = "#fff";
         ctx.font = "8px 'Press Start 2P', monospace";
-        ctx.fillText("BEN", fx + 9, gy - 75 + wave);
+        ctx.fillText("ME", fx + 9, gy - 75 + wave);
       }
 
       // player
@@ -446,15 +446,15 @@ export function StageGame({ onNext }: { onNext: () => void }) {
   const progress = Math.min(1, score / cfg.goalDistance);
 
   return (
-    <StageShell kicker="🏃‍♀️ BÖLÜM 3 / 7 — KOŞU OYUNU" title={cfg.title} subtitle={cfg.subtitle}>
+    <StageShell kicker="🏃‍♀️ STAGE 3 / 7 — RUN GAME" title={cfg.title} subtitle={cfg.subtitle}>
       <PixelPanel className="z-10 w-full max-w-3xl p-3 md:p-5">
         {/* HUD */}
         <div className="mb-2 flex items-center justify-between gap-2">
           <div className="pixel-font text-[10px] text-[#3A2B2B] md:text-xs">
-            MESAFE: {score}m <span className="text-[#8a6a6a]">/ {cfg.goalDistance}m</span>
+            DISTANCE: {score}m <span className="text-[#8a6a6a]">/ {cfg.goalDistance}m</span>
           </div>
           <div className="pixel-font text-[10px] text-[#8a6a6a] md:text-xs">
-            REKOR: {Math.max(best, score)}m • {jumps} zıplama
+            BEST: {Math.max(best, score)}m • {jumps} jumps
           </div>
         </div>
         {/* reunion progress */}
@@ -483,13 +483,13 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/55 p-4 text-center"
               >
-                <p className="pixel-font text-xs text-white md:text-sm">KOMİK KAFALARA ÇARPMA! 😜</p>
+                <p className="pixel-font text-xs text-white md:text-sm">DON&apos;T BONK THE FUNNY HEADS! 😜</p>
                 <p className="pixel-soft mt-2 text-xl text-white/90">
-                  {OBSTACLE_NAMES.join(" • ")} — hepsinin üzerinden zıpla!
+                  {OBSTACLE_NAMES.join(" • ")} — jump over them all!
                 </p>
                 <div className="mt-4">
                   <PixelButton onClick={start} color="#FF6B9D">
-                    BAŞLA ▶
+                    START ▶
                   </PixelButton>
                 </div>
                 <p className="pixel-font mt-3 text-[9px] text-white/80">
@@ -506,13 +506,13 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                 className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/60 p-4 text-center"
               >
                 <p className="text-4xl">💥🤪</p>
-                <p className="pixel-font mt-2 text-xs text-white md:text-sm">OOPS! bir kafaya tosladın!</p>
+                <p className="pixel-font mt-2 text-xs text-white md:text-sm">OOPS! you bonked a head!</p>
                 <p className="pixel-soft mt-1 text-xl text-white/85">
-                  {score}m koştun — {cfg.goalDistance - score}m kalmıştı. tekrar dene!
+                  you ran {score}m — {cfg.goalDistance - score}m to go. try again!
                 </p>
                 <div className="mt-4 flex gap-3">
                   <PixelButton onClick={retry} color="#FF6B9D" small>
-                    ↻ TEKRAR KOŞ
+                    ↻ RUN AGAIN
                   </PixelButton>
                 </div>
               </motion.div>
@@ -530,7 +530,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
               onClick={onCanvasTap}
               className="pixel-font rounded-lg border-[3px] border-[#3A2B2B] bg-[#FFD93D] px-4 py-2 text-[10px] text-[#3A2B2B] shadow-[3px_3px_0_#3A2B2B] active:translate-y-0.5 active:shadow-none md:hidden"
             >
-              ⬆ ZIPLA!
+              ⬆ JUMP!
             </button>
           )}
         </div>
@@ -550,7 +550,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={cfg.rewardPhoto}
-                    alt="ikimizin fotoğrafı"
+                    alt="photo of us two"
                     onError={() => setRewardOk(false)}
                     className="pixel-frame w-full object-cover"
                   />
@@ -558,7 +558,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                   <div className="pixel-frame flex flex-col items-center gap-2 bg-gradient-to-br from-[#FF6B9D] to-[#FFD93D] p-8 text-center">
                     <div className="text-6xl">👯‍♀️💖</div>
                     <p className="pixel-font text-[10px] text-white" style={{ textShadow: "2px 2px 0 #3A2B2B" }}>
-                      BİZ 💖 (fotoğraf buraya gelecek: /images/us-together.png)
+                      US 💖 (photo goes here: /images/us-together.png)
                     </p>
                   </div>
                 )}
