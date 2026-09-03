@@ -61,10 +61,10 @@ export const birthdayConfig = {
 
   quiz: {
     title: "BFF QUIZ SHOW 🎯",
-    subtitle: "10 questions • get your keyboard ready • be honest!",
-    completeTitle: "10/10 LEGENDARY! 🏆",
-    completeSub: "you literally know me better than I know myself",
-    continueText: "CONTINUE TO MEMORIES →",
+    subtitle: "5 sual • cavabı yaz • dürüst ol!",
+    completeTitle: "5/5 PERFECT!",
+    completeSub: "",
+    continueText: "XATİRƏLƏRƏ DAVAM ET →",
   },
 
   memories: {
@@ -117,67 +117,58 @@ export const wishes: string[] = [
   "20 yaşında bütün xoşbəxtliklər səninlə olsun. Ad günün mübarək!",
 ];
 
-// ─── QUIZ — 10 questions. Edit freely. ───
-// `answers`: accepted correct answers (lowercase-compared, trimmed).
-// `incorrectMessage`: funny message shown when wrong (you will provide final texts).
+// ─── QUIZ — 5 sual. Hamısı azərbaycanca. ───
+// `answers`: düzgün cavablar (kiçik/böyük hərf fərqi yoxdur, Ə/ə uyğunluğu var).
+// `correctMessage`: düz cavabda göstərilir. `incorrectMessage`: səhv cavabda
+// doğru cavabla birlikdə göstərilir — hər ikisindən sonra növbəti suala keçilir.
 export type QuizQuestion = {
   question: string;
   placeholder?: string;
   answers: string[];
+  correctMessage?: string;
   incorrectMessage: string;
   hint?: string;
 };
 
 export const quizQuestions: QuizQuestion[] = [
   {
-    question: "Question 1: What is our favorite emergency snack?",
-    answers: ["chips", "fries", "potato", "nugget"],
-    incorrectMessage: "Haha nope! Hint: fried and full of regret 🍟 Try again!",
+    question: "İlk tanış olduğumuz tarixin gün nömrəsi nə idi? (məs: 9, 7, 18)",
+    placeholder: "gün nömrəsini yaz…",
+    answers: ["15"],
+    correctMessage: "DÜZGÜN! Yaddaşın əla işləyir!",
+    incorrectMessage: "Ayıb olsun. Doğru cavab: 15 idi!",
   },
   {
-    question: "Question 2: What happens if you open my fridge?",
-    answers: ["you stay 3 hours", "you stay", "3 hours", "you can't leave"],
-    incorrectMessage: "Wrong! Fridge laws are clear: openers stay 🧊",
+    question: "Mənə ən çox .... olduğuma görə əsəbləşirsən. (nöqtələrin yerinə uyğun sözü yaz)",
+    placeholder: "bir söz yaz…",
+    answers: ["tənbəl", "tenbel"],
+    correctMessage: "DÜZGÜN! Bəli, tənbəl!",
+    incorrectMessage:
+      "Yox e! Doğru cavab: Tənbəl idi. Kül başına, bütün gün dediyimi eləmirəm deyə dalaşırıq.",
   },
   {
-    question: "Question 3: What is our world-record voice message length?",
-    answers: ["11:47", "11 minutes", "11 minutes 47", "11min"],
-    incorrectMessage: "No way, we are PROFESSIONAL yappers 🎙️ Think again!",
+    question: "Mənə hansı rəng paltar geyinməyə icazə vermirsən?",
+    placeholder: "rəngi yaz…",
+    answers: ["ağ", "ag"],
+    correctMessage: "DÜZGÜN! Bəli, ağ!",
+    incorrectMessage:
+      "Yox! Doğru cavab: ağ. Üstümə nəsə tökərəm deyə ağ geyinməyə icazə vermirsən.",
   },
   {
-    question: "Question 4: How many alarms do we set to wake up?",
-    answers: ["8", "eight", "7+1", "7", "seven"],
-    incorrectMessage: "Disciplined?? Don't act like you don't know us ⏰",
+    question:
+      "Mənə hər fürsət düşəndə verdiyin o mistik seçimli həyat sualının başlanğıc hissəsi necə idi?",
+    placeholder: "sualın başlanğıcını yaz…",
+    answers: ["əgər dünyada filankəs və sən qalsaydın", "eger dunyada filankes ve sen qalsaydin"],
+    correctMessage: "DÜZGÜN! Bəli, o məşhur sual!",
+    incorrectMessage:
+      "Yox! Doğru cavab: “Əgər dünyada filankəs və sən qalsaydın...” idi. Milyon dənə insanı filankəsin yerinə qoyub səbrimi sınayıb hər dəfə yox cavabı aldığın o sual.",
   },
   {
-    question: "Question 5: What is my coffee order?",
-    answers: ["latte", "cappuccino", "filter coffee", "espresso"],
-    incorrectMessage: "The barista is crying right now ☕ Try again!",
-  },
-  {
-    question: "Question 6: Where did we first meet?",
-    answers: ["school", "park", "cafe", "classroom"],
-    incorrectMessage: "Stretch that memory… remember that day! 👀",
-  },
-  {
-    question: "Question 7: What is my favorite color?",
-    answers: ["pink", "pastel pink"],
-    incorrectMessage: "Nope! Hint: this whole site is that color 🎀",
-  },
-  {
-    question: "Question 8: What was the first movie we watched together?",
-    answers: ["barbie", "harry potter", "titanic"],
-    incorrectMessage: "That popcorn night… 🍿",
-  },
-  {
-    question: "Question 9: What should you do when I'm grumpy?",
-    answers: ["chocolate", "give chocolate", "hug", "stay quiet"],
-    incorrectMessage: "Wrong move = danger! 🚨 You know the right answer!",
-  },
-  {
-    question: "Question 10: Who made this site? (super hard 😏)",
-    answers: ["my best friend", "bestie", "you"],
-    incorrectMessage: "Come on! One correct answer for all this effort please 💖",
+    question: "Bu həyatdakı ən mükəmməl olan və ən çox sevdiyin şəxsin adı nədir?",
+    placeholder: "adı yaz…",
+    answers: ["arifə", "arife"],
+    correctMessage: "Təbii ki də Arifə!",
+    incorrectMessage: "Ehh Arifə olmalı idi.",
   },
 ];
 
