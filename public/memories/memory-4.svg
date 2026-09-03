@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800">
+<rect width="800" height="800" rx="40" fill="#1A1A2E"/>
+<circle cx="400" cy="360" r="150" fill="#2B2D5C"/>
+<rect x="330" y="300" width="140" height="40" rx="20" fill="#0a0a0a"/>
+<circle cx="350" cy="420" r="18" fill="#FF6B9D"/>
+<circle cx="450" cy="420" r="18" fill="#FF6B9D"/>
+<path d="M350 460 Q400 480 450 460" stroke="#FFF6E9" stroke-width="10" fill="none" stroke-linecap="round"/>
+<rect x="240" y="150" width="320" height="70" rx="12" fill="#FFD93D" transform="rotate(-8 400 185)"/>
+<text x="400" y="198" text-anchor="middle" font-family="sans-serif" font-size="34" font-weight="900" fill="#1A1A2E" transform="rotate(-8 400 185)">DO NOT SHOW 😭</text>
+<text x="400" y="640" text-anchor="middle" font-family="sans-serif" font-size="52" font-weight="900" fill="#fff">cursed pic</text>
+<text x="400" y="688" text-anchor="middle" font-family="sans-serif" font-size="28" fill="#fff" opacity="0.6">replace with your photo →</text>
+</svg>

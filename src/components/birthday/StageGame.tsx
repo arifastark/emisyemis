@@ -1,0 +1,577 @@
+"use client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
+import { birthdayConfig } from "@/data/birthday";
+import { PixelButton, PixelPanel, StageShell } from "./pixel-ui";
+import { birthdayAudio } from "@/lib/birthday-audio";
+
+type GameState = "ready" | "playing" | "dead" | "won";
+
+type Obstacle = {
+  x: number;
+  w: number;
+  h: number;
+  variant: number;
+  passed: boolean;
+};
+
+// funny obstacle names for flavor
+const OBSTACLE_NAMES = ["odun kafalı ex", "komik abi", "random tip", "saç jöleli"];
+
+// ── STAGE 4: custom pixel runner ──
+// friend runs → jumps over funny male heads → reaches ME.
+export function StageGame({ onNext }: { onNext: () => void }) {
+  const cfg = birthdayConfig.game;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [state, setState] = useState<GameState>("ready");
+  const [score, setScore] = useState(0);
+  const [best, setBest] = useState(0);
+  const [jumps, setJumps] = useState(0);
+  const [rewardOk, setRewardOk] = useState(true);
+  const [, forceSprite] = useState(0);
+  const stateRef = useRef<GameState>("ready");
+  const rafRef = useRef(0);
+
+  // preload optional custom sprites (silent fallback to canvas-drawn pixels)
+  // NOTE: ready-flags live in refs so image onload never restarts the game loop.
+  const friendImg = useRef<HTMLImageElement | null>(null);
+  const meImg = useRef<HTMLImageElement | null>(null);
+  const friendReady = useRef(false);
+  const meReady = useRef(false);
+  useEffect(() => {
+    const f = new Image();
+    f.src = cfg.friendSprite;
+    f.onload = () => {
+      friendReady.current = true;
+      forceSprite((v) => v + 1);
+    };
+    f.onerror = () => {
+      friendReady.current = false;
+    };
+    friendImg.current = f;
+    const m = new Image();
+    m.src = cfg.meSprite;
+    m.onload = () => {
+      meReady.current = true;
+      forceSprite((v) => v + 1);
+    };
+    m.onerror = () => {
+      meReady.current = false;
+    };
+    meImg.current = m;
+  }, [cfg.friendSprite, cfg.meSprite]);
+
+  useEffect(() => {
+    void birthdayAudio.playBackground("game", cfg.musicSrc);
+  }, [cfg.musicSrc]);
+
+  const setBoth = (s: GameState) => {
+    stateRef.current = s;
+    setState(s);
+  };
+
+  const start = useCallback(() => {
+    birthdayAudio.unlock();
+    birthdayAudio.pop();
+    setScore(0);
+    setJumps(0);
+    setBoth("playing");
+  }, []);
+
+  // ── core loop ──
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let W = 0;
+    let H = 0;
+    const DPR = Math.min(window.devicePixelRatio || 1, 2);
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      W = Math.max(300, rect.width);
+      H = rect.height;
+      canvas.width = W * DPR;
+      canvas.height = H * DPR;
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // physics / world
+    const groundY = () => H - 46;
+    let playerY = 0; // height above ground
+    let vy = 0;
+    let jumping = false;
+    const GRAV = 0.75;
+    const JUMP_V = 13.5;
+    // Relaxed pace: slightly slower base speed + gentler ramp so the game
+    // feels fair rather than difficult. Jump physics left untouched.
+    const BASE_SPEED = 4.2;
+    const MAX_SPEED = 7.5;
+    const SPEED_RAMP = 900; // dist units per +1 speed (higher = slower ramp)
+    let speed = BASE_SPEED;
+    let dist = 0;
+    let frame = 0;
+    let obstacles: Obstacle[] = [];
+    // First obstacle gets extra breathing room at run start.
+    let spawnIn = 160;
+    const clouds = Array.from({ length: 5 }, (_, i) => ({ x: Math.random() * 800, y: 20 + Math.random() * 70, s: 0.6 + Math.random() * 0.8, i }));
+    let hills = 0;
+    let deadFlash = 0;
+
+    const doJump = () => {
+      if (stateRef.current !== "playing") return;
+      if (!jumping) {
+        jumping = true;
+        vy = JUMP_V;
+        birthdayAudio.jump();
+        setJumps((j) => j + 1);
+      }
+    };
+    (canvas as HTMLCanvasElement & { __jump?: () => void }).__jump = doJump;
+
+    const key = (e: KeyboardEvent) => {
+      if (e.code === "Space" || e.code === "ArrowUp") {
+        e.preventDefault();
+        if (stateRef.current === "ready") start();
+        else if (stateRef.current === "dead" || stateRef.current === "won") {
+          // ignore — use buttons (avoids accidental restart)
+        } else doJump();
+      }
+    };
+    window.addEventListener("keydown", key);
+
+    const PX = 3; // pixel block size for chunky look
+    const drawPixelRect = (x: number, y: number, w: number, h: number, c: string) => {
+      ctx.fillStyle = c;
+      ctx.fillRect(Math.round(x / PX) * PX, Math.round(y / PX) * PX, Math.round(w / PX) * PX, Math.round(h / PX) * PX);
+    };
+
+    // cute pixel girl (friend) — two-frame run cycle
+    const drawFriend = (x: number, gy: number, runFrame: number, squash: number) => {
+      if (friendImg.current && friendReady.current && friendImg.current.complete && friendImg.current.naturalWidth > 0) {
+        const s = 52;
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(friendImg.current, x - 6, gy - playerY - s + squash, s, s);
+        return;
+      }
+      const y0 = gy - playerY;
+      const legSwing = runFrame % 2 === 0 ? 5 : -5;
+      // shadow
+      ctx.fillStyle = "rgba(58,43,43,.18)";
+      ctx.beginPath();
+      ctx.ellipse(x + 16, gy + 8, 18, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // hair
+      drawPixelRect(x, y0 - 52, 32, 12, "#5b3a29");
+      drawPixelRect(x - 2, y0 - 42, 6, 22, "#5b3a29");
+      drawPixelRect(x + 28, y0 - 42, 6, 22, "#5b3a29");
+      // face
+      drawPixelRect(x + 4, y0 - 42, 24, 16, "#ffd9b3");
+      drawPixelRect(x + 8, y0 - 36, 4, 4, "#3A2B2B");
+      drawPixelRect(x + 20, y0 - 36, 4, 4, "#3A2B2B");
+      drawPixelRect(x + 12, y0 - 30, 8, 3, "#c2255c");
+      // bow
+      drawPixelRect(x + 22, y0 - 54, 10, 8, "#FF6B9D");
+      // dress
+      drawPixelRect(x + 4, y0 - 26, 24, 14, "#FF6B9D");
+      drawPixelRect(x + 2, y0 - 14, 28, 6, "#e64980");
+      // legs
+      drawPixelRect(x + 8 + legSwing * 0.4, y0 - 8, 6, 8, "#ffd9b3");
+      drawPixelRect(x + 18 - legSwing * 0.4, y0 - 8, 6, 8, "#ffd9b3");
+      // arm
+      drawPixelRect(x + 28, y0 - 24, 6, 10, "#ffd9b3");
+    };
+
+    const drawMe = (x: number, gy: number, t: number) => {
+      if (meImg.current && meReady.current && meImg.current.complete && meImg.current.naturalWidth > 0) {
+        const s = 56;
+        ctx.imageSmoothingEnabled = false;
+        const bob = Math.sin(t / 18) * 3;
+        ctx.drawImage(meImg.current, x, gy - s + bob, s, s);
+        return;
+      }
+      const y0 = gy + Math.sin(t / 18) * 3;
+      ctx.fillStyle = "rgba(58,43,43,.18)";
+      ctx.beginPath();
+      ctx.ellipse(x + 16, gy + 8, 18, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
+      // waving arm
+      const wave = Math.sin(t / 10) * 6;
+      drawPixelRect(x + 26, y0 - 46 + wave, 6, 14, "#ffd9b3");
+      drawPixelRect(x, y0 - 54, 32, 12, "#3A2B2B");
+      drawPixelRect(x + 4, y0 - 44, 24, 16, "#ffd9b3");
+      drawPixelRect(x + 8, y0 - 38, 4, 4, "#3A2B2B");
+      drawPixelRect(x + 20, y0 - 38, 4, 4, "#3A2B2B");
+      drawPixelRect(x + 11, y0 - 32, 10, 3, "#3A2B2B");
+      drawPixelRect(x + 4, y0 - 28, 24, 16, "#4D96FF");
+      drawPixelRect(x + 8, y0 - 12, 6, 12, "#3A2B2B");
+      drawPixelRect(x + 18, y0 - 12, 6, 12, "#3A2B2B");
+      // heart above head
+      ctx.font = "16px serif";
+      ctx.fillText("💖", x + 6, y0 - 60 + Math.sin(t / 12) * 3);
+    };
+
+    // funny male head obstacles
+    const HEAD_COLORS = ["#ffdbac", "#f1c27d", "#e0ac69", "#c68642"];
+    const HAIR = ["#2b2b2b", "#6b4a2b", "#d94f04", "#123a6d"];
+    const drawHead = (o: Obstacle, gy: number) => {
+      const x = o.x;
+      const y0 = gy - o.h;
+      // shadow
+      ctx.fillStyle = "rgba(58,43,43,.15)";
+      ctx.beginPath();
+      ctx.ellipse(x + o.w / 2, gy + 8, o.w / 2, 4, 0, 0, Math.PI * 2);
+      ctx.fill();
+      const skin = HEAD_COLORS[o.variant % HEAD_COLORS.length];
+      const hair = HAIR[o.variant % HAIR.length];
+      // neck + head block
+      drawPixelRect(x + 8, y0 + o.h - 10, o.w - 16, 10, skin);
+      drawPixelRect(x, y0, o.w, o.h - 10, skin);
+      // hair
+      drawPixelRect(x - 2, y0 - 4, o.w + 4, 12, hair);
+      if (o.variant % 2 === 0) drawPixelRect(x + 4, y0 - 10, o.w - 8, 8, hair); // tall hair
+      // eyes (derpy)
+      drawPixelRect(x + 8, y0 + 14, 6, 8, "#fff");
+      drawPixelRect(x + o.w - 14, y0 + 14, 6, 8, "#fff");
+      drawPixelRect(x + 10, y0 + 17, 3, 4, "#3A2B2B");
+      drawPixelRect(x + o.w - 12, y0 + 15, 3, 4, "#3A2B2B");
+      // silly mouth
+      if (o.variant % 3 === 0) drawPixelRect(x + o.w / 2 - 6, y0 + 30, 12, 4, "#3A2B2B");
+      else {
+        drawPixelRect(x + 6, y0 + 30, 8, 3, "#3A2B2B");
+        drawPixelRect(x + o.w - 14, y0 + 30, 8, 3, "#3A2B2B");
+      }
+      // label
+      ctx.fillStyle = "#3A2B2B";
+      ctx.font = "9px 'Press Start 2P', monospace";
+      ctx.fillText("!!", x + o.w / 2 - 7, y0 - 10);
+    };
+
+    const reset = () => {
+      playerY = 0;
+      vy = 0;
+      jumping = false;
+      speed = BASE_SPEED;
+      dist = 0;
+      obstacles = [];
+      spawnIn = 140;
+      deadFlash = 0;
+    };
+    (canvas as HTMLCanvasElement & { __reset?: () => void }).__reset = reset;
+
+    const loop = () => {
+      frame++;
+      // bg
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "#FFF1E8";
+      ctx.fillRect(0, 0, W, H);
+      // sun
+      ctx.fillStyle = "#FFD93D";
+      ctx.fillRect(W - 76, 18, 52, 52);
+      ctx.fillStyle = "#3A2B2B";
+      ctx.fillRect(W - 76, 18, 52, 4);
+      ctx.fillRect(W - 76, 66, 52, 4);
+      ctx.fillRect(W - 76, 18, 4, 52);
+      ctx.fillRect(W - 20, 18, 4, 52);
+      // clouds
+      ctx.fillStyle = "#ffffff";
+      clouds.forEach((c) => {
+        c.x -= speed * 0.2 * c.s;
+        if (c.x < -70) c.x = W + 40;
+        const y = c.y;
+        ctx.fillRect(c.x, y, 46 * c.s, 14 * c.s);
+        ctx.fillRect(c.x + 8 * c.s, y - 8 * c.s, 28 * c.s, 10 * c.s);
+      });
+      // hills
+      hills -= speed * 0.4;
+      ctx.fillStyle = "#FFC9D6";
+      for (let i = -1; i < 8; i++) {
+        const hx = ((i * 180 + hills) % (W + 360) + W + 360) % (W + 360) - 180;
+        ctx.beginPath();
+        ctx.arc(hx, groundY() + 46, 90, Math.PI, 0);
+        ctx.fill();
+      }
+      // ground
+      const gy = groundY();
+      ctx.fillStyle = "#6BCB77";
+      ctx.fillRect(0, gy, W, H - gy);
+      ctx.fillStyle = "#3A2B2B";
+      ctx.fillRect(0, gy, W, 4);
+      // moving dashes
+      ctx.fillStyle = "rgba(58,43,43,.25)";
+      const off = (dist * 2) % 46;
+      for (let x = -46; x < W + 46; x += 46) {
+        ctx.fillRect(x - off, gy + 18, 24, 5);
+      }
+      // floating hearts
+      if (frame % 40 === 0) {
+        /* decorative only */
+      }
+      ctx.font = "14px serif";
+      for (let i = 0; i < 3; i++) {
+        const hx = (frame * 0.6 + i * 260) % (W + 60);
+        ctx.globalAlpha = 0.5;
+        ctx.fillText("💖", W - hx, 60 + Math.sin((frame + i * 50) / 24) * 10 + i * 26);
+        ctx.globalAlpha = 1;
+      }
+
+      if (stateRef.current === "playing") {
+        dist += speed * 0.6;
+        speed = Math.min(MAX_SPEED, BASE_SPEED + dist / SPEED_RAMP);
+        const s = Math.floor(dist);
+        setScore((prev) => (prev === s ? prev : s));
+
+        // physics
+        if (jumping) {
+          playerY += vy;
+          vy -= GRAV;
+          if (playerY <= 0) {
+            playerY = 0;
+            jumping = false;
+            vy = 0;
+          }
+        }
+        // spawn — wider, slightly randomized gaps for comfortable reaction time.
+        // NOTE: spawnIn ticks down by speed*0.55/frame, so pixel spacing is
+        // gap/0.55 (independent of speed). avg gap ~295 => ~535px between
+        // obstacles, min gap 180 => ~327px guaranteed breathing room.
+        spawnIn -= speed * 0.55;
+        if (spawnIn <= 0) {
+          const h = 34 + Math.random() * 22;
+          obstacles.push({ x: W + 20, w: 34 + Math.random() * 10, h, variant: Math.floor(Math.random() * 4), passed: false });
+          const gap = Math.max(180, 250 - speed * 6 + Math.random() * 140);
+          spawnIn = gap;
+        }
+        // move + collide
+        const px = 64;
+        const pw = 32;
+        const ph = 52;
+        const pTop = gy - playerY - ph;
+        const pBot = gy - playerY;
+        for (const o of obstacles) {
+          o.x -= speed;
+          const oTop = gy - o.h;
+          const oBot = gy;
+          const overlapX = px + pw - 8 > o.x + 4 && px + 8 < o.x + o.w - 4;
+          const overlapY = pBot - 4 > oTop + 6 && pTop < oBot;
+          if (overlapX && overlapY) {
+            setBoth("dead");
+            birthdayAudio.hit();
+            deadFlash = 14;
+            setBest((b) => Math.max(b, Math.floor(dist)));
+            break;
+          }
+          if (!o.passed && o.x + o.w < px) {
+            o.passed = true;
+            birthdayAudio.pop();
+          }
+        }
+        obstacles = obstacles.filter((o) => o.x > -60);
+
+        // win?
+        if (dist >= cfg.goalDistance) {
+          setBoth("won");
+          birthdayAudio.fanfare();
+          setBest((b) => Math.max(b, Math.floor(dist)));
+          confetti({ particleCount: 200, spread: 120, origin: { y: 0.55 }, shapes: ["square"] });
+          const end = Date.now() + 1800;
+          const f2 = () => {
+            confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, shapes: ["square"] });
+            confetti({ particleCount: 5, angle: 120, spread: 60, origin: { x: 1, y: 0.7 }, shapes: ["square"] });
+            if (Date.now() < end) requestAnimationFrame(f2);
+          };
+          f2();
+        }
+      }
+
+      // draw goal guy at finish (walks in when close)
+      const remaining = Math.max(0, cfg.goalDistance - dist);
+      const goalX = stateRef.current === "won" ? W - 150 : W - 90 - Math.min(320, remaining * 0.5);
+      if (stateRef.current !== "dead" || true) {
+        if (remaining < 420 || stateRef.current === "won") drawMe(goalX, gy, frame);
+      }
+      // finish flag
+      if (remaining < 420 && stateRef.current === "playing") {
+        const fx = W - 60;
+        drawPixelRect(fx, gy - 90, 5, 90, "#3A2B2B");
+        const wave = Math.sin(frame / 12) * 3;
+        drawPixelRect(fx + 5, gy - 90 + wave, 34, 22, "#FF6B9D");
+        ctx.fillStyle = "#fff";
+        ctx.font = "8px 'Press Start 2P', monospace";
+        ctx.fillText("BEN", fx + 9, gy - 75 + wave);
+      }
+
+      // player
+      const squash = jumping ? 0 : Math.sin(frame / 6) * 1.5;
+      drawFriend(64, gy, Math.floor(frame / 8), squash);
+      for (const o of obstacles) drawHead(o, gy);
+
+      // dead flash
+      if (deadFlash > 0) {
+        deadFlash--;
+        ctx.fillStyle = `rgba(255,60,90,${deadFlash / 40})`;
+        ctx.fillRect(0, 0, W, H);
+      }
+
+      // score chip drawn in DOM (not canvas) — but draw distance ticks
+      rafRef.current = requestAnimationFrame(loop);
+    };
+    rafRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("keydown", key);
+      window.removeEventListener("resize", resize);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onCanvasTap = () => {
+    const canvas = canvasRef.current as (HTMLCanvasElement & { __jump?: () => void }) | null;
+    if (stateRef.current === "ready") start();
+    else canvas?.__jump?.();
+  };
+
+  const retry = () => {
+    const canvas = canvasRef.current as (HTMLCanvasElement & { __reset?: () => void }) | null;
+    canvas?.__reset?.();
+    // need to clear obstacles — easiest: force loop reset via start after tiny delay
+    start();
+  };
+
+  const progress = Math.min(1, score / cfg.goalDistance);
+
+  return (
+    <StageShell kicker="🏃‍♀️ BÖLÜM 3 / 7 — KOŞU OYUNU" title={cfg.title} subtitle={cfg.subtitle}>
+      <PixelPanel className="z-10 w-full max-w-3xl p-3 md:p-5">
+        {/* HUD */}
+        <div className="mb-2 flex items-center justify-between gap-2">
+          <div className="pixel-font text-[10px] text-[#3A2B2B] md:text-xs">
+            MESAFE: {score}m <span className="text-[#8a6a6a]">/ {cfg.goalDistance}m</span>
+          </div>
+          <div className="pixel-font text-[10px] text-[#8a6a6a] md:text-xs">
+            REKOR: {Math.max(best, score)}m • {jumps} zıplama
+          </div>
+        </div>
+        {/* reunion progress */}
+        <div className="mb-3 flex items-center gap-2">
+          <span className="text-xl">🏃‍♀️</span>
+          <div className="relative h-4 flex-1 overflow-hidden rounded-full border-[3px] border-[#3A2B2B] bg-[#FFD8D8]">
+            <motion.div className="h-full" style={{ background: "#FF6B9D", width: `${progress * 100}%` }} />
+            <span className="absolute left-1 top-0 text-[10px] leading-3">{"▮".repeat(Math.floor(progress * 20))}</span>
+          </div>
+          <span className="text-xl">🧍💖</span>
+        </div>
+
+        {/* canvas */}
+        <div className="pixel-frame relative">
+          <canvas
+            ref={canvasRef}
+            onPointerDown={onCanvasTap}
+            className="block h-[260px] w-full cursor-pointer touch-none select-none md:h-[320px]"
+          />
+          {/* overlays */}
+          <AnimatePresence>
+            {state === "ready" && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/55 p-4 text-center"
+              >
+                <p className="pixel-font text-xs text-white md:text-sm">KOMİK KAFALARA ÇARPMA! 😜</p>
+                <p className="pixel-soft mt-2 text-xl text-white/90">
+                  {OBSTACLE_NAMES.join(" • ")} — hepsinin üzerinden zıpla!
+                </p>
+                <div className="mt-4">
+                  <PixelButton onClick={start} color="#FF6B9D">
+                    BAŞLA ▶
+                  </PixelButton>
+                </div>
+                <p className="pixel-font mt-3 text-[9px] text-white/80">
+                  <span className="hidden md:inline">{cfg.instructionsDesktop}</span>
+                  <span className="md:hidden">{cfg.instructionsMobile}</span>
+                </p>
+              </motion.div>
+            )}
+            {state === "dead" && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/60 p-4 text-center"
+              >
+                <p className="text-4xl">💥🤪</p>
+                <p className="pixel-font mt-2 text-xs text-white md:text-sm">OOPS! bir kafaya tosladın!</p>
+                <p className="pixel-soft mt-1 text-xl text-white/85">
+                  {score}m koştun — {cfg.goalDistance - score}m kalmıştı. tekrar dene!
+                </p>
+                <div className="mt-4 flex gap-3">
+                  <PixelButton onClick={retry} color="#FF6B9D" small>
+                    ↻ TEKRAR KOŞ
+                  </PixelButton>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+          <p className="pixel-font text-[9px] text-[#8a6a6a] md:text-[10px]">
+            <span className="hidden md:inline">⌨️ {cfg.instructionsDesktop}</span>
+            <span className="md:hidden">👆 {cfg.instructionsMobile}</span>
+          </p>
+          {state === "playing" && (
+            <button
+              onClick={onCanvasTap}
+              className="pixel-font rounded-lg border-[3px] border-[#3A2B2B] bg-[#FFD93D] px-4 py-2 text-[10px] text-[#3A2B2B] shadow-[3px_3px_0_#3A2B2B] active:translate-y-0.5 active:shadow-none md:hidden"
+            >
+              ⬆ ZIPLA!
+            </button>
+          )}
+        </div>
+      </PixelPanel>
+
+      {/* victory card */}
+      <AnimatePresence>
+        {state === "won" && (
+          <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="z-10 mt-5 w-full max-w-3xl">
+            <PixelPanel className="p-5 text-center md:p-7" color="#FFF6E9">
+              <div className="text-5xl">💖🏁💖</div>
+              <h3 className="pixel-font mt-3 text-sm text-[#3A2B2B] md:text-lg">{cfg.victoryTitle}</h3>
+              <p className="pixel-soft mt-2 text-xl md:text-2xl">{cfg.victorySub}</p>
+              {/* reunion photo */}
+              <div className="mx-auto mt-4 max-w-sm">
+                {rewardOk ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={cfg.rewardPhoto}
+                    alt="ikimizin fotoğrafı"
+                    onError={() => setRewardOk(false)}
+                    className="pixel-frame w-full object-cover"
+                  />
+                ) : (
+                  <div className="pixel-frame flex flex-col items-center gap-2 bg-gradient-to-br from-[#FF6B9D] to-[#FFD93D] p-8 text-center">
+                    <div className="text-6xl">👯‍♀️💖</div>
+                    <p className="pixel-font text-[10px] text-white" style={{ textShadow: "2px 2px 0 #3A2B2B" }}>
+                      BİZ 💖 (fotoğraf buraya gelecek: /images/us-together.png)
+                    </p>
+                  </div>
+                )}
+              </div>
+              <div className="mt-5">
+                <PixelButton onClick={onNext} color="#6BCB77">
+                  {cfg.continueText}
+                </PixelButton>
+              </div>
+            </PixelPanel>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </StageShell>
+  );
+}

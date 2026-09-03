@@ -1,0 +1,161 @@
+"use client";
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { birthdayConfig, memories } from "@/data/birthday";
+import { PixelButton, PixelPanel, StageShell, FloatingPixels } from "./pixel-ui";
+import { birthdayAudio } from "@/lib/birthday-audio";
+
+// ── STAGE 6: cinematic memories — one by one, pixel transitions ──
+export function StageMemories({ onNext }: { onNext: () => void }) {
+  const cfg = birthdayConfig.memories;
+  const [idx, setIdx] = useState(0);
+  // first memory counts as seen on mount (no effect needed)
+  const [seen, setSeen] = useState<boolean[]>(() => memories.map((_, i) => i === 0));
+  const [dir, setDir] = useState(1);
+  const m = memories[idx];
+  const finished = seen.every(Boolean);
+
+  useEffect(() => {
+    void birthdayAudio.playBackground("memories", cfg.musicSrc);
+  }, [cfg.musicSrc]);
+
+  const markSeen = (i: number) => setSeen((s) => (s[i] ? s : s.map((v, j) => (j === i ? true : v))));
+
+  const go = (d: number) => {
+    birthdayAudio.click();
+    const n = (idx + d + memories.length) % memories.length;
+    setDir(d);
+    setIdx(n);
+    markSeen(n);
+  };
+
+  const jumpTo = (i: number) => {
+    birthdayAudio.click();
+    setDir(i > idx ? 1 : -1);
+    setIdx(i);
+    markSeen(i);
+  };
+
+  return (
+    <StageShell kicker={`📸 BÖLÜM 5 / 7 — ANILAR • ${idx + 1}/${memories.length}`} title={cfg.title} subtitle={cfg.subtitle}>
+      <FloatingPixels items={["📸", "💛", "✨", "🌸"]} />
+
+      {/* filmstrip progress */}
+      <div className="no-scrollbar z-10 mb-4 flex w-full max-w-2xl items-center justify-center gap-2 overflow-x-auto">
+        {memories.map((mm, i) => (
+          <button
+            key={i}
+            onClick={() => jumpTo(i)}
+            className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border-[3px] transition"
+            style={{
+              borderColor: i === idx ? "#FF6B9D" : "#3A2B2B",
+              transform: i === idx ? "scale(1.15)" : "none",
+              opacity: seen[i] || i === idx ? 1 : 0.55,
+            }}
+            title={mm.caption}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={mm.src} alt="" className="h-full w-full object-cover" />
+          </button>
+        ))}
+      </div>
+
+      {/* main memory card */}
+      <div className="relative z-10 w-full max-w-2xl">
+        <AnimatePresence mode="wait" custom={dir}>
+          <motion.div
+            key={idx}
+            custom={dir}
+            initial={{ opacity: 0, x: 90 * dir, rotate: 3 * dir, scale: 0.96 }}
+            animate={{ opacity: 1, x: 0, rotate: 0, scale: 1 }}
+            exit={{ opacity: 0, x: -90 * dir, rotate: -3 * dir, scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 140, damping: 18 }}
+          >
+            <PixelPanel className="relative overflow-hidden p-3 md:p-4" color="#FFF6E9">
+              {/* tape */}
+              <div className="absolute -top-1 left-1/2 z-10 h-6 w-28 -translate-x-1/2 -rotate-2 rounded-sm bg-[#FFD93D]/90 shadow" />
+              {/* photo with gentle ken-burns */}
+              <div className="pixel-frame relative aspect-[4/3] w-full bg-[#FFD8D8]">
+                <motion.div
+                  key={`zoom-${idx}`}
+                  initial={{ scale: 1.12 }}
+                  animate={{ scale: 1 }}
+                  transition={{ duration: 6, ease: "easeOut" }}
+                  className="h-full w-full"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={m.src} alt={m.caption} className="h-full w-full object-cover" draggable={false} />
+                </motion.div>
+                {/* sticker + overlay */}
+                <motion.span
+                  className="absolute right-3 top-3 text-3xl md:text-4xl"
+                  animate={{ rotate: [0, 12, -8, 0], scale: [1, 1.15, 1] }}
+                  transition={{ duration: 2.4, repeat: Infinity }}
+                >
+                  {m.sticker}
+                </motion.span>
+                <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
+                  <span className="pixel-font rounded-lg border-[3px] border-[#3A2B2B] bg-[#3A2B2B]/85 px-3 py-1.5 text-[9px] text-white md:text-[10px]">
+                    {m.overlay}
+                  </span>
+                  <span className="pixel-font hidden rounded-lg border-[3px] border-[#3A2B2B] bg-[#FFD93D] px-2 py-1 text-[9px] text-[#3A2B2B] sm:block">
+                    {idx + 1}/{memories.length}
+                  </span>
+                </div>
+                {/* pixel sparkle sweep */}
+                <motion.div
+                  className="pointer-events-none absolute inset-0"
+                  style={{ background: "linear-gradient(105deg, transparent 40%, rgba(255,255,255,.5) 50%, transparent 60%)" }}
+                  initial={{ x: "-100%" }}
+                  animate={{ x: "100%" }}
+                  transition={{ duration: 1.1, delay: 0.25, ease: "easeOut" }}
+                />
+              </div>
+              {/* caption */}
+              <div className="px-1 pb-1 pt-3 text-center">
+                <p className="pixel-font text-xs text-[#3A2B2B] md:text-sm">“{m.caption}”</p>
+                <p className="pixel-soft mt-1 text-lg">{m.date}</p>
+              </div>
+            </PixelPanel>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* prev / next */}
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <button
+            onClick={() => go(-1)}
+            className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-4 py-3 text-xs text-[#3A2B2B] shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
+          >
+            ← ÖNCEKİ
+          </button>
+          <p className="pixel-font hidden text-[9px] text-[#8a6a6a] sm:block">{cfg.hint}</p>
+          <button
+            onClick={() => go(1)}
+            className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FF6B9D] px-4 py-3 text-xs text-white shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
+            style={{ textShadow: "1px 1px 0 #3A2B2B" }}
+          >
+            SONRAKİ →
+          </button>
+        </div>
+      </div>
+
+      {/* continue appears after all seen */}
+      <div className="z-10 mt-5 flex min-h-16 flex-col items-center">
+        {finished ? (
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-2">
+            <p className="pixel-font text-[10px] text-[#5b4444]">✨ tüm anılar açıldı ✨</p>
+            <PixelButton onClick={onNext} color="#6BCB77">
+              {cfg.continueText}
+            </PixelButton>
+          </motion.div>
+        ) : (
+          <p className="pixel-font text-[10px] text-[#8a6a6a]">
+            {seen.filter(Boolean).length}/{memories.length} anı görüldü — hepsini gez 💛
+          </p>
+        )}
+      </div>
+
+      <p className="pixel-font z-10 mt-2 text-center text-[9px] text-[#8a6a6a]">🎵 anı müziği çalıyor • değiştirmek için /music/memories.mp3 ekle</p>
+    </StageShell>
+  );
+}
