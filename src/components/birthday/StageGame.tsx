@@ -444,8 +444,8 @@ export function StageGame({ onNext }: { onNext: () => void }) {
         }
         obstacles = obstacles.filter((o) => o.x > -60);
 
-        // win?
-        if (dist >= goalDist) {
+        // win? — 5 oğlanın hepsi geçildikten SONRA (sonuncusu arkada kalmadan bitirme)
+        if (dist >= goalDist && passedCount >= TOTAL_BOYS) {
           // son engel ekrandan çıksın, sonra kazan
           obstacles = [];
           doWin();
@@ -453,8 +453,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       }
 
       // ── final kızı + kavuşma ──
-      // ARIFA sonda sabit bekler, koşmaz — bitişe yaklaşınca görünür
-      const remaining = Math.max(0, goalDist - dist);
+      // ARIFA sonda sabit bekler, koşmaz — 5 oğlan bitmeden görünmez
       const goalX = W - 150;
 
       if (stateRef.current === "won") {
@@ -476,11 +475,13 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       }
 
       const hugged = stateRef.current === "won" && playerX >= goalX - 40;
-      if (remaining < 420 || stateRef.current === "won") {
+      // ARIFA sadece 5 oğlan da geçildikten sonra görünür
+      const allBoysDone = passedCount >= TOTAL_BOYS || stateRef.current === "won";
+      if (allBoysDone) {
         drawGoalGirl(goalX, gy, frame, stateRef.current === "won");
       }
-      // finish flag (sadece oynarken)
-      if (remaining < 420 && stateRef.current === "playing") {
+      // finish flag (sadece 5 oğlan bitince, oynarken)
+      if (allBoysDone && stateRef.current === "playing") {
         const fx = W - 60;
         drawPixelRect(fx, gy - 90, 5, 90, "#3A2B2B");
         const wave = Math.sin(frame / 12) * 3;
@@ -576,18 +577,11 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/55 p-4 text-center"
               >
-                <p className="pixel-font text-xs text-white md:text-sm">
-                  {friendName} 🏃‍♀️💨 → 5 oğlanı atla → {goalName}&apos;ya ulaş! 💖
-                </p>
                 <div className="mt-4">
                   <PixelButton onClick={start} color="#FF6B9D">
                     START ▶
                   </PixelButton>
                 </div>
-                <p className="pixel-font mt-3 text-[9px] text-white/80">
-                  <span className="hidden md:inline">{cfg.instructionsDesktop}</span>
-                  <span className="md:hidden">{cfg.instructionsMobile}</span>
-                </p>
               </motion.div>
             )}
             {state === "dead" && (
@@ -597,8 +591,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                 exit={{ opacity: 0 }}
                 className="absolute inset-0 flex flex-col items-center justify-center bg-[#3A2B2B]/60 p-4 text-center"
               >
-                <p className="text-4xl">💥🤪</p>
-                <p className="pixel-font mt-2 text-xs text-white md:text-sm">Min dəfə demişəm ki, oğlanlardan uzaq dur</p>
+                <p className="pixel-font mt-2 text-xs text-white md:text-sm">OPPS! You touch a boy. Retry!</p>
                 <p className="pixel-soft mt-1 text-xl text-white/85">
                   you ran {score}m — {cfg.goalDistance - score}m to go. try again!
                 </p>
@@ -635,9 +628,6 @@ export function StageGame({ onNext }: { onNext: () => void }) {
             <PixelPanel className="p-5 text-center md:p-7" color="#FFF6E9">
               <div className="text-5xl">💖🏁💖</div>
               <h3 className="pixel-font mt-3 text-sm text-[#3A2B2B] md:text-lg">{cfg.victoryTitle}</h3>
-              <p className="pixel-font mt-2 text-[10px] text-[#9B5DE5]">
-                {friendName} → {goalName} 💕 KAVUŞMA BAŞARILI!
-              </p>
               {/* reunion photo */}
               <div className="mx-auto mt-4 max-w-sm">
                 {rewardOk ? (
