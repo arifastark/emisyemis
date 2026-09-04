@@ -71,19 +71,19 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
             <PixelPanel className="relative overflow-hidden p-3 md:p-4" color="#FFF6E9">
               {/* tape */}
               <div className="absolute -top-1 left-1/2 z-10 h-6 w-28 -translate-x-1/2 -rotate-2 rounded-sm bg-[#FFD93D]/90 shadow" />
-              {/* photo with gentle ken-burns */}
-              <div className="pixel-frame relative aspect-[4/3] w-full bg-[#FFD8D8]">
+              {/* photo — natural size, never cropped */}
+              <div className="pixel-frame relative flex w-full items-center justify-center bg-[#FFD8D8] p-2">
                 <motion.div
                   key={`zoom-${idx}`}
-                  initial={{ scale: 1.12 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 6, ease: "easeOut" }}
-                  className="h-full w-full"
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, ease: "easeOut" }}
+                  className="flex w-full justify-center"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.src} alt={m.caption} className="h-full w-full object-cover" draggable={false} />
+                  <img src={m.src} alt={m.caption} className="h-auto max-h-[55vh] w-auto max-w-full" draggable={false} />
                 </motion.div>
-                {/* sticker + overlay */}
+                {/* sticker only — overlay labels removed */}
                 <motion.span
                   className="absolute right-3 top-3 text-3xl md:text-4xl"
                   animate={{ rotate: [0, 12, -8, 0], scale: [1, 1.15, 1] }}
@@ -91,14 +91,6 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
                 >
                   {m.sticker}
                 </motion.span>
-                <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between gap-2">
-                  <span className="pixel-font rounded-lg border-[3px] border-[#3A2B2B] bg-[#3A2B2B]/85 px-3 py-1.5 text-[9px] text-white md:text-[10px]">
-                    {m.overlay}
-                  </span>
-                  <span className="pixel-font hidden rounded-lg border-[3px] border-[#3A2B2B] bg-[#FFD93D] px-2 py-1 text-[9px] text-[#3A2B2B] sm:block">
-                    {idx + 1}/{memories.length}
-                  </span>
-                </div>
                 {/* pixel sparkle sweep */}
                 <motion.div
                   className="pointer-events-none absolute inset-0"
@@ -108,10 +100,9 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
                   transition={{ duration: 1.1, delay: 0.25, ease: "easeOut" }}
                 />
               </div>
-              {/* caption */}
+              {/* caption only — date line removed */}
               <div className="px-1 pb-1 pt-3 text-center">
                 <p className="pixel-font text-xs text-[#3A2B2B] md:text-sm">“{m.caption}”</p>
-                <p className="pixel-soft mt-1 text-lg">{m.date}</p>
               </div>
             </PixelPanel>
           </motion.div>

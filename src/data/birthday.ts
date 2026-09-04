@@ -181,18 +181,20 @@ export const quizQuestions: QuizQuestion[] = [
 export type Memory = {
   src: string;
   caption: string;
-  date: string;
   sticker: string;
-  overlay: string;
 };
 
 export const memories: Memory[] = [
-  { src: "/memories/memory-1.svg", caption: "the day we laughed till we cried", date: "summer • 14:32 • super hot", sticker: "☀️", overlay: "100% laughs guaranteed" },
-  { src: "/memories/memory-2.svg", caption: "midnight snack operation", date: "00:47 • sleep < chips", sticker: "🍟", overlay: "shoutout to my partner in crime" },
-  { src: "/memories/memory-3.svg", caption: "main character walk", date: "golden hour • wind: improvised", sticker: "✨", overlay: "iconic behavior" },
-  { src: "/memories/memory-4.svg", caption: "the photo we must never show", date: "classified • eyes half closed", sticker: "🙈", overlay: "burn after viewing" },
-  { src: "/memories/memory-5.svg", caption: "kitchen dance break", date: "rainy day • volume: max", sticker: "🪩", overlay: "spoon = microphone" },
-  { src: "/memories/memory-6.svg", caption: "us against the world", date: "always • forever", sticker: "💛", overlay: "dynamic duo" },
+  { src: "/memories/e1.jpg", caption: "Gel ve bax, gece nece yaraşır sene", sticker: "☀️" },
+  { src: "/memories/e2.jpg", caption: "2026 — bir yerde qeyd etdiyimiz ilk Yeni il", sticker: "🍟" },
+  { src: "/memories/e3.jpg", caption: "Satqınlıq edib başqa komandada olduğun o Hackathon (aramızda qarlı dağlar)", sticker: "✨" },
+  { src: "/memories/e4.jpg", caption: "you're my sunshine, my only sunshine", sticker: "🙈" },
+  { src: "/memories/e6.jpg", caption: "Daha bir Hackathon", sticker: "💛" },
+  { src: "/memories/e7.jpg", caption: "Qorxu filmi adı ile gedib, Aysu ile gülmekden yere uzandığımız o film date", sticker: "📸" },
+  { src: "/memories/e8.jpg", caption: "because no one else in the world matters more to me than you do, you're my pack", sticker: "😎" },
+  { src: "/memories/e10.jpg", caption: "Hackathonda uduzandan sonra boynunun borcu senin keyfini açmaq olan bir eded Arife", sticker: "💫" },
+  { src: "/memories/e12.jpg", caption: "Peerstack", sticker: "🌈" },
+  { src: "/memories/e14.jpg", caption: "Basketball date", sticker: "🏀" },
 ];
 
 // ─── FINAL LETTER — replace with your real long letter ───

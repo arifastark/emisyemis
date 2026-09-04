@@ -39,7 +39,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="crt relative min-h-dvh overflow-x-clip bg-[#FFD8D8]">
+    <main className="crt relative min-h-dvh overflow-x-clip bg-[#F5ACBC]">
       {stage > 0 && <StageProgress stage={stage} total={stages.length} />}
       <MusicToggle />
 

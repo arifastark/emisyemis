@@ -71,6 +71,38 @@ export function StageCake({ onNext }: { onNext: () => void }) {
     <StageShell kicker="🎂 STAGE 1 / 7 — CAKE" title={allOut ? cfg.blownMessage : cfg.title} subtitle={allOut ? cfg.blownSub : cfg.subtitle}>
       <FloatingPixels items={["🎂", "⭐", "💖", "✨", "🕯️"]} />
 
+      {/* pixel-art I LOVE YOU background writings */}
+      <div aria-hidden className="pointer-events-none fixed inset-0 overflow-hidden">
+        {[
+          { l: "3%", t: "10%", r: "-12deg", text: "I LOVE YOU" },
+          { l: "78%", t: "8%", r: "10deg", text: "I ♥ YOU" },
+          { l: "8%", t: "32%", r: "8deg", text: "I ♥ YOU" },
+          { l: "84%", t: "30%", r: "-8deg", text: "I LOVE YOU" },
+          { l: "2%", t: "58%", r: "-6deg", text: "LOVE YOU" },
+          { l: "88%", t: "56%", r: "12deg", text: "LOVE YOU" },
+          { l: "6%", t: "82%", r: "10deg", text: "I LOVE YOU" },
+          { l: "74%", t: "84%", r: "-10deg", text: "I ♥ YOU" },
+          { l: "38%", t: "4%", r: "0deg", text: "I LOVE YOU" },
+          { l: "44%", t: "92%", r: "-4deg", text: "I LOVE YOU" },
+        ].map((w, i) => (
+          <span
+            key={i}
+            className="pixel-font floaty absolute text-xs whitespace-nowrap md:text-sm"
+            style={{
+              left: w.l,
+              top: w.t,
+              transform: `rotate(${w.r})`,
+              color: "#fff",
+              textShadow: "2px 2px 0 #3A2B2B",
+              opacity: 0.75,
+              animationDelay: `${(i % 5) * 0.5}s`,
+            }}
+          >
+            {w.text}
+          </span>
+        ))}
+      </div>
+
       {/* dim room when lit, bright party when blown */}
       <div
         aria-hidden
