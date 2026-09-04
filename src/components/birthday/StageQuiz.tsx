@@ -51,6 +51,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
   const [value, setValue] = useState("");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [revealed, setRevealed] = useState(false);
+  const [pending, setPending] = useState(false); // son sual cavablandı, mesaj göstərilir
   const [shake, setShake] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -65,9 +66,23 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
     };
   }, []);
 
+  // son sualın cavabını neticeye işlə — mesajdan sonra birbaşa finiş
+  const commitLast = (correct: boolean) => {
+    if (timer.current) clearTimeout(timer.current);
+    setResults((prev) => prev.map((r, j) => (j === idx ? correct : r)));
+    setPending(false);
+    birthdayAudio.fanfare();
+    confetti({ particleCount: 240, spread: 130, origin: { y: 0.5 }, shapes: ["square"] });
+  };
+
   const goNext = () => {
     if (timer.current) clearTimeout(timer.current);
     if (idx + 1 >= total) {
+      // son sual — NƏTİCƏYƏ BAX basıldısa dərhal neticeye keç
+      if (pending) {
+        commitLast(isCorrect(value, q.answers));
+        return;
+      }
       // hamısı cavablandı — fanfar
       birthdayAudio.fanfare();
       confetti({ particleCount: 240, spread: 130, origin: { y: 0.5 }, shapes: ["square"] });
@@ -81,7 +96,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
   };
 
   const check = () => {
-    if (revealed || finished) return;
+    if (revealed || finished || pending) return;
     const v = value.trim();
     if (!v) {
       setMsg({ ok: false, text: "əvvəlcə nəsə yaz!" });
@@ -89,10 +104,18 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       return;
     }
     const correct = isCorrect(v, q.answers);
+    const isLast = idx + 1 >= total;
     if (correct) {
       birthdayAudio.success();
       confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 }, shapes: ["square"], scalar: 0.9 });
       setMsg({ ok: true, text: q.correctMessage ?? "DÜZGÜN! 🎉" });
+      if (isLast) {
+        // son sual — mesaj görünsün, sonra avtomatik neticeye
+        setRevealed(true);
+        setPending(true);
+        timer.current = setTimeout(() => commitLast(true), 1800);
+        return;
+      }
       setResults((prev) => prev.map((r, j) => (j === idx ? true : r)));
       setRevealed(true);
       // düz cavab → qısa fasilədən sonra avtomatik növbəti
@@ -110,6 +133,14 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
     } else {
       birthdayAudio.fail();
       setMsg({ ok: false, text: q.incorrectMessage });
+      if (isLast) {
+        // son sual — səhv mesajı görünsün, sonra avtomatik neticeye
+        setRevealed(true);
+        setPending(true);
+        setShake((s) => s + 1);
+        timer.current = setTimeout(() => commitLast(false), 2400);
+        return;
+      }
       setResults((prev) => prev.map((r, j) => (j === idx ? false : r)));
       setRevealed(true);
       setShake((s) => s + 1);

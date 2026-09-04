@@ -458,7 +458,8 @@ export function StageGame({ onNext }: { onNext: () => void }) {
 
       // ── final kızı + kavuşma ──
       // ARIFA sonda sabit bekler, koşmaz — 5 oğlan bitmeden görünmez
-      const goalX = W - 150;
+      // ARIFA başlangıca 3/4 yaklaştı — orijinal mesafenin 1/4'ü kaldı
+      const goalX = 64 + ((W - 150 - 64) / 4);
 
       if (stateRef.current === "won") {
         winT++;

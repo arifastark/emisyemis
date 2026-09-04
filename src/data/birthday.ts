@@ -31,7 +31,7 @@ export const birthdayConfig = {
     litMessage: "candles are lit… make a wish!",
     blownMessage: "HAPPY BIRTHDAY! 🎉",
     blownSub: "your wish flew to the stars — now 20 wishes await you",
-    continueText: "CONTINUE TO 20 WISHES →",
+    continueText: "CONTINUE",
   },
 
   wishes: {
@@ -39,7 +39,7 @@ export const birthdayConfig = {
     subtitle: "blow out each candle one by one — a wish hides in every flame 🕯️",
     completeTitle: "20/20! ALL WISHES UNLOCKED ✨",
     completeSub: "we collected 20 tiny universes for you",
-    continueText: "CONTINUE TO THE GAME →",
+    continueText: "CONTINUE",
   },
 
   game: {
@@ -52,7 +52,7 @@ export const birthdayConfig = {
     goalName: "ARIFA", // finalde bekleyen kız
     victoryTitle: "You escaped the boys and reached me. Well done!",
     victorySub: "You escaped the boys and reached me. Well done!",
-    continueText: "Continue",
+    continueText: "CONTINUE",
     // sprites — replace with your own pixel art
     friendSprite: "/sprites/friend.png",
     meSprite: "/sprites/me.png",
@@ -64,13 +64,13 @@ export const birthdayConfig = {
     subtitle: "5 sual • cavabı yaz • dürüst ol!",
     completeTitle: "5/5 PERFECT!",
     completeSub: "",
-    continueText: "CONTINUE →",
+    continueText: "CONTINUE",
   },
 
   memories: {
     title: "MEMORIES 📸",
     subtitle: "tiny time capsules opening one by one",
-    continueText: "CONTINUE TO THE FINAL LETTER →",
+    continueText: "CONTINUE",
     hint: "press the arrow / swipe to move on",
   },
 
@@ -78,12 +78,12 @@ export const birthdayConfig = {
     title: "ONE LAST ENVELOPE 💌",
     subtitle: "a handmade letter, just for you",
     envelopeHint: "tap the envelope to open it 👆",
-    continueText: "GO TO THE FINALE →",
+    continueText: "CONTINUE",
   },
 
   finale: {
     title: "HAPPY 20",
-    subtitle: "happy birthday, so glad you exist 💖",
+    subtitle: "happy birthday, my best best bestie",
     replayText: "↻ PLAY AGAIN",
   },
 
@@ -172,8 +172,8 @@ export const quizQuestions: QuizQuestion[] = [
     question: "Bu həyatdakı ən mükəmməl olan və ən çox sevdiyin şəxsin adı nədir?",
     placeholder: "adı yaz…",
     answers: ["arifə", "arife"],
-    correctMessage: "Doğru! Təbii ki, Arifə!",
-    incorrectMessage: "Ehh, Arifə olmalı idi, heyif.",
+    correctMessage: "Düzdür, təbii ki də Arifə!",
+    incorrectMessage: "Başa düşmədim, mənə qarşı bu nə hərəkətdir? Cavab Arifə olmalı idi!",
   },
 ];
 

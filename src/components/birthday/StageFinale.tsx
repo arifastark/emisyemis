@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { birthdayConfig } from "@/data/birthday";
@@ -10,7 +10,6 @@ import { birthdayAudio } from "@/lib/birthday-audio";
 // Background music is global (thoseeyes.mp3) — keeps playing through the finale.
 export function StageFinale({ onReplay }: { onReplay: () => void }) {
   const cfg = birthdayConfig.finale;
-  const [photoOk, setPhotoOk] = useState(true);
 
   useEffect(() => {
     birthdayAudio.fanfare();
@@ -61,43 +60,7 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
           <span className="text-[4rem] md:text-[8rem]">20</span>
         </motion.h1>
 
-        <motion.div className="floaty my-4 flex items-center gap-3 text-5xl md:text-6xl" animate={{ rotate: [0, 4, -4, 0] }} transition={{ duration: 3, repeat: Infinity }}>
-          <span>👯‍♀️</span>
-          <span className="text-4xl md:text-5xl">💖</span>
-          <span>🎂</span>
-        </motion.div>
-
         <p className="pixel-soft max-w-md text-2xl text-[#5b4444] md:text-3xl">{cfg.subtitle}</p>
-
-        {/* duo photo */}
-        <div className="mt-5 w-full max-w-xs">
-          {photoOk ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src="/images/us-together.png"
-              alt="us two"
-              onError={() => setPhotoOk(false)}
-              className="pixel-frame w-full object-cover"
-            />
-          ) : (
-            <div className="pixel-frame bg-gradient-to-br from-[#FF6B9D] via-[#FF9F45] to-[#FFD93D] p-6">
-              <div className="text-5xl">👯‍♀️💖🎂</div>
-              <p className="pixel-font mt-2 text-[9px] leading-relaxed text-white" style={{ textShadow: "2px 2px 0 #3A2B2B" }}>
-                HAPPY BIRTHDAY!
-                <br />
-                SO GLAD YOU EXIST! 💖
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* mini credits */}
-        <div className="pixel-panel mt-6 w-full max-w-md bg-[#FFF6E9] p-4">
-          <p className="pixel-font text-[9px] text-[#8a6a6a]">★ ADVENTURE RECAP ★</p>
-          <p className="pixel-soft mt-1 text-xl leading-snug">
-            🎂 candles blown • 🕯️ 20 wishes unlocked • 🏃‍♀️ reunion run won • 🎯 10/10 quiz • 📸 memories visited • 💌 letter read
-          </p>
-        </div>
 
         <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row">
           <PixelButton
