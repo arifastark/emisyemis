@@ -56,7 +56,7 @@ export const birthdayConfig = {
     // sprites — replace with your own pixel art
     friendSprite: "/sprites/friend.png",
     meSprite: "/sprites/me.png",
-    rewardPhoto: "/images/us-together.png",
+    rewardPhoto: "/eanda.png",
   },
 
   quiz: {
@@ -64,7 +64,7 @@ export const birthdayConfig = {
     subtitle: "5 sual • cavabı yaz • dürüst ol!",
     completeTitle: "5/5 PERFECT!",
     completeSub: "",
-    continueText: "XATİRƏLƏRƏ DAVAM ET →",
+    continueText: "CONTINUE →",
   },
 
   memories: {
@@ -135,40 +135,45 @@ export const quizQuestions: QuizQuestion[] = [
     question: "İlk tanış olduğumuz tarixin gün nömrəsi nə idi? (məs: 9, 7, 18)",
     placeholder: "gün nömrəsini yaz…",
     answers: ["15"],
-    correctMessage: "DÜZGÜN! Yaddaşın əla işləyir!",
-    incorrectMessage: "Ayıb olsun. Doğru cavab: 15 idi!",
+    correctMessage: "Düz!",
+    incorrectMessage: "Səhvdi, ayıb olsun. 15 olmalı idi!",
   },
   {
     question: "Mənə ən çox .... olduğuma görə əsəbləşirsən. (nöqtələrin yerinə uyğun sözü yaz)",
     placeholder: "bir söz yaz…",
     answers: ["tənbəl", "tenbel"],
-    correctMessage: "DÜZGÜN! Bəli, tənbəl!",
+    correctMessage: "Düzdü, tapşırdığın şeyləri heç vaxt vaxtında etmirəm, amma bu il edəcəm.",
     incorrectMessage:
-      "Yox e! Doğru cavab: Tənbəl idi. Kül başına, bütün gün dediyimi eləmirəm deyə dalaşırıq.",
+      "Səhvdi, cavab “tənbəl” olmalı idi. Kül başına, bütün gün dediyini vaxtında etmirəm deyə dalaşırıq, amma bu il edəcəm.",
   },
   {
     question: "Mənə hansı rəng paltar geyinməyə icazə vermirsən?",
     placeholder: "rəngi yaz…",
     answers: ["ağ", "ag"],
-    correctMessage: "DÜZGÜN! Bəli, ağ!",
+    correctMessage: "Düz, üstümə nəsə tökərəm deyə icazə vermirsən.",
     incorrectMessage:
-      "Yox! Doğru cavab: ağ. Üstümə nəsə tökərəm deyə ağ geyinməyə icazə vermirsən.",
+      "Səhvdi, ağ olmalı idi. Üstümə nəsə tökərəm deyə icazə vermirsən.",
   },
   {
     question:
-      "Mənə hər fürsət düşəndə verdiyin o mistik seçimli həyat sualının başlanğıc hissəsi necə idi?",
+      "Hər dəfə fürsət düşəndə mənə verdiyin o seçim əsaslı kritik sualın başlanğıc hissəsi necə idi?",
     placeholder: "sualın başlanğıcını yaz…",
-    answers: ["əgər dünyada filankəs və sən qalsaydın", "eger dunyada filankes ve sen qalsaydin"],
-    correctMessage: "DÜZGÜN! Bəli, o məşhur sual!",
+    answers: [
+      "arifə, dünyada təkcə filankəs və sən qalsaydın",
+      "arife, dunyada tekce filankes ve sen qalsaydin",
+      "əgər dünyada filankəs və sən qalsaydın",
+      "eger dunyada filankes ve sen qalsaydin",
+    ],
+    correctMessage: "Doğrudur!",
     incorrectMessage:
-      "Yox! Doğru cavab: “Əgər dünyada filankəs və sən qalsaydın...” idi. Milyon dənə insanı filankəsin yerinə qoyub səbrimi sınayıb hər dəfə yox cavabı aldığın o sual.",
+      "Səhvdi. Cavab: “Arifə, dünyada təkcə filankəs və sən qalsaydın...” olmalı idi. Hər dəfə fərqli adamı filankəsin yerinə qoymağına baxmayaraq “yox” cavabı aldığın o sual. Yox, Elmira, yoxxxxxx!",
   },
   {
     question: "Bu həyatdakı ən mükəmməl olan və ən çox sevdiyin şəxsin adı nədir?",
     placeholder: "adı yaz…",
     answers: ["arifə", "arife"],
-    correctMessage: "Təbii ki də Arifə!",
-    incorrectMessage: "Ehh Arifə olmalı idi.",
+    correctMessage: "Doğru! Təbii ki, Arifə!",
+    incorrectMessage: "Ehh, Arifə olmalı idi, heyif.",
   },
 ];
 
@@ -206,7 +211,7 @@ export const finalLetter = {
 export const assets = {
   friendSprite: "/sprites/friend.png",
   meSprite: "/sprites/me.png",
-  rewardPhoto: "/images/us-together.png",
+  rewardPhoto: "/eanda.png",
   cakeSprite: "/images/cake.png",
 } as const;
 

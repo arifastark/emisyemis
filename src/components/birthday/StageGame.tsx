@@ -328,6 +328,10 @@ export function StageGame({ onNext }: { onNext: () => void }) {
     (canvas as HTMLCanvasElement & { __reset?: () => void }).__reset = reset;
 
     const doWin = () => {
+      // havada kazanırsa Elmira havada asılı kalmasın — yere indir (uçma bug fix)
+      playerY = 0;
+      vy = 0;
+      jumping = false;
       setBoth("won");
       winT = 0;
       birthdayAudio.fanfare();
@@ -458,6 +462,10 @@ export function StageGame({ onNext }: { onNext: () => void }) {
 
       if (stateRef.current === "won") {
         winT++;
+        // güvenlik: won sırasında yerde kal (havada kazanılmışsa süzülmesin)
+        playerY = 0;
+        vy = 0;
+        jumping = false;
         // ELMIRA cidden ARIFA'ya doğru koşar
         const target = goalX - 38;
         if (playerX < target) {

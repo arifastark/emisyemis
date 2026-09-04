@@ -119,8 +119,8 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
 
   return (
     <StageShell
-      kicker={`🎯 STAGE 4 / 7 — QUIZ • ${answeredCount}/${total}`}
-      title={finished ? cfg.completeTitle : cfg.title}
+      kicker={`🎯 STAGE 4 / 7 — QUIZ • ${finished ? score : answeredCount}/${total}`}
+      title={finished ? (score === total ? cfg.completeTitle : `${score}/${total}`) : cfg.title}
       subtitle={finished ? cfg.completeSub : cfg.subtitle}
     >
       <FloatingPixels items={["🎯", "⭐", "❓", "💡", "🏆"]} />
@@ -138,7 +138,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
           ))}
         </div>
         <span className="pixel-font text-[10px] text-white md:text-xs">
-          {answeredCount}/{total}
+          {finished ? score : answeredCount}/{total}
         </span>
       </div>
 

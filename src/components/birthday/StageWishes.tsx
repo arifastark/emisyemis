@@ -186,7 +186,7 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
           ) : (
             <motion.div key="hint" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <PixelPanel className="min-h-[120px] p-5 text-center" color="#FFF6E9">
-                <p className="pixel-soft text-[21px] leading-snug md:text-[26px]">👆 tap a candle — a wish hides inside…</p>
+                <p className="pixel-soft text-[21px] leading-snug md:text-[26px]">tap a candle — a wish hides inside…</p>
               </PixelPanel>
             </motion.div>
           )}
