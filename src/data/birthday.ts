@@ -105,7 +105,7 @@ export const wishes: string[] = [
   "Bu yaşında məni danlamağa bir az ara verəcəyinə inanıram.",
   "Bir də harasa gedəndə açarı evdə unutmayasan.",
   "Arifənin sənin dediklərini vaxtında etdiyi bir il olsun.",
-  "Yeni laptopunla sənə bu il xoşbəxtliklər arzu edirəm.",
+  "Yeni laptopunla Aysu ilə gözəl oyunlar arzulayıram.",
   "Bu yaşında bir də camaat içində yıxılıb 1000 aura itirməyəsən.",
   "İmtahanda köçürəndə tutulmayacaq qədər \"professional\" olasan.",
   "Ümid edirəm ki, bir də avtobusa minəndə bank kartında problem olmaz.",
