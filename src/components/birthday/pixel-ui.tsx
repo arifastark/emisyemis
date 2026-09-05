@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import type { ReactNode } from "react";
 import { birthdayAudio } from "@/lib/birthday-audio";
+import { CoquetteBackground, type DecoPreset } from "./CoquetteBackground";
 
 // ── Big rounded pixel button (ARE YOU READY? etc.) ──
 export function PixelButton({
@@ -50,24 +51,48 @@ export function PixelPanel({
   );
 }
 
+// ── Site logo badge: circular pixel-framed /logo.jpg ──
+export function LogoBadge({ size = 120 }: { size?: number }) {
+  return (
+    <motion.span
+      className="floaty inline-block overflow-hidden rounded-full border-4 border-[#3A2B2B] bg-[#FFF6E9] shadow-[5px_5px_0_#3A2B2B]"
+      style={{ width: size, height: size }}
+      whileHover={{ scale: 1.06, rotate: -2 }}
+      whileTap={{ scale: 0.94 }}
+    >
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logo.jpg"
+        alt="birthday logo"
+        draggable={false}
+        className="h-full w-full select-none object-cover"
+        style={{ imageRendering: "pixelated" }}
+      />
+    </motion.span>
+  );
+}
+
 // ── Stage wrapper: centers content, pink bg, floating pixels ──
 export function StageShell({
   kicker,
   title,
   subtitle,
   children,
+  deco = "generic",
 }: {
   kicker: string;
   title: string;
   subtitle?: string;
   children: ReactNode;
+  deco?: DecoPreset;
 }) {
   return (
     <div className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col items-center justify-center px-4 py-10 md:py-14">
+      <CoquetteBackground preset={deco} />
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6 text-center"
+        className="relative z-10 mb-6 text-center"
       >
         <span className="pixel-font inline-block -rotate-2 rounded-lg border-4 border-[#3A2B2B] bg-[#FFD93D] px-4 py-1.5 text-[10px] tracking-widest text-[#3A2B2B] md:text-xs">
           {kicker}

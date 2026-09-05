@@ -585,7 +585,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
   const progress = Math.min(1, score / cfg.goalDistance);
 
   return (
-    <StageShell kicker="🏃‍♀️ STAGE 3 / 7 — RUN GAME" title={cfg.title} subtitle={cfg.subtitle}>
+    <StageShell kicker="🏃‍♀️ STAGE 3 / 7 — RUN GAME" title={cfg.title} subtitle={cfg.subtitle} deco="game">
       <PixelPanel className="z-10 w-full max-w-4xl p-3 md:p-5">
         {/* HUD */}
         <div className="mb-2 flex items-center justify-between gap-2">

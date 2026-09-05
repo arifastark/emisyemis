@@ -34,7 +34,7 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <StageShell kicker={`📸 STAGE 5 / 7 — MEMORIES • ${idx + 1}/${memories.length}`} title={cfg.title} subtitle={cfg.subtitle}>
+    <StageShell kicker={`📸 STAGE 5 / 7 — MEMORIES • ${idx + 1}/${memories.length}`} title={cfg.title} subtitle={cfg.subtitle} deco="memories">
       <FloatingPixels items={["📸", "💛", "✨", "🌸"]} />
 
       {/* filmstrip progress */}

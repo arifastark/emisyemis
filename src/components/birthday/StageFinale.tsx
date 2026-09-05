@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import { birthdayConfig } from "@/data/birthday";
-import { PixelButton, FloatingPixels } from "./pixel-ui";
+import { PixelButton, FloatingPixels, LogoBadge } from "./pixel-ui";
+import { CoquetteBackground } from "./CoquetteBackground";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── FINAL: HAPPY 20 ──
@@ -26,6 +27,7 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
 
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-14 text-center">
+      <CoquetteBackground preset="finale" />
       <FloatingPixels items={["🎉", "💖", "⭐", "🎂", "✨", "🎈", "💛"]} />
       {/* twinkles */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -41,10 +43,11 @@ export function StageFinale({ onReplay }: { onReplay: () => void }) {
       </div>
 
       <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} transition={{ type: "spring", stiffness: 90, damping: 13 }} className="relative z-10 flex max-w-2xl flex-col items-center">
+        <LogoBadge size={100} />
         <motion.div
           animate={{ rotate: [-2, 2, -2] }}
           transition={{ duration: 2.4, repeat: Infinity }}
-          className="pixel-font rounded-2xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-5 py-2 text-[10px] text-[#3A2B2B] shadow-[5px_5px_0_#3A2B2B] md:text-xs"
+          className="pixel-font mt-5 rounded-2xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-5 py-2 text-[10px] text-[#3A2B2B] shadow-[5px_5px_0_#3A2B2B] md:text-xs"
         >
           🎮 ★ GAME COMPLETE ★ CONGRATS! ★
         </motion.div>

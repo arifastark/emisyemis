@@ -93,7 +93,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <StageShell kicker="💌 STAGE 6 / 7 — BIRTHDAY MESSAGES" title={cfg.title} subtitle={cfg.subtitle}>
+    <StageShell kicker="💌 STAGE 6 / 7 — BIRTHDAY MESSAGES" title={cfg.title} subtitle={cfg.subtitle} deco="letter">
       <InteractivePixels
         items={["💌", "🌸", "💖", "✨", "🎂", "💕", "🎉", "🍰", "💝", "🌷", "⭐", "💗"]}
         count={22}

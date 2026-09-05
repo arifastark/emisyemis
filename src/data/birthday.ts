@@ -56,7 +56,7 @@ export const birthdayConfig = {
     // sprites — replace with your own pixel art
     friendSprite: "/sprites/friend.png",
     meSprite: "/sprites/me.png",
-    rewardPhoto: "/eanda.png",
+    rewardPhoto: "/us.jpg",
   },
 
   quiz: {
@@ -230,7 +230,7 @@ export const finalLetter = {
 export const assets = {
   friendSprite: "/sprites/friend.png",
   meSprite: "/sprites/me.png",
-  rewardPhoto: "/eanda.png",
+  rewardPhoto: "/us.jpg",
   cakeSprite: "/images/cake.png",
 } as const;
 

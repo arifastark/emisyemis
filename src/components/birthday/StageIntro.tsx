@@ -1,7 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import { birthdayConfig } from "@/data/birthday";
-import { PixelButton, FloatingPixels } from "./pixel-ui";
+import { PixelButton, FloatingPixels, LogoBadge } from "./pixel-ui";
+import { CoquetteBackground } from "./CoquetteBackground";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
 // ── STAGE 1: Intro / "ARE YOU READY?" ──
@@ -9,6 +10,7 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
   const cfg = birthdayConfig.intro;
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-12 text-center">
+      <CoquetteBackground preset="intro" />
       <FloatingPixels />
       {/* twinkling star layer */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -68,10 +70,11 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
         transition={{ type: "spring", stiffness: 120, damping: 14 }}
         className="relative z-10 mt-10 flex max-w-2xl flex-col items-center"
       >
+        <LogoBadge size={124} />
         <motion.div
           animate={{ rotate: [-2, 2, -2] }}
           transition={{ duration: 2.6, repeat: Infinity }}
-          className="pixel-font rounded-2xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-5 py-2 text-[10px] tracking-widest text-[#3A2B2B] shadow-[5px_5px_0_#3A2B2B] md:text-xs"
+          className="pixel-font mt-5 rounded-2xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-5 py-2 text-[10px] tracking-widest text-[#3A2B2B] shadow-[5px_5px_0_#3A2B2B] md:text-xs"
         >
           🎮 ★ PLAYER 1: {birthdayConfig.friendName} ★ LEVEL 20 UNLOCKED ★
         </motion.div>

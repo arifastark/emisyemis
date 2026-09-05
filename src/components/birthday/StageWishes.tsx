@@ -72,7 +72,7 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
   ];
 
   return (
-    <StageShell kicker={`🕯️ STAGE 2 / 7 — 20 WISHES • ${done}/20`} title={done === 20 ? cfg.completeTitle : cfg.title} subtitle={done === 20 ? cfg.completeSub : cfg.subtitle}>
+    <StageShell kicker={`🕯️ STAGE 2 / 7 — 20 WISHES • ${done}/20`} title={done === 20 ? cfg.completeTitle : cfg.title} subtitle={done === 20 ? cfg.completeSub : cfg.subtitle} deco="wishes">
       <FloatingPixels items={["🕯️", "✨", "💖", "⭐"]} />
 
       {/* progress bar */}

@@ -156,6 +156,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       kicker={`🎯 STAGE 4 / 7 — QUIZ • ${finished ? score : answeredCount}/${total}`}
       title={finished ? (score === total ? cfg.completeTitle : `${score}/${total}`) : cfg.title}
       subtitle={finished ? cfg.completeSub : cfg.subtitle}
+      deco="quiz"
     >
       <FloatingPixels items={["🎯", "⭐", "❓", "💡", "🏆"]} />
 

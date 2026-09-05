@@ -68,7 +68,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
   };
 
   return (
-    <StageShell kicker="🎂 STAGE 1 / 7 — CAKE" title={allOut ? cfg.blownMessage : cfg.title} subtitle={allOut ? cfg.blownSub : cfg.subtitle}>
+    <StageShell kicker="🎂 STAGE 1 / 7 — CAKE" title={allOut ? cfg.blownMessage : cfg.title} subtitle={allOut ? cfg.blownSub : cfg.subtitle} deco="cake">
       <FloatingPixels items={["🎂", "⭐", "💖", "✨", "🕯️"]} />
 
       {/* pixel-art I LOVE YOU background writings */}
