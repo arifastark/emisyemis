@@ -75,9 +75,11 @@ export const birthdayConfig = {
   },
 
   letter: {
-    title: "ONE LAST ENVELOPE 💌",
-    subtitle: "a handmade letter, just for you",
-    envelopeHint: "tap the envelope to open it 👆",
+    title: "BIRTHDAY MESSAGES 💬",
+    subtitle: "your friends got together and wrote you something",
+    groupName: "Elmira's Birthday 🎂",
+    groupSub: "friends • online",
+    notice: "06/09/2026",
     continueText: "CONTINUE",
   },
 
@@ -97,7 +99,7 @@ export const birthdayConfig = {
 export const wishes: string[] = [
   "Ümid edirəm ki, 20 yaşında olduğu kimi, 40 yaşında da ən yaxın dostun mən olaram (onsuz da başqa şansın yoxdur).",
   "İnanıram ki, Arifə bir də tənbəllik edib sənin əsəblərinlə oynamayacaq.",
-  "Bu yaşında mütləq o xəyalındakı möhtəşəm soyuducuya qovuşmalısan, başqa variant yoxdur!",
+  "Bu yaşında mütləq o xəyalındakı möhtəşəm soyuducuya qovuşmalısan.",
   "Gündə 500 dəfə \"Oğlanlar yaramır, başını burax\" adlı romanımı sənə oxusam da, ümid edirəm ki, bu il xəyalındakı relationshipi taparsan.",
   "Tək arzum bir gün o qədər varlanmağındır ki, mənim işləməyimə ehtiyac qalmasın.",
   "Bu yaşında məni danlamağa bir az ara verəcəyinə inanıram.",
@@ -197,7 +199,23 @@ export const memories: Memory[] = [
   { src: "/memories/e14.jpg", caption: "Basketball date", sticker: "🏀" },
 ];
 
-// ─── FINAL LETTER — replace with your real long letter ───
+// ─── FRIEND MESSAGES — WhatsApp-style birthday wishes for Elmira ───
+// Hər dost üçün: name + text. Rənglər avtomatik verilir.
+export type FriendMessage = {
+  name: string;
+  text: string;
+  time?: string;
+};
+
+export const friendMessages: FriendMessage[] = [
+  { name: "Nərmin", text: "Emişim, ürəyim, hər şeyim😌 ad günün mübarək olsun. 🎉sən mənim hər anımda hər zaman yanımda olmusan. 🫂yaxşı ki,varsan.❤️bu yaşın sənə bol uğur və çoxlu pul gətirsin hər şey ürəyincə olsun. anın tadını çıkar baby😃💋öpdüm balamı.səni sevirəm aşkım.", time: "00:00" },
+  { name: "Səma", text: "Askm menim . Canim Elmiram. Seni tebrik edirem ❤️. Heyatda sene her seyin en gozelini arzu edirem. Cunki sen buna laiqsen🩷. Sen menim ucun cox deyerlisen. Men seni ozume yalniz dost , sirdas kimi yox eyni zamanda dogmam ailem bacim kimi gorurem. Bu heyatda meni evimde hissetdirecek tek tuk insanlardan biri ve demek olarki ilki sensen❤️. Mende son nefesime qeder sene ev olmaga calisacam. Seni cooox ama cooox istyrem💋. Sen menim en gözel şansimsan🧡\nYaxsiki varsan heyatim🫂", time: "00:00" },
+  { name: "Günel", text: "Aşkmmmm ad günün mübarek💋💋 Bu yeni yaşında qabağına tam senin istediyin kimi birini çıxartsın və çox başarılı olasan Aminnn", time: "00:00" },
+  { name: "Aysu", text: "elmıraaa,dostum ad gunun mubarek🥳yaxşı kı doğulmusan.senın gunun 💜.yenı yasında ugurlar ve xosbextlık arzulayıram🙏🏿seninle bırlıkde kıno baxmağı ve oyun oynamağı cox sevırem senıde sevırem. yenı yasında sene yenı herfler arzulayıram🤣🤣🤣.yaxsıkı varsan yoxsa gozumuzu kım açardı🥺🥺🥺🥺🥺🥺🥺🥺❤️", time: "00:00" },
+  { name: "Arifə", text: "Əslində deyiləsi elə də sözüm yoxdu. Sadəcə bunu yazanda backgroundda Paster “İnanıram” mahnısı oxunurdu. Səni ilk dəfə görəndə “Daxilində bir nur gördüm, xaricində büllur”. İndi isə “Sənlə yaşamağı öyrəndim, sənsiz ölməyə də yox meylim”. Sən mənim isti gecələrdə yastığımın soyuq tərəfisən. Səni sevirəm. Bu qədər.", time: "00:00" },
+];
+
+// ─── FINAL LETTER — legacy, no longer shown (kept for reference) ───
 export const finalLetter = {
   greeting: "Dear Best Friend,",
   paragraphs: [
@@ -225,6 +243,6 @@ export const stages = [
   { id: 3, label: "run game", emoji: "🏃‍♀️" },
   { id: 4, label: "quiz", emoji: "🎯" },
   { id: 5, label: "memories", emoji: "📸" },
-  { id: 6, label: "letter", emoji: "💌" },
+  { id: 6, label: "messages", emoji: "💬" },
   { id: 7, label: "happy 20", emoji: "🎉" },
 ] as const;

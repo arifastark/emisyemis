@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import confetti from "canvas-confetti";
 import type { ReactNode } from "react";
@@ -110,7 +111,79 @@ export function pixelBurst(big = false) {
   });
 }
 
-// ── floating pixel decorations (hearts, stars…) ──
+// ── interactive floating emojis: tap one → pops with mini confetti + sound ──
+// Sahnedeki diğer butonların (z-10) altında kalır, sadece boş arka alanda tıklanır.
+export function InteractivePixels({
+  items = ["💌", "🌸", "💖", "✨", "🎂", "💕", "🎉", "🍰"],
+  count = 22,
+}: {
+  items?: string[];
+  count?: number;
+}) {
+  const [spots] = useState(() =>
+    Array.from({ length: count }, (_, i) => ({
+      left: (i * 41 + 13) % 100,
+      top: 10 + ((i * 53 + 7) % 78),
+      delay: (i % 9) * 0.5,
+      dur: 3 + (i % 6) * 0.6,
+      size: 18 + ((i * 11) % 22),
+    })),
+  );
+  const [popped, setPopped] = useState<number | null>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+
+  const pop = (i: number, e: { clientX: number; clientY: number }) => {
+    birthdayAudio.pop();
+    confetti({
+      particleCount: 25,
+      spread: 65,
+      startVelocity: 22,
+      scalar: 0.7,
+      ticks: 120,
+      origin: { x: e.clientX / window.innerWidth, y: e.clientY / window.innerHeight },
+      shapes: ["square"],
+      colors: ["#FF6B9D", "#FFD93D", "#ffffff", "#FFD8D8"],
+    });
+    setPopped(i);
+    timers.current.push(setTimeout(() => setPopped(null), 450));
+  };
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {spots.map((s, i) => (
+        <motion.button
+          key={i}
+          type="button"
+          onClick={pop.bind(null, i)}
+          onPointerDown={(e) => {
+            // dokunmatik ekranda da konfeti tam parmağın ucunda çıksın
+            if (e.pointerType === "touch") pop(i, e);
+          }}
+          className="pointer-events-auto absolute cursor-pointer select-none"
+          style={{ left: `${s.left}%`, top: `${s.top}%`, fontSize: s.size, background: "none", border: "none" }}
+          animate={
+            popped === i
+              ? { y: [0, -26], scale: [1, 1.8, 0.4], opacity: [1, 1, 0.4], rotate: [0, 20] }
+              : { y: [0, -16, 0], rotate: [0, 10, -8, 0], scale: 1, opacity: 1 }
+          }
+          transition={
+            popped === i
+              ? { duration: 0.45, ease: "easeOut" }
+              : { duration: s.dur, repeat: Infinity, delay: s.delay, ease: "easeInOut" }
+          }
+          whileTap={{ scale: 1.4 }}
+          aria-label="pop emoji"
+        >
+          {items[i % items.length]}
+        </motion.button>
+      ))}
+    </div>
+  );
+}
+
+ // ── floating pixel decorations (hearts, stars…) ──
 export function FloatingPixels({ items = ["💖", "⭐", "🎈", "✨", "🍰", "💛"] }: { items?: string[] }) {
   const dots = Array.from({ length: 14 }, (_, i) => ({
     left: (i * 37 + 11) % 100,
