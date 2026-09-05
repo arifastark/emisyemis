@@ -56,7 +56,7 @@ npm start
 
 ## Deploy
 
-Import this repo as a new Vercel project — the framework and commands are detected automatically. The project name becomes the site address (for example, `elmira20` gives `elmira20.vercel.app`).
+Import this repo as a new Vercel project — the framework and commands are detected automatically. The project name becomes the site address.
 
 ## License
 
