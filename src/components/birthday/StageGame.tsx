@@ -17,7 +17,7 @@ type Obstacle = {
 };
 
 // ── STAGE 4: custom pixel runner ──
-// ELMIRA runs → jumps over 5 boys → reaches ARIFA (girl) → hug!
+// ELMIRA runs → jumps over 6 boys → reaches ARIFA (girl) → hug!
 // Background music is global (thoseeyes.mp3) — continues across stages.
 export function StageGame({ onNext }: { onNext: () => void }) {
   const cfg = birthdayConfig.game;
@@ -112,13 +112,28 @@ export function StageGame({ onNext }: { onNext: () => void }) {
     let frame = 0;
     let obstacles: Obstacle[] = [];
 
-    // ── TAM 5 ERKEK, ERKEN GELEN, ~8CM ARALIK (~300px) ──
-    const TOTAL_BOYS = 5;
-    // aralar ~180 dist (~300px ≈ ekranda ~8cm) → tek zıplayışla rahat geçilir.
+    // ── TAM 6 ERKEK — hepsi baştan sahada, skorla senkron ──
+    const TOTAL_BOYS = 6;
     const goalDist = cfg.goalDistance;
-    const SPAWN_AT = [0.1, 0.28, 0.46, 0.64, 0.82].map((f) => f * goalDist);
-    let spawned = 0;
+    const FIRST_HIT = 250; // ilk erkekle karşılaşma skoru (m)
+    const HIT_GAP = 150; // erkekler arası skor mesafesi → 250, 400, 550, 700, 850, 1000
+    const HIT_X = 84; // temas anındaki o.x (oyuncu önü)
+    // skor 1m = 1/0.6 px — hızdan bağımsız sabit oran (dist += speed*0.6, o.x -= speed)
     let passedCount = 0;
+    const placeBoys = () => {
+      obstacles = [];
+      for (let i = 0; i < TOTAL_BOYS; i++) {
+        const h = 32 + Math.random() * 10; // alçak → tek zıplayış yeter
+        obstacles.push({
+          x: HIT_X + (FIRST_HIT + i * HIT_GAP) / 0.6,
+          w: 34,
+          h,
+          variant: i % 6,
+          passed: false,
+        });
+      }
+    };
+    placeBoys();
 
     // kavuşma animasyonu
     let playerX = 64;
@@ -251,11 +266,11 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       drawNameTag(x + 16, y0 - 60, goalName, "#8B5E34");
     };
 
-    // 5 farklı tipte erkek kafa — her biri türlü türlü
-    const HEAD_COLORS = ["#ffdbac", "#f1c27d", "#e0ac69", "#c68642", "#8d5524"];
-    const HAIR = ["#2b2b2b", "#6b4a2b", "#d94f04", "#123a6d", "#555555"];
+    // 6 yakışıklı erkek tipi — sarışın, esmer, kumral, koyu kahve, açık kahve, kızıl
+    const HEAD_COLORS = ["#ffdbac", "#f1c27d", "#e0ac69", "#c68642", "#8d5524", "#ffc9a3"];
+    const HAIR = ["#f7dc6f", "#232323", "#9c6b30", "#4a2f18", "#6b4a2b", "#c1440e"];
     const drawHead = (o: Obstacle, gy: number) => {
-      const v = o.variant % 5;
+      const v = o.variant % 6;
       const x = o.x;
       const y0 = gy - o.h;
       // shadow
@@ -268,48 +283,73 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       // neck + head block
       drawPixelRect(x + 8, y0 + o.h - 10, o.w - 16, 10, skin);
       drawPixelRect(x, y0, o.w, o.h - 10, skin);
-      // saç — tipe göre
-      if (v === 4) {
-        // kel + yanlar + sakal
-        drawPixelRect(x - 2, y0 + 8, 6, 14, hair);
-        drawPixelRect(x + o.w - 4, y0 + 8, 6, 14, hair);
-        drawPixelRect(x + 6, y0 + 30, o.w - 12, 8, "#3A2B2B"); // sakal
-      } else {
-        drawPixelRect(x - 2, y0 - 4, o.w + 4, 12, hair);
-        if (v === 0) drawPixelRect(x + 4, y0 - 12, o.w - 8, 10, hair); // dik saç
-        if (v === 2) drawPixelRect(x + o.w / 2 - 4, y0 - 14, 8, 12, hair); // mohawk
-        if (v === 3) drawPixelRect(x - 2, y0 - 2, 6, 18, hair); // uzun yan
-      }
-      if (v === 1) drawPixelRect(x + 4, y0 + 8, o.w - 8, 4, hair); // alın bandı gibi
-      // eyes (derpy — her tipte farklı)
-      drawPixelRect(x + 8, y0 + 14, 6, 8, "#fff");
-      drawPixelRect(x + o.w - 14, y0 + 14, 6, 8, "#fff");
-      if (v === 3) {
-        // gözlüklü tip
-        drawPixelRect(x + 6, y0 + 12, 10, 12, "#3A2B2B");
-        drawPixelRect(x + o.w - 16, y0 + 12, 10, 12, "#3A2B2B");
-        drawPixelRect(x + 8, y0 + 15, 6, 6, "#fff");
-        drawPixelRect(x + o.w - 14, y0 + 15, 6, 6, "#fff");
-      }
-      drawPixelRect(x + 10, y0 + 17, 3, 4, "#3A2B2B");
-      drawPixelRect(x + o.w - 12, y0 + 15, 3, 4, "#3A2B2B");
-      // silly mouth — her tipte farklı
-      if (v === 0) drawPixelRect(x + o.w / 2 - 6, y0 + 30, 12, 4, "#3A2B2B");
-      else if (v === 1) drawPixelRect(x + 6, y0 + 30, 8, 3, "#3A2B2B");
-      else if (v === 2) {
-        drawPixelRect(x + o.w / 2 - 4, y0 + 28, 8, 8, "#3A2B2B"); // açık ağız
+      // ears
+      drawPixelRect(x - 3, y0 + 12, 4, 8, skin);
+      drawPixelRect(x + o.w - 1, y0 + 12, 4, 8, skin);
+      // saç bazı (herkes)
+      drawPixelRect(x - 2, y0 - 6, o.w + 4, 12, hair);
+      if (v === 0) {
+        // sarışın — yana taralı perçem
+        drawPixelRect(x + 2, y0 + 4, o.w - 10, 6, hair);
+        drawPixelRect(x + o.w - 10, y0 + 4, 8, 10, hair);
+      } else if (v === 1) {
+        // esmer — kısa kesim
+        drawPixelRect(x - 2, y0 - 9, o.w + 4, 6, hair);
+      } else if (v === 2) {
+        // kumral — dalgalı, yanlar uzun
+        drawPixelRect(x - 3, y0 + 2, 6, 16, hair);
+        drawPixelRect(x + o.w - 3, y0 + 2, 6, 16, hair);
+        drawPixelRect(x + 6, y0 + 4, o.w - 12, 5, hair);
+      } else if (v === 3) {
+        // koyu kahve — perde (curtain)
+        drawPixelRect(x - 2, y0 + 2, 10, 14, hair);
+        drawPixelRect(x + o.w - 8, y0 + 2, 10, 14, hair);
       } else if (v === 4) {
-        drawPixelRect(x + o.w / 2 - 6, y0 + 30, 12, 3, "#fff"); // sakal üstü sırıtma
+        // açık kahve — havalı quiff
+        drawPixelRect(x + 2, y0 - 14, o.w - 4, 10, hair);
+        drawPixelRect(x + o.w - 10, y0 - 10, 10, 8, hair);
       } else {
-        drawPixelRect(x + 6, y0 + 30, 8, 3, "#3A2B2B");
-        drawPixelRect(x + o.w - 14, y0 + 30, 8, 3, "#3A2B2B");
+        // kızıl — kıvırcık
+        drawPixelRect(x - 4, y0 - 2, 8, 8, hair);
+        drawPixelRect(x + 6, y0 - 10, 10, 8, hair);
+        drawPixelRect(x + o.w - 6, y0 - 10, 10, 8, hair);
       }
-      // bıyık (tip 1 ve 4)
-      if (v === 1) drawPixelRect(x + o.w / 2 - 8, y0 + 26, 16, 3, "#2b2b2b");
+      if (v === 3) {
+        // havalı gözlük 😎
+        drawPixelRect(x + 5, y0 + 9, 11, 12, "#3A2B2B");
+        drawPixelRect(x + o.w - 16, y0 + 9, 11, 12, "#3A2B2B");
+        drawPixelRect(x + 16, y0 + 13, o.w - 32, 3, "#3A2B2B"); // köprü
+        drawPixelRect(x + 7, y0 + 11, 7, 8, "#9db8c9"); // cam parlaması
+        drawPixelRect(x + o.w - 14, y0 + 11, 7, 8, "#9db8c9");
+      } else {
+        // kaşlar
+        drawPixelRect(x + 7, y0 + 6, 8, 3, hair);
+        drawPixelRect(x + o.w - 15, y0 + 6, 8, 3, hair);
+        // düzgün gözler — simetrik, parlak bakış
+        drawPixelRect(x + 7, y0 + 12, 8, 8, "#fff");
+        drawPixelRect(x + o.w - 15, y0 + 12, 8, 8, "#fff");
+        drawPixelRect(x + 9, y0 + 14, 4, 5, "#3A2B2B");
+        drawPixelRect(x + o.w - 13, y0 + 14, 4, 5, "#3A2B2B");
+        drawPixelRect(x + 10, y0 + 15, 2, 2, "#fff"); // göz parlaması ✨
+        drawPixelRect(x + o.w - 12, y0 + 15, 2, 2, "#fff");
+      }
+      // kendinden emin gülüş 😏
+      const mouthY = y0 + 25;
+      drawPixelRect(x + o.w / 2 - 6, mouthY, 12, 3, "#7a3b3b");
+      drawPixelRect(x + o.w / 2 + 4, mouthY - 3, 4, 3, "#7a3b3b"); // yan sırıtma
+      if (v === 1) {
+        // esmer — hafif kirli sakal
+        drawPixelRect(x + 8, mouthY + 4, o.w - 16, 3, "#23232355");
+      }
+      if (v === 5) {
+        // kızıl — çiller
+        drawPixelRect(x + 5, y0 + 22, 3, 3, "#a05a2c");
+        drawPixelRect(x + o.w - 8, y0 + 22, 3, 3, "#a05a2c");
+      }
       // label
       ctx.fillStyle = "#3A2B2B";
       ctx.font = "9px 'Press Start 2P', monospace";
-      ctx.fillText("!!", x + o.w / 2 - 7, y0 - 10);
+      ctx.fillText("!!", x + o.w / 2 - 7, y0 - 18);
     };
 
     const reset = () => {
@@ -318,8 +358,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       jumping = false;
       speed = BASE_SPEED;
       dist = 0;
-      obstacles = [];
-      spawned = 0;
+      placeBoys();
       passedCount = 0;
       playerX = 64;
       winT = 0;
@@ -415,12 +454,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
             vy = 0;
           }
         }
-        // ── sabit 5 engel: mesafe eşiğine gelince tek tek doğar ──
-        while (spawned < TOTAL_BOYS && dist >= SPAWN_AT[spawned]) {
-          const h = 32 + Math.random() * 10; // alçak → tek zıplayış yeter
-          obstacles.push({ x: W + 20, w: 34, h, variant: spawned % 5, passed: false });
-          spawned++;
-        }
+        // erkekler baştan sahada (placeBoys) — sonradan doğma yok
         // move + collide
         const px = playerX;
         const pw = 32;
@@ -448,7 +482,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
         }
         obstacles = obstacles.filter((o) => o.x > -60);
 
-        // win? — 5 oğlanın hepsi geçildikten SONRA (sonuncusu arkada kalmadan bitirme)
+        // win? — 6 oğlanın hepsi geçildikten SONRA (sonuncusu arkada kalmadan bitirme)
         if (dist >= goalDist && passedCount >= TOTAL_BOYS) {
           // son engel ekrandan çıksın, sonra kazan
           obstacles = [];
@@ -457,7 +491,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       }
 
       // ── final kızı + kavuşma ──
-      // ARIFA sonda sabit bekler, koşmaz — 5 oğlan bitmeden görünmez
+      // ARIFA sonda sabit bekler, koşmaz — 6 oğlan bitmeden görünmez
       // ARIFA başlangıca 3/4 yaklaştı — orijinal mesafenin 1/4'ü kaldı
       const goalX = 64 + ((W - 150 - 64) / 4);
 
@@ -484,12 +518,12 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       }
 
       const hugged = stateRef.current === "won" && playerX >= goalX - 40;
-      // ARIFA sadece 5 oğlan da geçildikten sonra görünür
+      // ARIFA sadece 6 oğlan da geçildikten sonra görünür
       const allBoysDone = passedCount >= TOTAL_BOYS || stateRef.current === "won";
       if (allBoysDone) {
         drawGoalGirl(goalX, gy, frame, stateRef.current === "won");
       }
-      // finish flag (sadece 5 oğlan bitince, oynarken)
+      // finish flag (sadece 6 oğlan bitince, oynarken)
       if (allBoysDone && stateRef.current === "playing") {
         const fx = W - 60;
         drawPixelRect(fx, gy - 90, 5, 90, "#3A2B2B");

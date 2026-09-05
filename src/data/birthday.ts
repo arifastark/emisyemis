@@ -47,7 +47,7 @@ export const birthdayConfig = {
     subtitle: "Jump over the boys and escape them • reach Arifa",
     instructionsDesktop: "JUMP: SPACE / ↑",
     instructionsMobile: "JUMP: tap the screen 👆",
-    goalDistance: 1000, // 5 engel, aralar ~8cm (~300px)
+    goalDistance: 1000, // 6 engel: ilki 250m'de, aralar 150m
     friendName: "ELMIRA", // oynayan kız
     goalName: "ARIFA", // finalde bekleyen kız
     victoryTitle: "You escaped the boys and reached me. Well done!",
@@ -61,8 +61,8 @@ export const birthdayConfig = {
 
   quiz: {
     title: "BFF QUIZ SHOW 🎯",
-    subtitle: "5 sual • cavabı yaz • dürüst ol!",
-    completeTitle: "5/5 PERFECT!",
+    subtitle: "4 questions • type your answer • be honest!",
+    completeTitle: "4/4 PERFECT!",
     completeSub: "",
     continueText: "CONTINUE",
   },
@@ -119,7 +119,7 @@ export const wishes: string[] = [
   "20 yaşında bütün xoşbəxtliklər səninlə olsun. Ad günün mübarək!",
 ];
 
-// ─── QUIZ — 5 sual. Hamısı azərbaycanca. ───
+// ─── QUIZ — 4 sual. Hamısı azərbaycanca. ───
 // `answers`: düzgün cavablar (kiçik/böyük hərf fərqi yoxdur, Ə/ə uyğunluğu var).
 // `correctMessage`: düz cavabda göstərilir. `incorrectMessage`: səhv cavabda
 // doğru cavabla birlikdə göstərilir — hər ikisindən sonra növbəti suala keçilir.
@@ -133,13 +133,6 @@ export type QuizQuestion = {
 };
 
 export const quizQuestions: QuizQuestion[] = [
-  {
-    question: "İlk tanış olduğumuz tarixin gün nömrəsi nə idi? (məs: 9, 7, 18)",
-    placeholder: "gün nömrəsini yaz…",
-    answers: ["15"],
-    correctMessage: "Düz!",
-    incorrectMessage: "Səhvdi, ayıb olsun. 15 olmalı idi!",
-  },
   {
     question: "Mənə ən çox .... olduğuma görə əsəbləşirsən. (nöqtələrin yerinə uyğun sözü yaz)",
     placeholder: "bir söz yaz…",
@@ -203,7 +196,6 @@ export const memories: Memory[] = [
   { src: "/memories/e18.jpg", caption: "with Narmin", sticker: "☀️" },
   { src: "/memories/e19.jpg", caption: "yaxşı oğlan pizza söhbeti elemez", sticker: "😎" },
   { src: "/memories/e20.jpg", caption: "kalite kontrol", sticker: "💫" },
-  { src: "/memories/e21.jpg", caption: "Cutie", sticker: "🎉" },
 ];
 
 // ─── FRIEND MESSAGES — WhatsApp-style birthday wishes for Elmira ───

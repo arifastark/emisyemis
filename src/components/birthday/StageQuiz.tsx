@@ -6,7 +6,7 @@ import { birthdayConfig, quizQuestions } from "@/data/birthday";
 import { PixelButton, StageShell, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── STAGE 5: Quiz — 5 sual, tək-tək. ──
+// ── STAGE 5: Quiz — 4 sual, tək-tək. ──
 // Düz → təbrik + avtomatik növbəti. Səhv → doğru cavabı göstər + növbəti.
 // Kiçik/böyük hərf fərqi yoxdur, Ə/ə uyğunluğu var.
 
@@ -37,7 +37,7 @@ function isCorrect(input: string, answers: string[]) {
     const n = normalize(a);
     if (!n) return false;
     if (v === n) return true;
-    // uzun cavablarda (4-cü sual) artıq simvol (... və s.) olsa da qəbul et
+    // uzun cavablarda (3-cü sual) artıq simvol (... və s.) olsa da qəbul et
     if (n.length > 12 && v.includes(n)) return true;
     return false;
   });
@@ -99,7 +99,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
     if (revealed || finished || pending) return;
     const v = value.trim();
     if (!v) {
-      setMsg({ ok: false, text: "əvvəlcə nəsə yaz!" });
+      setMsg({ ok: false, text: "write something first!" });
       setShake((s) => s + 1);
       return;
     }
@@ -108,7 +108,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
     if (correct) {
       birthdayAudio.success();
       confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 }, shapes: ["square"], scalar: 0.9 });
-      setMsg({ ok: true, text: q.correctMessage ?? "DÜZGÜN! 🎉" });
+      setMsg({ ok: true, text: q.correctMessage ?? "CORRECT! 🎉" });
       if (isLast) {
         // son sual — mesaj görünsün, sonra avtomatik neticeye
         setRevealed(true);
@@ -158,7 +158,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
 
       {/* arcade scoreboard */}
       <div className="pixel-panel z-10 mb-5 flex w-full max-w-2xl items-center justify-between bg-[#3A2B2B] px-4 py-2">
-        <span className="pixel-font text-[10px] text-[#FFD93D] md:text-xs">XAL: {score * 100}</span>
+        <span className="pixel-font text-[10px] text-[#FFD93D] md:text-xs">SCORE: {score * 100}</span>
         <div className="flex gap-1">
           {results.map((r, i) => (
             <span
@@ -183,10 +183,10 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
         >
           <div className="flex items-start justify-between gap-2">
             <span className="pixel-font rounded-md border-2 border-[#3A2B2B] bg-[#FFD93D] px-2 py-1 text-[9px] text-[#3A2B2B]">
-              SUAL {idx + 1}/{total}
+              QUESTION {idx + 1}/{total}
             </span>
             <span className="pixel-font rounded-md border-2 border-[#3A2B2B] bg-white px-2 py-1 text-[9px] text-[#3A2B2B]">
-              ⭐ {score} DÜZ
+              ⭐ {score} CORRECT
             </span>
           </div>
 
@@ -198,7 +198,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && check()}
-                placeholder={q.placeholder ?? q.hint ?? "cavabını yaz…"}
+                placeholder={q.placeholder ?? q.hint ?? "type your answer…"}
                 enterKeyHint="go"
                 autoFocus
                 className="pixel-input pixel-soft w-full px-3 py-2 text-xl"
@@ -207,19 +207,19 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
                 onClick={check}
                 className="pixel-font rounded-lg border-[3px] border-[#3A2B2B] bg-[#4D96FF] px-3 py-2 text-[10px] text-white shadow-[3px_3px_0_#3A2B2B] transition active:translate-y-0.5 active:shadow-none"
               >
-                YOXLAMAQ ▶
+                CHECK ▶
               </button>
             </div>
           ) : (
             <div className="mt-3 flex flex-col gap-2">
               <div className="pixel-soft rounded-lg border-2 border-dashed border-[#3A2B2B]/30 bg-white/60 px-3 py-2 text-xl text-[#3A2B2B]/70">
-                sənin cavabın: <b>{value}</b>
+                your answer: <b>{value}</b>
               </div>
               <button
                 onClick={goNext}
                 className="pixel-font rounded-lg border-[3px] border-[#3A2B2B] bg-[#6BCB77] px-3 py-2 text-[10px] text-white shadow-[3px_3px_0_#3A2B2B] transition active:translate-y-0.5 active:shadow-none"
               >
-                {idx + 1 >= total ? "NƏTİCƏYƏ BAX →" : "NÖVBƏTİ SUAL →"}
+                {idx + 1 >= total ? "SEE RESULTS →" : "NEXT QUESTION →"}
               </button>
             </div>
           )}
@@ -245,7 +245,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
         >
           <div className="text-5xl">{score >= 3 ? "😄" : "🙃"}</div>
           <p className="pixel-font mt-3 text-[10px] text-[#5b4444]">
-            NƏTİCƏ: {score}/{total} DÜZ
+            RESULT: {score}/{total} CORRECT
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
             {results.map((r, i) => (
@@ -254,7 +254,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
                 className="pixel-font rounded-md border-2 border-[#3A2B2B] px-2 py-1 text-[9px]"
                 style={{ background: r ? "#6BCB77" : "#FF6B9D", color: "#fff" }}
               >
-                {i + 1}: {r ? "DÜZ ✓" : "SƏHV"}
+                {i + 1}: {r ? "CORRECT ✓" : "WRONG"}
               </span>
             ))}
           </div>

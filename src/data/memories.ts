@@ -143,14 +143,6 @@ export const memories: Memory[] = [
     doodle: "new memory",
     backNote: "REPLACE ME: add your note for e20.",
   },
-  {
-    src: "/memories/e21.jpg",
-    caption: "Cutie",
-    date: "good vibes only",
-    sticker: "🎉",
-    doodle: "new memory",
-    backNote: "REPLACE ME: add your note for e21.",
-  },
 ];
 
 export const chatScript = [
