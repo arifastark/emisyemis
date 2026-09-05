@@ -75,14 +75,14 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
         items={["💌", "🌸", "💖", "✨", "🎂", "💕", "🎉", "🍰", "💝", "🌷", "⭐", "💗"]}
         count={22}
       />
-      <div className="pixel-panel z-10 w-full max-w-2xl bg-[#FFF6E9] px-4 py-3 md:px-6 md:py-4">
+      <div className="pixel-panel z-10 w-full max-w-2xl bg-[#FFF6E9] px-3 py-2.5 md:px-4 md:py-3">
         <div className="flex items-center gap-3">
           <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-[3px] border-[#3A2B2B] bg-[#FF6B9D] text-2xl shadow-[3px_3px_0_#3A2B2B]">
             💌
           </span>
           <div className="min-w-0 flex-1 text-left">
             <p className="pixel-font truncate text-[11px] text-[#3A2B2B] md:text-xs">{cfg.groupName}</p>
-            <p className="pixel-soft truncate text-lg leading-tight md:text-xl">
+            <p className="pixel-soft truncate text-base leading-tight md:text-lg">
               {announce !== null ? `${friendMessages[announce].name} is typing… ✍️` : cfg.groupSub}
             </p>
           </div>
@@ -103,11 +103,11 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
             </button>
           )}
         </div>
-        <div className="pixel-soft mt-2 rounded-xl border-2 border-dashed border-[#FF6B9D]/50 bg-[#FFD8D8]/40 px-3 py-1.5 text-center text-lg leading-snug">
+        <div className="pixel-soft mt-1.5 rounded-xl border-2 border-dashed border-[#FF6B9D]/50 bg-[#FFD8D8]/40 px-3 py-1 text-center text-base leading-snug">
           {cfg.notice}
         </div>
       </div>
-      <div ref={scrollRef} className="z-10 mt-4 flex w-full max-w-2xl flex-col gap-3">
+      <div ref={scrollRef} className="z-10 mt-3 flex w-full max-w-2xl flex-col gap-2">
         <p className="pixel-font mx-auto rounded-lg border-[3px] border-[#3A2B2B] bg-[#FFD93D] px-3 py-1 text-[8px] text-[#3A2B2B] shadow-[3px_3px_0_#3A2B2B]">
           🎂 TODAY • {count}/{friendMessages.length}
         </p>
@@ -125,14 +125,14 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
             />
             <div className="flex items-center gap-2">
               <span
-                className="pixel-soft text-[22px] font-bold leading-none md:text-[24px]"
+                className="pixel-soft text-[19px] font-bold leading-none md:text-[21px]"
                 style={{ color: NAME_COLORS[i % NAME_COLORS.length] }}
               >
                 {m.name}
               </span>
               {m.time && <span className="pixel-font ml-auto pl-4 text-[8px] text-[#8a6a6a]">{m.time}</span>}
             </div>
-            <p className="pixel-soft mt-1 break-words whitespace-pre-line text-[22px] leading-[1.4] text-[#3A2B2B] md:text-[24px]">
+            <p className="pixel-soft mt-1 break-words whitespace-pre-line text-[19px] leading-[1.35] text-[#3A2B2B] md:text-[21px]">
               {m.text}
             </p>
           </motion.div>
@@ -160,7 +160,7 @@ export function StageLetter({ onNext }: { onNext: () => void }) {
           </motion.div>
         )}
       </div>
-      <div className="z-10 mt-5 flex min-h-16 flex-col items-center">
+      <div className="z-10 mt-4 flex min-h-14 flex-col items-center">
         {finished ? (
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-2">
             <p className="pixel-font text-[10px] text-[#5b4444]">💛 everyone loves you 💛</p>

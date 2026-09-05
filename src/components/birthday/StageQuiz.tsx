@@ -148,7 +148,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       <FloatingPixels items={["🎯", "⭐", "❓", "💡", "🏆"]} />
 
       {/* arcade scoreboard */}
-      <div className="pixel-panel z-10 mb-5 flex w-full max-w-2xl items-center justify-between bg-[#3A2B2B] px-4 py-2">
+      <div className="pixel-panel z-10 mb-3 flex w-full max-w-2xl items-center justify-between bg-[#3A2B2B] px-3 py-1.5">
         <span className="pixel-font text-[10px] text-[#FFD93D] md:text-xs">SCORE: {score * 100}</span>
         <div className="flex gap-1">
           {visible.map((r, i) => (
@@ -169,7 +169,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
           key={`${idx}-${shake}`}
           animate={msg && !msg.ok && revealed ? { x: [0, -8, 8, -5, 5, 0] } : {}}
           transition={{ duration: 0.4 }}
-          className="pixel-panel relative z-10 flex w-full max-w-2xl flex-col p-4 md:p-5"
+          className="pixel-panel relative z-10 flex w-full max-w-2xl flex-col p-3 md:p-4"
           style={{ background: "#FFF6E9" }}
         >
           <div className="flex items-start justify-between gap-2">
@@ -181,10 +181,10 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
             </span>
           </div>
 
-          <p className="pixel-soft mt-3 text-xl leading-snug text-[#3A2B2B] md:text-2xl">{q.question}</p>
+          <p className="pixel-soft mt-2 text-lg leading-snug text-[#3A2B2B] md:text-xl">{q.question}</p>
 
           {!revealed ? (
-            <div className="mt-3 flex flex-col gap-2">
+            <div className="mt-2.5 flex flex-col gap-2">
               <input
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
@@ -192,7 +192,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
                 placeholder={q.placeholder ?? q.hint ?? "type your answer…"}
                 enterKeyHint="go"
                 autoFocus
-                className="pixel-input pixel-soft w-full px-3 py-2 text-xl"
+                className="pixel-input pixel-soft w-full px-3 py-1.5 text-lg"
               />
               <button
                 onClick={check}
@@ -202,8 +202,8 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
               </button>
             </div>
           ) : (
-            <div className="mt-3 flex flex-col gap-2">
-              <div className="pixel-soft rounded-lg border-2 border-dashed border-[#3A2B2B]/30 bg-white/60 px-3 py-2 text-xl text-[#3A2B2B]/70">
+            <div className="mt-2.5 flex flex-col gap-2">
+              <div className="pixel-soft rounded-lg border-2 border-dashed border-[#3A2B2B]/30 bg-white/60 px-3 py-1.5 text-lg text-[#3A2B2B]/70">
                 your answer: <b>{value}</b>
               </div>
               <button
@@ -221,7 +221,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className={`pixel-soft mt-3 text-xl leading-tight ${msg.ok ? "text-[#2b8a3e]" : "text-[#c2255c]"}`}
+                className={`pixel-soft mt-2 text-lg leading-tight ${msg.ok ? "text-[#2b8a3e]" : "text-[#c2255c]"}`}
               >
                 {msg.text}
               </motion.p>
@@ -232,9 +232,9 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="pixel-panel z-10 flex w-full max-w-2xl flex-col items-center bg-[#FFF6E9] p-6 text-center"
+          className="pixel-panel z-10 flex w-full max-w-2xl flex-col items-center bg-[#FFF6E9] p-4 text-center"
         >
-          <div className="text-5xl">{score >= 3 ? "😄" : "🙃"}</div>
+          <div className="text-4xl">{score >= 3 ? "😄" : "🙃"}</div>
           <p className="pixel-font mt-3 text-[10px] text-[#5b4444]">
             RESULT: {score}/{total} CORRECT
           </p>
@@ -249,7 +249,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
               </span>
             ))}
           </div>
-          <div className="mt-5">
+          <div className="mt-4">
             <PixelButton onClick={onNext} color="#6BCB77">
               {cfg.continueText}
             </PixelButton>

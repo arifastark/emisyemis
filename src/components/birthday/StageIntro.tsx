@@ -8,7 +8,7 @@ import { birthdayAudio } from "@/lib/birthday-audio";
 export function StageIntro({ onStart }: { onStart: () => void }) {
   const cfg = birthdayConfig.intro;
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 py-12 text-center">
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 pb-14 pt-12 text-center md:pb-12">
       <CoquetteBackground preset="intro" />
       <FloatingPixels />
       {/* twinkling star layer */}
@@ -49,7 +49,7 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
       </div>
 
       {/* balloon row */}
-      <div aria-hidden className="pointer-events-none absolute left-0 right-0 top-6 flex justify-center gap-3 text-3xl md:gap-6 md:text-5xl">
+      <div aria-hidden className="pointer-events-none absolute left-0 right-0 top-3 flex justify-center gap-2 text-xl md:gap-4 md:text-3xl">
         {["🎈", "🎀", "🎈", "⭐", "🎈", "💖", "🎈"].map((e, i) => (
           <motion.span
             key={i}
@@ -67,25 +67,25 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
         initial={{ opacity: 0, scale: 0.9, y: 24 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 120, damping: 14 }}
-        className="relative z-10 mt-10 flex max-w-2xl flex-col items-center"
+        className="relative z-10 mt-6 flex max-w-2xl flex-col items-center"
       >
-        <LogoBadge size={124} />
+        <LogoBadge size={80} />
         <motion.div
           animate={{ rotate: [-2, 2, -2] }}
           transition={{ duration: 2.6, repeat: Infinity }}
-          className="pixel-font mt-5 rounded-2xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-5 py-2 text-[10px] tracking-widest text-[#3A2B2B] shadow-[5px_5px_0_#3A2B2B] md:text-xs"
+          className="pixel-font mt-4 rounded-2xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-4 py-1.5 text-[9px] tracking-widest text-[#3A2B2B] shadow-[5px_5px_0_#3A2B2B] md:text-[10px]"
         >
           🎮 ★ PLAYER 1: {birthdayConfig.friendName} ★ LEVEL 20 UNLOCKED ★
         </motion.div>
 
-        <h1 className="pixel-font mt-6 text-lg text-[#3A2B2B] md:text-3xl" style={{ textShadow: "3px 3px 0 #fff" }}>
+        <h1 className="pixel-font mt-4 text-base text-[#3A2B2B] md:text-xl" style={{ textShadow: "2px 2px 0 #fff" }}>
           {cfg.titleTop}
         </h1>
 
         {/* giant pixel 20 */}
-        <div className="relative my-2 select-none">
+        <div className="relative my-1 select-none">
           <motion.div
-            className="pixel-font text-[7rem] font-black leading-none md:text-[11rem]"
+            className="pixel-font text-[4.5rem] font-black leading-none md:text-[6.5rem]"
             style={{
               color: "#FF6B9D",
               WebkitTextStroke: "4px #3A2B2B",
@@ -98,7 +98,7 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
             20
           </motion.div>
           <motion.div
-            className="absolute -right-6 -top-2 text-4xl md:-right-10 md:text-6xl"
+            className="absolute -right-5 -top-1 text-3xl md:-right-8 md:text-4xl"
             animate={{ rotate: [0, 15, -10, 0], scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
@@ -107,15 +107,15 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
         </div>
 
         {/* pixel cake strip */}
-        <div className="floaty my-3 text-5xl md:text-6xl" aria-hidden>
+        <div className="floaty my-2 text-3xl md:text-4xl" aria-hidden>
           🧁 🎂 🍰 🧁 🎂
         </div>
 
-        <p className="pixel-soft max-w-md text-xl md:text-2xl">{cfg.subtitle}</p>
-        <p className="pixel-font mt-2 text-[10px] text-[#8a6a6a] md:text-xs">{cfg.hint}</p>
+        <p className="pixel-soft max-w-md text-lg leading-snug md:text-xl">{cfg.subtitle}</p>
+        <p className="pixel-font mt-1.5 text-[9px] text-[#8a6a6a] md:text-[10px]">{cfg.hint}</p>
 
         {/* main button */}
-        <div className="mt-8">
+        <div className="mt-5">
           <PixelButton
             onClick={() => {
               birthdayAudio.unlock();
@@ -131,7 +131,7 @@ export function StageIntro({ onStart }: { onStart: () => void }) {
       </motion.div>
 
       {/* bottom deco */}
-      <div aria-hidden className="pointer-events-none absolute bottom-4 left-0 right-0 flex justify-center gap-2 text-2xl md:gap-5 md:text-4xl">
+      <div aria-hidden className="pointer-events-none absolute bottom-2 left-0 right-0 flex justify-center gap-2 text-xl md:gap-4 md:text-2xl">
         {["🍰", "💛", "🎁", "⭐", "🎉", "💖", "🧁"].map((e, i) => (
           <motion.span key={i} animate={{ y: [0, -8, 0] }} transition={{ duration: 2 + (i % 4) * 0.4, repeat: Infinity, delay: i * 0.15 }}>
             {e}

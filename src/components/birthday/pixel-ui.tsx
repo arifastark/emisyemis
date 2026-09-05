@@ -25,7 +25,7 @@ export function PixelButton({
         birthdayAudio.click();
         onClick?.();
       }}
-      className={`pixel-font pixel-btn ${small ? "px-5 py-3 text-xs md:text-sm" : "px-8 py-4 text-sm md:px-12 md:py-5 md:text-xl"}`}
+      className={`pixel-font pixel-btn ${small ? "px-4 py-2.5 text-[11px] md:text-xs" : "px-6 py-3 text-xs md:px-8 md:py-3.5 md:text-sm"}`}
       style={{ background: color }}
     >
       {children}
@@ -83,20 +83,20 @@ export function StageShell({
   deco?: DecoPreset;
 }) {
   return (
-    <div className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col items-center justify-center px-4 py-10 md:py-14">
+    <div className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col items-center justify-start px-4 pb-6 pt-16 md:pb-8 md:pt-14">
       <CoquetteBackground preset={deco} />
       <motion.div
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 mb-6 text-center"
+        className="relative z-10 mb-4 text-center"
       >
-        <span className="pixel-font inline-block -rotate-2 rounded-lg border-4 border-[#3A2B2B] bg-[#FFD93D] px-4 py-1.5 text-[10px] tracking-widest text-[#3A2B2B] md:text-xs">
+        <span className="pixel-font inline-block -rotate-2 rounded-lg border-4 border-[#3A2B2B] bg-[#FFD93D] px-3 py-1 text-[9px] tracking-widest text-[#3A2B2B] md:text-[10px]">
           {kicker}
         </span>
-        <h2 className="pixel-font mt-4 text-xl leading-tight text-[#3A2B2B] md:text-4xl" style={{ textShadow: "3px 3px 0 #fff" }}>
+        <h2 className="pixel-font mt-3 text-base leading-tight text-[#3A2B2B] md:text-2xl" style={{ textShadow: "2px 2px 0 #fff" }}>
           {title}
         </h2>
-        {subtitle && <p className="pixel-soft mx-auto mt-3 max-w-xl text-base md:text-lg">{subtitle}</p>}
+        {subtitle && <p className="pixel-soft mx-auto mt-2 max-w-xl text-base leading-snug md:text-lg">{subtitle}</p>}
       </motion.div>
       {children}
     </div>

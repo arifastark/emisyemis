@@ -105,11 +105,11 @@ export function StageCake({ onNext }: { onNext: () => void }) {
         style={{ background: allOut ? "radial-gradient(circle at 50% 40%, rgba(255,217,61,.35), transparent 65%)" : "rgba(58,30,60,.22)" }}
       />
 
-      <PixelPanel className="relative z-10 w-full max-w-xl p-5 md:p-8">
+      <PixelPanel className="relative z-10 w-full max-w-xl p-4 md:p-5">
         {/* ── pixel cake ── */}
         <div className="flex flex-col items-center">
           {/* number candles 2 + 0 — interactive, stays on top of cake.png */}
-          <div className="relative z-10 -mb-10 flex items-end gap-6 md:-mb-14 md:gap-10">
+          <div className="relative z-10 -mb-8 flex items-end gap-5 md:-mb-10 md:gap-8">
             {(["2", "0"] as const).map((digit, i) => (
               <button
                 key={digit}
@@ -118,10 +118,10 @@ export function StageCake({ onNext }: { onNext: () => void }) {
                 className="flex cursor-pointer flex-col items-center outline-none"
               >
                 {/* flame / smoke */}
-                <span className="flex h-12 items-end justify-center md:h-14">
+                <span className="flex h-9 items-end justify-center md:h-10">
                   {!blown[i] ? (
                     <motion.span
-                      className={`flame text-3xl md:text-4xl ${blowing ? "scale-125" : ""}`}
+                      className={`flame text-2xl md:text-3xl ${blowing ? "scale-125" : ""}`}
                       animate={blowing ? { x: [0, 6, -6, 0], opacity: [1, 0.6, 1] } : {}}
                     >
                       🔥
@@ -134,7 +134,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
                 </span>
                 {/* digit candle body */}
                 <motion.span
-                  className="pixel-font flex h-20 w-14 items-center justify-center rounded-lg border-4 border-[#3A2B2B] text-4xl md:h-24 md:w-16 md:text-5xl"
+                  className="pixel-font flex h-16 w-12 items-center justify-center rounded-lg border-4 border-[#3A2B2B] text-3xl md:h-18 md:w-14 md:text-4xl"
                   style={{
                     background: i === 0 ? "#4D96FF" : "#FF6B9D",
                     color: "#fff",
@@ -147,7 +147,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
                 >
                   {digit}
                 </motion.span>
-                <span className="mt-1 h-8 w-2 rounded bg-[#3A2B2B]/70" />
+                <span className="mt-1 h-6 w-2 rounded bg-[#3A2B2B]/70" />
               </button>
             ))}
           </div>
@@ -157,7 +157,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
             initial={{ scale: 0.8, y: 30, opacity: 0 }}
             animate={{ scale: 1, y: 0, opacity: 1 }}
             transition={{ type: "spring", stiffness: 90, damping: 12 }}
-            className="mt-1 w-full max-w-md"
+            className="mt-1 w-full max-w-[240px] md:max-w-xs"
           >
             <img
               src="/cake.png"
@@ -169,7 +169,7 @@ export function StageCake({ onNext }: { onNext: () => void }) {
           </motion.div>
 
           {/* status */}
-          <div className="pixel-font mt-5 min-h-6 text-center text-[10px] text-[#5b4444] md:text-xs">
+          <div className="pixel-font mt-3 min-h-5 text-center text-[10px] text-[#5b4444] md:text-[11px]">
             {!allOut ? (
               <span>
                 {blown.filter(Boolean).length}/2 candles out{blowing ? " — bloooow… 🌬️" : ""}
@@ -183,15 +183,15 @@ export function StageCake({ onNext }: { onNext: () => void }) {
 
           {/* blow button */}
           {!allOut ? (
-            <div className="mt-3">
+            <div className="mt-2">
               <PixelButton onClick={blowAll} color="#4D96FF">
                 {blowing ? "BLOWING… 🌬️" : cfg.blowButtonText}
               </PixelButton>
             </div>
           ) : (
             <AnimatePresence>
-              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mt-4 flex flex-col items-center gap-3">
-                <div className="text-4xl">🎉💖🎂💖🎉</div>
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mt-3 flex flex-col items-center gap-2">
+                <div className="text-3xl">🎉💖🎂💖🎉</div>
                 <PixelButton onClick={onNext} color="#6BCB77">
                   {cfg.continueText}
                 </PixelButton>

@@ -35,12 +35,12 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
       <FloatingPixels items={["📸", "💛", "✨", "🌸"]} />
 
       {/* filmstrip progress */}
-      <div className="no-scrollbar z-10 mb-4 flex w-full max-w-2xl items-center justify-center gap-2 overflow-x-auto">
+      <div className="no-scrollbar z-10 mb-3 flex w-full max-w-2xl items-center justify-center gap-1.5 overflow-x-auto">
         {memories.map((mm, i) => (
           <button
             key={i}
             onClick={() => jumpTo(i)}
-            className="h-10 w-10 shrink-0 overflow-hidden rounded-lg border-[3px] transition"
+            className="h-9 w-9 shrink-0 overflow-hidden rounded-lg border-[3px] transition"
             style={{
               borderColor: i === idx ? "#FF6B9D" : "#3A2B2B",
               transform: i === idx ? "scale(1.15)" : "none",
@@ -65,11 +65,11 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
             exit={{ opacity: 0, x: -90 * dir, rotate: -3 * dir, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 140, damping: 18 }}
           >
-            <PixelPanel className="relative overflow-hidden p-3 md:p-4" color="#FFF6E9">
+            <PixelPanel className="relative overflow-hidden p-2.5 md:p-3" color="#FFF6E9">
               {/* tape */}
-              <div className="absolute -top-1 left-1/2 z-10 h-6 w-28 -translate-x-1/2 -rotate-2 rounded-sm bg-[#FFD93D]/90 shadow" />
+              <div className="absolute -top-1 left-1/2 z-10 h-5 w-24 -translate-x-1/2 -rotate-2 rounded-sm bg-[#FFD93D]/90 shadow" />
               {/* photo — natural size, never cropped */}
-              <div className="pixel-frame relative flex w-full items-center justify-center bg-[#FFD8D8] p-2">
+              <div className="pixel-frame relative flex w-full items-center justify-center bg-[#FFD8D8] p-1.5">
                 <motion.div
                   key={`zoom-${idx}`}
                   initial={{ opacity: 0, scale: 0.98 }}
@@ -78,11 +78,11 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
                   className="flex w-full justify-center"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.src} alt={m.caption} className="h-auto max-h-[55vh] w-auto max-w-full" draggable={false} />
+                  <img src={m.src} alt={m.caption} className="h-auto max-h-[32vh] w-auto max-w-full md:max-h-[36vh]" draggable={false} />
                 </motion.div>
                 {/* sticker only — overlay labels removed */}
                 <motion.span
-                  className="absolute right-3 top-3 text-3xl md:text-4xl"
+                  className="absolute right-2 top-2 text-2xl md:text-3xl"
                   animate={{ rotate: [0, 12, -8, 0], scale: [1, 1.15, 1] }}
                   transition={{ duration: 2.4, repeat: Infinity }}
                 >
@@ -98,25 +98,25 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
                 />
               </div>
               {/* caption only — date line removed */}
-              <div className="px-1 pb-1 pt-3 text-center">
-                <p className="pixel-font text-xs text-[#3A2B2B] md:text-sm">“{m.caption}”</p>
+              <div className="px-1 pb-1 pt-2 text-center">
+                <p className="pixel-font text-[11px] text-[#3A2B2B] md:text-xs">“{m.caption}”</p>
               </div>
             </PixelPanel>
           </motion.div>
         </AnimatePresence>
 
         {/* prev / next */}
-        <div className="mt-4 flex items-center justify-between gap-3">
+        <div className="mt-3 flex items-center justify-between gap-3">
           <button
             onClick={() => go(-1)}
-            className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-4 py-3 text-xs text-[#3A2B2B] shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
+            className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-3 py-2.5 text-[11px] text-[#3A2B2B] shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
           >
             ← PREV
           </button>
           <p className="pixel-font hidden text-[9px] text-[#8a6a6a] sm:block">{cfg.hint}</p>
           <button
             onClick={() => go(1)}
-            className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FF6B9D] px-4 py-3 text-xs text-white shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
+            className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FF6B9D] px-3 py-2.5 text-[11px] text-white shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"
             style={{ textShadow: "1px 1px 0 #3A2B2B" }}
           >
             NEXT →
@@ -125,7 +125,7 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
       </div>
 
       {/* continue appears after all seen */}
-      <div className="z-10 mt-5 flex min-h-16 flex-col items-center">
+      <div className="z-10 mt-3 flex min-h-14 flex-col items-center">
         {finished ? (
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-2">
             <p className="pixel-font text-[10px] text-[#5b4444]">✨ all memories unlocked ✨</p>

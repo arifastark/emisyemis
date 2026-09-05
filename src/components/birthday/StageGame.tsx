@@ -478,7 +478,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
   const progress = Math.min(1, score / cfg.goalDistance);
   return (
     <StageShell kicker="🏃‍♀️ STAGE 3 / 7 — RUN GAME" title={cfg.title} subtitle={cfg.subtitle} deco="game">
-      <PixelPanel className="z-10 w-full max-w-4xl p-3 md:p-5">
+      <PixelPanel className="z-10 w-full max-w-4xl p-3">
         <div className="mb-2 flex items-center justify-between gap-2">
           <div className="pixel-font text-[10px] text-[#3A2B2B] md:text-xs">
             DISTANCE: {score}m <span className="text-[#8a6a6a]">/ {cfg.goalDistance}m</span>
@@ -497,7 +497,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
           <canvas
             ref={canvasRef}
             onPointerDown={onCanvasTap}
-            className="block h-[300px] w-full cursor-pointer touch-none select-none md:h-[380px]"
+            className="block h-[210px] w-full cursor-pointer touch-none select-none md:h-[250px]"
           />
           <AnimatePresence>
             {state === "ready" && (
@@ -551,11 +551,11 @@ export function StageGame({ onNext }: { onNext: () => void }) {
       </PixelPanel>
       <AnimatePresence>
         {state === "won" && (
-          <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="z-10 mt-5 w-full max-w-4xl">
-            <PixelPanel className="p-5 text-center md:p-7" color="#FFF6E9">
-              <div className="text-5xl">💖🏁💖</div>
-              <h3 className="pixel-font mt-3 text-sm text-[#3A2B2B] md:text-lg">{cfg.victoryTitle}</h3>
-              <div className="mx-auto mt-4 max-w-sm">
+          <motion.div initial={{ opacity: 0, y: 30, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="z-10 mt-4 w-full max-w-4xl">
+            <PixelPanel className="p-4 text-center md:p-5" color="#FFF6E9">
+              <div className="text-4xl">💖🏁💖</div>
+              <h3 className="pixel-font mt-2 text-xs text-[#3A2B2B] md:text-sm">{cfg.victoryTitle}</h3>
+              <div className="mx-auto mt-3 max-w-[240px] md:max-w-xs">
                 {rewardOk ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -573,7 +573,7 @@ export function StageGame({ onNext }: { onNext: () => void }) {
                   </div>
                 )}
               </div>
-              <div className="mt-5">
+              <div className="mt-4">
                 <PixelButton onClick={onNext} color="#6BCB77">
                   {cfg.continueText}
                 </PixelButton>
