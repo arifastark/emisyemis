@@ -197,6 +197,13 @@ export const memories: Memory[] = [
   { src: "/memories/e10.jpg", caption: "Hackathonda uduzandan sonra boynunun borcu senin keyfini açmaq olan bir eded Arife", sticker: "💫" },
   { src: "/memories/e12.jpg", caption: "Peerstack", sticker: "🌈" },
   { src: "/memories/e14.jpg", caption: "Basketball date", sticker: "🏀" },
+  { src: "/memories/e15.jpg", caption: "with Günel", sticker: "💛" },
+  { src: "/memories/e16.jpg", caption: "Sema ile date", sticker: "📸" },
+  { src: "/memories/e17.jpg", caption: "ohh my shaylaa", sticker: "🌈" },
+  { src: "/memories/e18.jpg", caption: "with Narmin", sticker: "☀️" },
+  { src: "/memories/e19.jpg", caption: "yaxşı oğlan pizza söhbeti elemez", sticker: "😎" },
+  { src: "/memories/e20.jpg", caption: "kalite kontrol", sticker: "💫" },
+  { src: "/memories/e21.jpg", caption: "Cutie", sticker: "🎉" },
 ];
 
 // ─── FRIEND MESSAGES — WhatsApp-style birthday wishes for Elmira ───
