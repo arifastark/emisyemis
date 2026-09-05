@@ -35,7 +35,7 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
       <FloatingPixels items={["📸", "💛", "✨", "🌸"]} />
 
       {/* filmstrip progress */}
-      <div className="no-scrollbar z-10 mb-3 flex w-full max-w-2xl items-center justify-center gap-1.5 overflow-x-auto">
+      <div className="no-scrollbar z-10 mx-auto mb-3 flex w-full max-w-xl items-center justify-start gap-1.5 overflow-x-auto px-1 py-1 sm:justify-center">
         {memories.map((mm, i) => (
           <button
             key={i}
@@ -54,8 +54,8 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
         ))}
       </div>
 
-      {/* main memory card */}
-      <div className="relative z-10 w-full max-w-2xl">
+      {/* main memory card — çerçeve resme sarılır (w-fit), asla kırpılmaz */}
+      <div className="relative z-10 flex w-full max-w-xl flex-col items-center">
         <AnimatePresence mode="wait" custom={dir}>
           <motion.div
             key={idx}
@@ -64,21 +64,28 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
             animate={{ opacity: 1, x: 0, rotate: 0, scale: 1 }}
             exit={{ opacity: 0, x: -90 * dir, rotate: -3 * dir, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 140, damping: 18 }}
+            className="flex w-fit max-w-full justify-center"
           >
-            <PixelPanel className="relative overflow-hidden p-2.5 md:p-3" color="#FFF6E9">
+            <PixelPanel className="relative mx-auto w-fit max-w-full min-w-[min(300px,84vw)] p-2.5 md:p-3" color="#FFF6E9">
               {/* tape */}
-              <div className="absolute -top-1 left-1/2 z-10 h-5 w-24 -translate-x-1/2 -rotate-2 rounded-sm bg-[#FFD93D]/90 shadow" />
-              {/* photo — natural size, never cropped */}
-              <div className="pixel-frame relative flex w-full items-center justify-center bg-[#FFD8D8] p-1.5">
+              <div className="absolute -top-2 left-1/2 z-10 h-5 w-24 -translate-x-1/2 -rotate-2 rounded-sm bg-[#FFD93D]/90 shadow" />
+              {/* photo — çerçeve resmin ölçüsüne sarılır, resim asla kırpılmaz */}
+              <div className="pixel-frame relative mx-auto flex w-fit max-w-full items-center justify-center bg-[#FFD8D8] p-1.5">
                 <motion.div
                   key={`zoom-${idx}`}
                   initial={{ opacity: 0, scale: 0.98 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.4, ease: "easeOut" }}
-                  className="flex w-full justify-center"
+                  className="flex w-fit max-w-full justify-center"
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={m.src} alt={m.caption} className="h-auto max-h-[32vh] w-auto max-w-full md:max-h-[36vh]" draggable={false} />
+                  <img
+                    src={m.src}
+                    alt={m.caption}
+                    draggable={false}
+                    className="memory-photo block h-auto min-h-[160px] w-auto max-w-full rounded-md object-contain"
+                    style={{ maxWidth: "min(100%, 72vw)" }}
+                  />
                 </motion.div>
                 {/* sticker only — overlay labels removed */}
                 <motion.span
@@ -97,16 +104,16 @@ export function StageMemories({ onNext }: { onNext: () => void }) {
                   transition={{ duration: 1.1, delay: 0.25, ease: "easeOut" }}
                 />
               </div>
-              {/* caption only — date line removed */}
-              <div className="px-1 pb-1 pt-2 text-center">
-                <p className="pixel-font text-[11px] text-[#3A2B2B] md:text-xs">“{m.caption}”</p>
+              {/* caption only — genişlik resme uyar, ortalanır */}
+              <div className="mx-auto max-w-full px-1 pb-1 pt-2 text-center">
+                <p className="pixel-font mx-auto max-w-[62vw] text-balance text-[11px] leading-relaxed text-[#3A2B2B] md:max-w-[380px] md:text-xs">“{m.caption}”</p>
               </div>
             </PixelPanel>
           </motion.div>
         </AnimatePresence>
 
         {/* prev / next */}
-        <div className="mt-3 flex items-center justify-between gap-3">
+        <div className="mt-3 flex w-full items-center justify-between gap-3">
           <button
             onClick={() => go(-1)}
             className="pixel-font rounded-xl border-4 border-[#3A2B2B] bg-[#FFF6E9] px-3 py-2.5 text-[11px] text-[#3A2B2B] shadow-[4px_4px_0_#3A2B2B] transition active:translate-y-1 active:shadow-none"

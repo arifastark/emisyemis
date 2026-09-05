@@ -83,22 +83,25 @@ export function StageShell({
   deco?: DecoPreset;
 }) {
   return (
-    <div className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col items-center justify-start px-4 pb-6 pt-16 md:pb-8 md:pt-14">
+    <div className="relative mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-4 pb-10 pt-20 md:pb-12 md:pt-20">
       <CoquetteBackground preset={deco} />
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 mb-4 text-center"
-      >
-        <span className="pixel-font inline-block -rotate-2 rounded-lg border-4 border-[#3A2B2B] bg-[#FFD93D] px-3 py-1 text-[9px] tracking-widest text-[#3A2B2B] md:text-[10px]">
-          {kicker}
-        </span>
-        <h2 className="pixel-font mt-3 text-base leading-tight text-[#3A2B2B] md:text-2xl" style={{ textShadow: "2px 2px 0 #fff" }}>
-          {title}
-        </h2>
-        {subtitle && <p className="pixel-soft mx-auto mt-2 max-w-xl text-base leading-snug md:text-lg">{subtitle}</p>}
-      </motion.div>
-      {children}
+      {/* m-auto = safe vertical centering: boşlukta ortalar, içerik uzunsa kesmeden scroll'a izin verir */}
+      <div className="m-auto flex w-full flex-col items-center">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative z-10 mb-4 w-full text-center"
+        >
+          <span className="pixel-font inline-block -rotate-2 rounded-lg border-4 border-[#3A2B2B] bg-[#FFD93D] px-3 py-1 text-[9px] tracking-widest text-[#3A2B2B] md:text-[10px]">
+            {kicker}
+          </span>
+          <h2 className="pixel-font mx-auto mt-3 max-w-2xl text-balance text-base leading-tight text-[#3A2B2B] md:text-2xl" style={{ textShadow: "2px 2px 0 #fff" }}>
+            {title}
+          </h2>
+          {subtitle && <p className="pixel-soft mx-auto mt-2 max-w-xl text-balance text-base leading-snug md:text-lg">{subtitle}</p>}
+        </motion.div>
+        <div className="flex w-full flex-col items-center">{children}</div>
+      </div>
     </div>
   );
 }
