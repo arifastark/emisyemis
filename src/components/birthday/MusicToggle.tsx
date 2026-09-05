@@ -3,9 +3,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── small unobtrusive music control ──
-// Controls the ONE global thoseeyes.mp3 player. Pause preserves position,
-// resume continues from the same spot (never restarts).
 export function MusicToggle() {
   const [muted, setMuted] = useState(false);
   const [on, setOn] = useState(true);

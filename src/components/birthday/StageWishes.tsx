@@ -6,9 +6,6 @@ import { birthdayConfig, wishes } from "@/data/birthday";
 import { PixelButton, PixelPanel, StageShell, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── STAGE 3: 20 candles / 20 wishes ──
-// Background music is global (thoseeyes.mp3) — handled once in page.tsx,
-// continues across stages without restarting.
 function celebrateWishes() {
   birthdayAudio.fanfare();
   const colors = ["#FF6B9D", "#FFD93D", "#6BCB77", "#4D96FF", "#9B5DE5", "#ffffff"];
@@ -35,7 +32,6 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
 
   const blow = (i: number) => {
     if (out[i]) {
-      // re-open already-read wish
       setActiveWish(i);
       birthdayAudio.click();
       return;
@@ -60,15 +56,12 @@ export function StageWishes({ onNext }: { onNext: () => void }) {
     }
   };
 
-  // 5 pastel candle tones × 4 each = 20 candles.
-  // Harmonious with #FFD8D8 bg, clearly distinguishable pixel-art families.
-  // Order is fixed so each tone appears exactly 4 times (i % 5).
   const candleColors = [
-    "#FF9EBB", // pastel rose
-    "#8FCBFF", // pastel sky
-    "#A8E6B8", // pastel mint
-    "#D3B8FF", // pastel lavender
-    "#FFCBA8", // pastel peach
+    "#FF9EBB",
+    "#8FCBFF",
+    "#A8E6B8",
+    "#D3B8FF",
+    "#FFCBA8",
   ];
 
   return (

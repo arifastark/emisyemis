@@ -7,14 +7,11 @@ import { PixelButton, FloatingPixels, LogoBadge } from "./pixel-ui";
 import { CoquetteBackground } from "./CoquetteBackground";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── FINAL: HAPPY 20 ──
-// Background music is global (thoseeyes.mp3) — keeps playing through the finale.
 export function StageFinale({ onReplay }: { onReplay: () => void }) {
   const cfg = birthdayConfig.finale;
 
   useEffect(() => {
     birthdayAudio.fanfare();
-    // fireworks loop for ~4s
     const end = Date.now() + 4000;
     const frame = () => {
       confetti({ particleCount: 5, angle: 60, spread: 60, origin: { x: 0, y: 0.6 }, shapes: ["square"], colors: ["#FF6B9D", "#FFD93D", "#fff"] });

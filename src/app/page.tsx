@@ -14,9 +14,6 @@ import { StageProgress } from "@/components/birthday/pixel-ui";
 import { MusicToggle } from "@/components/birthday/MusicToggle";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// Sequential 8-stage pixel birthday game. One stage at a time.
-// Background music is ONE global thoseeyes.mp3 instance: started once here,
-// never restarted on stage change, keeps playback position.
 export default function Home() {
   const [stage, setStage] = useState(0);
   const next = useCallback(() => {
@@ -31,9 +28,6 @@ export default function Home() {
     window.scrollTo({ top: 0 });
   }, [stage]);
 
-  // Start the single global background track once. If autoplay is blocked,
-  // birthdayAudio retries after the user's first interaction. Stage changes
-  // never touch it, so position is preserved.
   useEffect(() => {
     birthdayAudio.playGlobalMusic();
   }, []);

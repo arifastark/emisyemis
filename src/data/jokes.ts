@@ -1,10 +1,3 @@
-// ─────────────────────────────────────────────
-//  INSIDE JOKES — click-to-reveal lab cards.
-//  `setup` shows first, `punchline` reveals on flip.
-//  Add as many as you want. `secret: true` hides it
-//  until all others are found (easter egg).
-// ─────────────────────────────────────────────
-
 export type Joke = {
   id: string;
   tag: string;

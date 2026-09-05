@@ -6,9 +6,6 @@ import { birthdayConfig } from "@/data/birthday";
 import { PixelButton, PixelPanel, StageShell, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── STAGE 2: Big pixel birthday cake with "20" candles ──
-// Interaction: press BLOW OR tap each flame.
-// Background music is global (thoseeyes.mp3) — continues across stages.
 function celebrateCake() {
   birthdayAudio.fanfare();
   const end = Date.now() + 1600;
@@ -23,11 +20,10 @@ function celebrateCake() {
 
 export function StageCake({ onNext }: { onNext: () => void }) {
   const cfg = birthdayConfig.cake;
-  const [blown, setBlown] = useState<boolean[]>([false, false]); // [candle "2", candle "0"]
+  const [blown, setBlown] = useState<boolean[]>([false, false]);
   const [blowing, setBlowing] = useState(false);
   const timers = useRef<number[]>([]);
 
-  // Clear pending blow-out timers on unmount (music is global, untouched).
   useEffect(() => {
     const pending = timers.current;
     return () => {
@@ -50,7 +46,6 @@ export function StageCake({ onNext }: { onNext: () => void }) {
     if (blowing || allOut) return;
     setBlowing(true);
     birthdayAudio.blow();
-    // staggered extinguish = satisfying (explicit states avoid stale closures)
     timers.current.push(
       window.setTimeout(() => {
         setBlown([true, false]);

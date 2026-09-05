@@ -20,9 +20,9 @@ type Spot = {
   alt: string;
   left: string;
   top: string;
-  size: number; // px (mobile)
-  mdSize: number; // px (desktop)
-  depth: number; // parallax strength 0..1
+  size: number;
+  mdSize: number;
+  depth: number;
   rotate: number;
   delay: number;
   dur: number;
@@ -51,8 +51,6 @@ const CUP = "/deco/deco-cup.png";
 const LETTER = "/deco/deco-letter.png";
 const BOUQUET = "/deco/deco-bouquet.png";
 
-// Her bölümde aynı 7 öğe, ama farklı dizilim + farklı güzel boyutlar.
-// Kenarlara yaslı — ortadaki oyun alanı her zaman temiz kalır.
 const LAYOUTS: Record<DecoPreset, Spot[]> = {
   intro: [
     S(HEART, "pink heart", "2%", "16%", 96, 150, 0.9, -10, 0, 4.2),
@@ -137,9 +135,6 @@ const LAYOUTS: Record<DecoPreset, Spot[]> = {
   ],
 };
 
-// ── İnteraktif coquette background ──
-// 7 sticker: mouse ile parallax, havada süzülme, tıklayınca pop + konfeti.
-// İçeriğin altında kalır (z-0), oyun alanını kapatmaz.
 export function CoquetteBackground({ preset = "generic" }: { preset?: DecoPreset }) {
   const spots = LAYOUTS[preset] ?? LAYOUTS.generic;
   const [par, setPar] = useState({ x: 0, y: 0 });

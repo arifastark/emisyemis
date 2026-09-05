@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { songs, type Song } from "@/data/songs";
 import { SectionHeading } from "./ui";
 
-// ── tiny synth engine: plays song.melody, or real <audio> if audioSrc set ──
 function useSongPlayer(song: Song) {
   const [playing, setPlaying] = useState(false);
   const [tick, setTick] = useState(0);
@@ -24,7 +23,6 @@ function useSongPlayer(song: Song) {
 
   const play = () => {
     if (playing) { stop(); return; }
-    // real file wins if configured
     if (song.audioSrc) {
       if (!audioRef.current) audioRef.current = new Audio(song.audioSrc);
       else audioRef.current.src = song.audioSrc;
@@ -36,7 +34,6 @@ function useSongPlayer(song: Song) {
       timerRef.current = t;
       return;
     }
-    // synth fallback
     try {
       if (!ctxRef.current) ctxRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
       const ctx = ctxRef.current;
@@ -62,7 +59,6 @@ function useSongPlayer(song: Song) {
     } catch { /* audio blocked — visual only */ setPlaying(true); }
   };
 
-  // cleanup only touches refs/audio — no setState in effects
   useEffect(() => {
     const timer = timerRef;
     const audio = audioRef;

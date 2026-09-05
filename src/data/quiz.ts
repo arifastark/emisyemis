@@ -1,13 +1,9 @@
-// ─────────────────────────────────────────────
-//  QUIZ — all questions live here. Edit freely.
-// ─────────────────────────────────────────────
-
 export type QuizQ = {
   q: string;
   options: string[];
   correct: number;
-  reaction: string; // shown when correct
-  roast: string; // shown when wrong
+  reaction: string;
+  roast: string;
 };
 
 export const quizQuestions: QuizQ[] = [

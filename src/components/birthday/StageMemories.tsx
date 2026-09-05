@@ -5,12 +5,9 @@ import { birthdayConfig, memories } from "@/data/birthday";
 import { PixelButton, PixelPanel, StageShell, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── STAGE 6: cinematic memories — one by one, pixel transitions ──
-// Background music is global (thoseeyes.mp3) — continues across stages.
 export function StageMemories({ onNext }: { onNext: () => void }) {
   const cfg = birthdayConfig.memories;
   const [idx, setIdx] = useState(0);
-  // first memory counts as seen on mount (no effect needed)
   const [seen, setSeen] = useState<boolean[]>(() => memories.map((_, i) => i === 0));
   const [dir, setDir] = useState(1);
   const m = memories[idx];

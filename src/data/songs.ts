@@ -1,13 +1,3 @@
-// ─────────────────────────────────────────────
-//  SONGS — the jukebox config. EASY MODE:
-//  Option A (synth demo, works now): just edit title/artist/
-//           mood/melody below — site plays a cute chiptune.
-//  Option B (real music): drop an mp3 into /public/music/
-//           and set audioSrc: "/music/my-song.mp3".
-//           If audioSrc exists, it plays instead of synth.
-//  Optional: link out to Spotify/YouTube with `link`.
-// ─────────────────────────────────────────────
-
 export type Song = {
   id: string;
   title: string;
@@ -16,13 +6,11 @@ export type Song = {
   description: string;
   color: string;
   emoji: string;
-  // WebAudio chiptune — frequencies in Hz. Keep 8–16 notes.
   melody: number[];
-  tempo: number; // ms per note
-  audioSrc?: string; // e.g. "/music/roadtrip.mp3"
-  link?: string; // e.g. spotify url
+  tempo: number;
+  audioSrc?: string;
+  link?: string;
 };
-
 export const songs: Song[] = [
   {
     id: "liftoff",

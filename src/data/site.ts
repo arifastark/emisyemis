@@ -1,23 +1,12 @@
-// ─────────────────────────────────────────────
-//  SITE CONFIG — start here! Replace names/texts.
-//  Everything on the site pulls from these files,
-//  so you never have to hunt through components.
-// ─────────────────────────────────────────────
-
 export const siteConfig = {
-  // 👇 REPLACE with your friend's name
   friendName: "Sunshine",
-  // secret codename for the whole experience (tab title, envelope stamp)
   codename: "OPERATION EMISYEMIS",
-  // hero lines — keep them short & punchy
   heroTitleA: "a tiny universe,",
   heroTitleB: "built for you.",
   heroSubtitle:
     "No boring gallery. No normal portfolio. Just us — the photos, the songs, the stupid jokes — turned into a little adventure.",
-  // envelope intro
   envelopeFrom: "your favorite chaos gremlin",
   envelopeWarning: "TOP SECRET • DO NOT OPEN unless you are 100% awesome",
-  // finale letter — make it cry-laugh
   finaleLetter: [
     "Okay. Serious mode for 10 seconds. (Yes, I'm capable of it. Barely.)",
     "If you're reading this, you survived the envelope, the embarrassing photos, the cursed quiz and that big red button. Classic you — curious, brave, slightly chaotic.",
@@ -26,7 +15,6 @@ export const siteConfig = {
     "Now go drink some water, text me something unhinged, and never forget — you are so, so loved. 💛",
   ],
   finaleSign: "— your partner in crime",
-  // quiz ranks
   ranks: [
     { min: 0, label: "Certified Stranger 🕵️", note: "Have we even met??" },
     { min: 1, label: "Casual Accomplice 😏", note: "warming up…" },

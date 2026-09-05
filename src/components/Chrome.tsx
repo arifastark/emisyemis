@@ -68,7 +68,6 @@ export function Toast({ msg }: { msg: string | null }) {
   );
 }
 
-// Konami code → disco mode + click sparkles everywhere
 export function useSecrets(onToast: (m: string) => void, onDisco: (v: boolean) => void) {
   useEffect(() => {
     const seq = ["arrowup", "arrowup", "arrowdown", "arrowdown", "arrowleft", "arrowright", "arrowleft", "arrowright", "b", "a"];

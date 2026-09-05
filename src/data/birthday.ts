@@ -1,17 +1,3 @@
-// ─────────────────────────────────────────────────────────────
-//  🎂 BIRTHDAY CONFIG — ★ EDIT EVERYTHING HERE ★
-//  This is the ONLY file you need to personalize the whole game.
-//  Replace placeholders with your real texts / files.
-//
-//  ASSET MAP (drop files into /public/...):
-//   /public/sprites/friend.png   → pixel-art of your best friend (player)
-//   /public/sprites/me.png       → pixel-art of you (goal at end of game)
-//   /public/images/us-together.png → reward photo after the runner game
-//   /public/memories/*           → memory photos (memory-1..N)
-//   /public/audio/thoseeyes.mp3  → the ONE global background music track (loops on all stages)
-//  Background music is a single global player — see src/lib/birthday-audio.ts.
-// ─────────────────────────────────────────────────────────────
-
 export const birthdayConfig = {
   friendName: "ELMIRA",
   age: 20,
@@ -47,13 +33,12 @@ export const birthdayConfig = {
     subtitle: "Jump over the boys and escape them • reach Arifa",
     instructionsDesktop: "JUMP: SPACE / ↑",
     instructionsMobile: "JUMP: tap the screen 👆",
-    goalDistance: 1000, // 6 engel: ilki 250m'de, aralar 150m
-    friendName: "ELMIRA", // oynayan kız
-    goalName: "ARIFA", // finalde bekleyen kız
+    goalDistance: 1000,
+    friendName: "ELMIRA",
+    goalName: "ARIFA",
     victoryTitle: "You escaped the boys and reached me. Well done!",
     victorySub: "You escaped the boys and reached me. Well done!",
     continueText: "CONTINUE",
-    // sprites — replace with your own pixel art
     friendSprite: "/sprites/friend.png",
     meSprite: "/sprites/me.png",
     rewardPhoto: "/us.jpg",
@@ -94,8 +79,6 @@ export const birthdayConfig = {
   },
 } as const;
 
-// ─── 20 WISHES — final content (do not edit wording/order) ───
-// wishes[i] belongs to candle #i+1. Keep exactly 20 entries.
 export const wishes: string[] = [
   "Ümid edirəm ki, 20 yaşında olduğu kimi, 40 yaşında da ən yaxın dostun mən olaram (onsuz da başqa şansın yoxdur).",
   "İnanıram ki, Arifə bir də tənbəllik edib sənin əsəblərinlə oynamayacaq.",
@@ -119,10 +102,6 @@ export const wishes: string[] = [
   "20 yaşında bütün xoşbəxtliklər səninlə olsun. Ad günün mübarək!",
 ];
 
-// ─── QUIZ — 4 sual. Hamısı azərbaycanca. ───
-// `answers`: düzgün cavablar (kiçik/böyük hərf fərqi yoxdur, Ə/ə uyğunluğu var).
-// `correctMessage`: düz cavabda göstərilir. `incorrectMessage`: səhv cavabda
-// doğru cavabla birlikdə göstərilir — hər ikisindən sonra növbəti suala keçilir.
 export type QuizQuestion = {
   question: string;
   placeholder?: string;
@@ -172,7 +151,6 @@ export const quizQuestions: QuizQuestion[] = [
   },
 ];
 
-// ─── MEMORIES — replace src with your photos in /public/memories/ ───
 export type Memory = {
   src: string;
   caption: string;
@@ -195,11 +173,10 @@ export const memories: Memory[] = [
   { src: "/memories/e17.jpg", caption: "ohh my shaylaa", sticker: "🌈" },
   { src: "/memories/e18.jpg", caption: "with Narmin", sticker: "☀️" },
   { src: "/memories/e19.jpg", caption: "yaxşı oğlan pizza söhbeti elemez", sticker: "😎" },
+  { src: "/memories/e22.jpg", caption: "😲", sticker: "😲" },
   { src: "/memories/e20.jpg", caption: "kalite kontrol", sticker: "💫" },
 ];
 
-// ─── FRIEND MESSAGES — WhatsApp-style birthday wishes for Elmira ───
-// Hər dost üçün: name + text. Rənglər avtomatik verilir.
 export type FriendMessage = {
   name: string;
   text: string;
@@ -211,10 +188,10 @@ export const friendMessages: FriendMessage[] = [
   { name: "Səma", text: "Askm menim . Canim Elmiram. Seni tebrik edirem ❤️. Heyatda sene her seyin en gozelini arzu edirem. Cunki sen buna laiqsen🩷. Sen menim ucun cox deyerlisen. Men seni ozume yalniz dost , sirdas kimi yox eyni zamanda dogmam ailem bacim kimi gorurem. Bu heyatda meni evimde hissetdirecek tek tuk insanlardan biri ve demek olarki ilki sensen❤️. Mende son nefesime qeder sene ev olmaga calisacam. Seni cooox ama cooox istyrem💋. Sen menim en gözel şansimsan🧡\nYaxsiki varsan heyatim🫂", time: "00:00" },
   { name: "Günel", text: "Aşkmmmm ad günün mübarek💋💋 Bu yeni yaşında qabağına tam senin istediyin kimi birini çıxartsın və çox başarılı olasan Aminnn", time: "00:00" },
   { name: "Aysu", text: "elmıraaa,dostum ad gunun mubarek🥳yaxşı kı doğulmusan.senın gunun 💜.yenı yasında ugurlar ve xosbextlık arzulayıram🙏🏿seninle bırlıkde kıno baxmağı ve oyun oynamağı cox sevırem senıde sevırem. yenı yasında sene yenı herfler arzulayıram🤣🤣🤣.yaxsıkı varsan yoxsa gozumuzu kım açardı🥺🥺🥺🥺🥺🥺🥺🥺❤️", time: "00:00" },
+  { name: "Sübhan", text: "Ad gününüz mübarək Emiş xanım, yeni kompüteriniz mübarəkdi.", time: "00:00" },
   { name: "Arifə", text: "Əslində deyiləsi elə də sözüm yoxdu. Sadəcə bunu yazanda backgroundda Paster “İnanıram” mahnısı oxunurdu. Səni ilk dəfə görəndə “Daxilində bir nur gördüm, xaricində büllur”. İndi isə “Sənlə yaşamağı öyrəndim, sənsiz ölməyə də yox meylim”. Sən mənim isti gecələrdə yastığımın soyuq tərəfisən. Səni sevirəm. Bu qədər.", time: "00:00" },
 ];
 
-// ─── FINAL LETTER — legacy, no longer shown (kept for reference) ───
 export const finalLetter = {
   greeting: "Dear Best Friend,",
   paragraphs: [
@@ -226,7 +203,6 @@ export const finalLetter = {
   sign: "— your bestie who loves you tons 💛",
 };
 
-// ─── SPRITES / IMAGES — file paths to replace later ───
 export const assets = {
   friendSprite: "/sprites/friend.png",
   meSprite: "/sprites/me.png",
@@ -234,7 +210,6 @@ export const assets = {
   cakeSprite: "/images/cake.png",
 } as const;
 
-// ─── STAGE ORDER (do not change unless you know what you do) ───
 export const stages = [
   { id: 0, label: "start", emoji: "🎈" },
   { id: 1, label: "cake", emoji: "🎂" },

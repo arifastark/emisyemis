@@ -6,7 +6,6 @@ import type { ReactNode } from "react";
 import { birthdayAudio } from "@/lib/birthday-audio";
 import { CoquetteBackground, type DecoPreset } from "./CoquetteBackground";
 
-// ── Big rounded pixel button (ARE YOU READY? etc.) ──
 export function PixelButton({
   children,
   onClick,
@@ -34,7 +33,6 @@ export function PixelButton({
   );
 }
 
-// ── Pixel panel / dialog box ──
 export function PixelPanel({
   children,
   className = "",
@@ -51,7 +49,6 @@ export function PixelPanel({
   );
 }
 
-// ── Site logo badge: circular pixel-framed /logo.jpg ──
 export function LogoBadge({ size = 120 }: { size?: number }) {
   return (
     <motion.span
@@ -72,7 +69,6 @@ export function LogoBadge({ size = 120 }: { size?: number }) {
   );
 }
 
-// ── Stage wrapper: centers content, pink bg, floating pixels ──
 export function StageShell({
   kicker,
   title,
@@ -107,7 +103,6 @@ export function StageShell({
   );
 }
 
-// ── Progress dots for 8 stages ──
 export function StageProgress({ stage, total }: { stage: number; total: number }) {
   return (
     <div className="pointer-events-none fixed left-1/2 top-3 z-50 flex -translate-x-1/2 items-center gap-1.5 rounded-full border-[3px] border-[#3A2B2B] bg-[#FFF6E9]/95 px-3 py-2 shadow-[3px_3px_0_#3A2B2B]">
@@ -122,7 +117,6 @@ export function StageProgress({ stage, total }: { stage: number; total: number }
   );
 }
 
-// ── tiny pixel burst via canvas-confetti ──
 export function pixelBurst(big = false) {
   birthdayAudio.pop();
   confetti({
@@ -136,8 +130,6 @@ export function pixelBurst(big = false) {
   });
 }
 
-// ── interactive floating emojis: tap one → pops with mini confetti + sound ──
-// Sahnedeki diğer butonların (z-10) altında kalır, sadece boş arka alanda tıklanır.
 export function InteractivePixels({
   items = ["💌", "🌸", "💖", "✨", "🎂", "💕", "🎉", "🍰"],
   count = 22,
@@ -183,7 +175,6 @@ export function InteractivePixels({
           type="button"
           onClick={pop.bind(null, i)}
           onPointerDown={(e) => {
-            // dokunmatik ekranda da konfeti tam parmağın ucunda çıksın
             if (e.pointerType === "touch") pop(i, e);
           }}
           className="pointer-events-auto absolute cursor-pointer select-none"
@@ -208,7 +199,6 @@ export function InteractivePixels({
   );
 }
 
- // ── floating pixel decorations (hearts, stars…) ──
 export function FloatingPixels({ items = ["💖", "⭐", "🎈", "✨", "🍰", "💛"] }: { items?: string[] }) {
   const dots = Array.from({ length: 14 }, (_, i) => ({
     left: (i * 37 + 11) % 100,

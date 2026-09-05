@@ -6,11 +6,7 @@ import { birthdayConfig, quizQuestions } from "@/data/birthday";
 import { PixelButton, StageShell, FloatingPixels } from "./pixel-ui";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── STAGE 5: Quiz — 4 sual, tək-tək. ──
-// Düz → təbrik + avtomatik növbəti. Səhv → doğru cavabı göstər + növbəti.
-// Kiçik/böyük hərf fərqi yoxdur, Ə/ə uyğunluğu var.
 
-// Azərbaycan hərflərini qatla ki, "Tənbəl" = "tenbel" = "TENBEL" olsun.
 function foldAz(s: string) {
   return s
     .toLocaleLowerCase("az")
@@ -37,7 +33,6 @@ function isCorrect(input: string, answers: string[]) {
     const n = normalize(a);
     if (!n) return false;
     if (v === n) return true;
-    // uzun cavablarda (3-cü sual) artıq simvol (... və s.) olsa da qəbul et
     if (n.length > 12 && v.includes(n)) return true;
     return false;
   });
@@ -51,12 +46,11 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
   const [value, setValue] = useState("");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const [pending, setPending] = useState(false); // son sual cavablandı, mesaj göstərilir
+  const [pending, setPending] = useState(false);
   const [shake, setShake] = useState(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const q = quizQuestions[idx];
-  // soru listesi değişmiş ama state eski kalmışsa hizala (dev hot-reload güvenliği)
   const visible = results.length === total ? results : Array<boolean | null>(total).fill(null);
   const answeredCount = visible.filter((r) => r !== null).length;
   const score = visible.filter((r) => r === true).length;
@@ -69,7 +63,6 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
     };
   }, [total]);
 
-  // son sualın cavabını neticeye işlə — mesajdan sonra birbaşa finiş
   const commitLast = (correct: boolean) => {
     if (timer.current) clearTimeout(timer.current);
     setResults((prev) => prev.map((r, j) => (j === idx ? correct : r)));
@@ -81,12 +74,10 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
   const goNext = () => {
     if (timer.current) clearTimeout(timer.current);
     if (idx + 1 >= total) {
-      // son sual — NƏTİCƏYƏ BAX basıldısa dərhal neticeye keç
       if (pending) {
         commitLast(isCorrect(value, q.answers));
         return;
       }
-      // hamısı cavablandı — fanfar
       birthdayAudio.fanfare();
       confetti({ particleCount: 240, spread: 130, origin: { y: 0.5 }, shapes: ["square"] });
       setResults((prev) => [...prev]);
@@ -113,7 +104,6 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 }, shapes: ["square"], scalar: 0.9 });
       setMsg({ ok: true, text: q.correctMessage ?? "CORRECT! 🎉" });
       if (isLast) {
-        // son sual — mesaj görünsün, sonra avtomatik neticeye
         setRevealed(true);
         setPending(true);
         timer.current = setTimeout(() => commitLast(true), 1800);
@@ -121,7 +111,6 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       }
       setResults((prev) => prev.map((r, j) => (j === idx ? true : r)));
       setRevealed(true);
-      // düz cavab → qısa fasilədən sonra avtomatik növbəti
       timer.current = setTimeout(() => {
         if (idx + 1 >= total) {
           birthdayAudio.fanfare();
@@ -137,7 +126,6 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       birthdayAudio.fail();
       setMsg({ ok: false, text: q.incorrectMessage });
       if (isLast) {
-        // son sual — səhv mesajı görünsün, sonra avtomatik neticeye
         setRevealed(true);
         setPending(true);
         setShake((s) => s + 1);
@@ -147,7 +135,6 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       setResults((prev) => prev.map((r, j) => (j === idx ? false : r)));
       setRevealed(true);
       setShake((s) => s + 1);
-      // səhv cavab → doğru cavabı oxusun deyə avtomatik keçmir, düyməni gözləyir
     }
   };
 

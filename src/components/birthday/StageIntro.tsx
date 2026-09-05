@@ -5,7 +5,6 @@ import { PixelButton, FloatingPixels, LogoBadge } from "./pixel-ui";
 import { CoquetteBackground } from "./CoquetteBackground";
 import { birthdayAudio } from "@/lib/birthday-audio";
 
-// ── STAGE 1: Intro / "ARE YOU READY?" ──
 export function StageIntro({ onStart }: { onStart: () => void }) {
   const cfg = birthdayConfig.intro;
   return (

@@ -1,10 +1,3 @@
-// ─────────────────────────────────────────────
-//  MEMORIES — replace with your real photos.
-//  1. Drop images into /public/memories/ (jpg/png/webp)
-//  2. Update `src` below, keep caption/date/sticker.
-//  Tip: square-ish photos look best in the deck.
-// ─────────────────────────────────────────────
-
 export type Memory = {
   src: string;
   caption: string;
