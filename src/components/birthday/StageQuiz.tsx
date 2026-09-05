@@ -56,15 +56,18 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const q = quizQuestions[idx];
-  const answeredCount = results.filter((r) => r !== null).length;
-  const score = results.filter((r) => r === true).length;
+  // soru listesi değişmiş ama state eski kalmışsa hizala (dev hot-reload güvenliği)
+  const visible = results.length === total ? results : Array<boolean | null>(total).fill(null);
+  const answeredCount = visible.filter((r) => r !== null).length;
+  const score = visible.filter((r) => r === true).length;
   const finished = answeredCount === total;
 
   useEffect(() => {
+    setResults((prev) => (prev.length === total ? prev : Array(total).fill(null)));
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, []);
+  }, [total]);
 
   // son sualın cavabını neticeye işlə — mesajdan sonra birbaşa finiş
   const commitLast = (correct: boolean) => {
@@ -160,7 +163,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
       <div className="pixel-panel z-10 mb-5 flex w-full max-w-2xl items-center justify-between bg-[#3A2B2B] px-4 py-2">
         <span className="pixel-font text-[10px] text-[#FFD93D] md:text-xs">SCORE: {score * 100}</span>
         <div className="flex gap-1">
-          {results.map((r, i) => (
+          {visible.map((r, i) => (
             <span
               key={i}
               className="block h-3 w-3 rounded-[4px] border border-black"
@@ -248,7 +251,7 @@ export function StageQuiz({ onNext }: { onNext: () => void }) {
             RESULT: {score}/{total} CORRECT
           </p>
           <div className="mt-4 flex flex-wrap justify-center gap-2">
-            {results.map((r, i) => (
+            {visible.map((r, i) => (
               <span
                 key={i}
                 className="pixel-font rounded-md border-2 border-[#3A2B2B] px-2 py-1 text-[9px]"
